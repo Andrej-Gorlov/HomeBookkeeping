@@ -1,0 +1,5 @@
+*obj
+*bin
+/HomeBookkeepingWebApi/HomeBookkeepingWebApi.csproj.user
+/.git
+/.vs

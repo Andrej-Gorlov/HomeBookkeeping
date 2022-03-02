@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HomeBookkeepingWebApi", "HomeBookkeepingWebApi", "{5C1E9E3E-E047-46D2-8E4B-1CEC0DD9D59C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeBookkeepingWebApi", "HomeBookkeepingWebApi\HomeBookkeepingWebApi.csproj", "{A75228D6-B4C8-4BD0-8B00-A8A597B675C8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DAL", "DAL", "{48E1DF6C-ECE1-4DBF-A40E-733F149F64BE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{AB8ADFD4-AFFD-4CC7-8E11-33D7F61C1061}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{2CBCB8EE-ECDF-4C21-A4A9-FD47DA27CD9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeBookkeepingWebApi.Domain", "HomeBookkeepingWebApi.Domain\HomeBookkeepingWebApi.Domain.csproj", "{15770011-D82D-4027-952A-4B7F22E05823}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeBookkeepingWebApi.DAL", "HomeBookkeepingWebApi.DAL\HomeBookkeepingWebApi.DAL.csproj", "{779603A0-41F6-43DB-B2AD-F233868FD43C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeBookkeepingWebApi.Service", "HomeBookkeepingWebApi.Service\HomeBookkeepingWebApi.Service.csproj", "{A71BB5E6-A7DA-4AD6-AF58-B8095CFC943B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A75228D6-B4C8-4BD0-8B00-A8A597B675C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A75228D6-B4C8-4BD0-8B00-A8A597B675C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A75228D6-B4C8-4BD0-8B00-A8A597B675C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A75228D6-B4C8-4BD0-8B00-A8A597B675C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15770011-D82D-4027-952A-4B7F22E05823}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15770011-D82D-4027-952A-4B7F22E05823}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15770011-D82D-4027-952A-4B7F22E05823}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15770011-D82D-4027-952A-4B7F22E05823}.Release|Any CPU.Build.0 = Release|Any CPU
+		{779603A0-41F6-43DB-B2AD-F233868FD43C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{779603A0-41F6-43DB-B2AD-F233868FD43C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{779603A0-41F6-43DB-B2AD-F233868FD43C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{779603A0-41F6-43DB-B2AD-F233868FD43C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A71BB5E6-A7DA-4AD6-AF58-B8095CFC943B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A71BB5E6-A7DA-4AD6-AF58-B8095CFC943B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A71BB5E6-A7DA-4AD6-AF58-B8095CFC943B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A71BB5E6-A7DA-4AD6-AF58-B8095CFC943B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A75228D6-B4C8-4BD0-8B00-A8A597B675C8} = {5C1E9E3E-E047-46D2-8E4B-1CEC0DD9D59C}
+		{48E1DF6C-ECE1-4DBF-A40E-733F149F64BE} = {5C1E9E3E-E047-46D2-8E4B-1CEC0DD9D59C}
+		{AB8ADFD4-AFFD-4CC7-8E11-33D7F61C1061} = {5C1E9E3E-E047-46D2-8E4B-1CEC0DD9D59C}
+		{2CBCB8EE-ECDF-4C21-A4A9-FD47DA27CD9F} = {5C1E9E3E-E047-46D2-8E4B-1CEC0DD9D59C}
+		{15770011-D82D-4027-952A-4B7F22E05823} = {AB8ADFD4-AFFD-4CC7-8E11-33D7F61C1061}
+		{779603A0-41F6-43DB-B2AD-F233868FD43C} = {48E1DF6C-ECE1-4DBF-A40E-733F149F64BE}
+		{A71BB5E6-A7DA-4AD6-AF58-B8095CFC943B} = {2CBCB8EE-ECDF-4C21-A4A9-FD47DA27CD9F}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {22BDE21C-C884-47C4-B5DE-792E04DC58D1}
+	EndGlobalSection
+EndGlobal
