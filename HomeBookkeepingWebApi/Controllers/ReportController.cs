@@ -22,9 +22,23 @@ namespace HomeBookkeepingWebApi.Controllers
         /// </remarks> 
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         [HttpGet]
-        [Route("listCategory/")]
+        [Route("listCategory")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllCategory() => Ok(await _reportSer.Service_GetAllCategory());
+        /// <summary>
+        /// Список всех пользователей совершившиx транзакции.
+        /// </summary>
+        /// <returns>Вывод списка.</returns>
+        /// <remarks>
+        ///
+        ///     GET /report
+        ///
+        /// </remarks> 
+        /// <response code="200"> Запрос прошёл. (Успех) </response>
+        [HttpGet]
+        [Route("listFullNameUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> AllFullNameUser() => Ok(await _reportSer.Service_GetAllFullNameUser());
 
 
         /// <summary>
@@ -38,10 +52,8 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     GET /report
         ///     
-        ///     {
-        ///        "fullName": Иван Иванов   // Введите полное имя пользователя, отчёт которого нужно показать.
-        ///        "year": int (2000)        // Введите год за который нужно паказать отчёт.
-        ///     }
+        ///        fullName: Иван Иванов   // Введите полное имя пользователя, отчёт которого нужно показать.
+        ///        year: int (2000)        // Введите год за который нужно паказать отчёт.
         ///     
         /// </remarks>
         /// <response code="200"> Запрос прошёл. (Успех) </response>
@@ -71,17 +83,15 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     GET /report
         ///     
-        ///     {
-        ///        "fullName": Иван Иванов             // Введите полное имя пользователя, отчёт которого нужно показать.
-        ///        "year": int (2000)                  // Введите год за который нужно паказать отчёт.
-        ///        "month": (январь или 01 или 1)      // Введите месяц за который нужно паказать отчёт.
-        ///     }
+        ///        fullName: Иван Иванов             // Введите полное имя пользователя, отчёт которого нужно показать.
+        ///        year: int (2000)                  // Введите год за который нужно паказать отчёт.
+        ///        month: (январь или 01 или 1)      // Введите месяц за который нужно паказать отчёт.
         ///     
         /// </remarks>
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         /// <response code="400"> Отчёт не найден. </response>
         [HttpGet]
-        [Route("{fullName}/{year}/{month}")]
+        [Route("ExpensNameYearMonthReport/{fullName}/{year}/{month}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ExpensNameYearMonthReport(string fullName, int year, string month)
@@ -96,41 +106,31 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <summary>
         /// Отчёт по категории определенного пользователя за конкретный год.
         /// </summary>
-        /// <param name="typeExpense"></param>
+        /// <param name="category"></param>
         /// <param name="fullName"></param>
         /// <param name="year"></param>
         /// <returns>Вывод отчёта.</returns>
         /// <remarks>
         /// 
-        ///  Виды категорий:
-        ///     1. Коммунальные расходы
-        ///     2. Еда
-        ///     3. Здоровье и красота
-        ///     4. Образование
-        ///     5. Накопление
-        ///     6. Другое
-        /// 
         /// Образец запроса:
         /// 
         ///     GET /report
         ///     
-        ///     {
-        ///        "typeExpense": Коммунальные расходы   // Введите категорию за которую нужно паказать отчёт.
-        ///        "fullName": Иван Иванов               // Введите полное имя пользователя, отчёт которого нужно показать.
-        ///        "year": int (2000)                    // Введите год за который нужно паказать отчёт.
-        ///     }
+        ///        typeExpense: Коммунальные расходы   // Введите категорию за которую нужно паказать отчёт.
+        ///        fullName: Иван Иванов               // Введите полное имя пользователя, отчёт которого нужно показать.
+        ///        year: int (2000)                    // Введите год за который нужно паказать отчёт.
         ///     
         /// </remarks>
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         /// <response code="400"> Отчёт не найден. </response>
         [HttpGet]
-        [Route("{typeExpense}/{fullName}/{year}")]
+        [Route("ExpensNameCategoryYearReport/{category}/{fullName}/{year}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ExpensNameCategoryYearReport(string typeExpense, string fullName, int year)
+        public async Task<IActionResult> ExpensNameCategoryYearReport(string category, string fullName, int year)
         {
             if (year <= 0) return BadRequest($"год: [{year}] не может быть меньше или равен нулю");
-            var report = await _reportSer.Service_ExpensNameCategoryYear(typeExpense, fullName, year);
+            var report = await _reportSer.Service_ExpensNameCategoryYear(category, fullName, year);
             if (report.Result == null) return BadRequest(report);
             return Ok(report);
         }
@@ -139,43 +139,33 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <summary>
         /// Отчёт по категории определенного пользователя за конкретный год и месяц.
         /// </summary>
-        /// <param name="typeExpense"></param>
+        /// <param name="category"></param>
         /// <param name="fullName"></param>
         /// <param name="year"></param>
         /// <param name="month"></param>
         /// <returns>Вывод отчёта.</returns>
         /// <remarks>
         /// 
-        ///  Виды категорий:
-        ///     1. Коммунальные расходы
-        ///     2. Еда
-        ///     3. Здоровье и красота
-        ///     4. Образование
-        ///     5. Накопление
-        ///     6. Другое
-        /// 
         /// Образец запроса:
         /// 
         ///     GET /report
         ///     
-        ///     {
-        ///        "typeExpense": Коммунальные расходы   // Введите категорию за которую нужно паказать отчёт.
-        ///        "fullName": Иван Иванов               // Введите полное имя пользователя, отчёт которого нужно показать.
-        ///        "year": int (2000)                    // Введите год за который нужно паказать отчёт.
-        ///        "month": (январь или 01 или 1)        // Введите месяц за который нужно паказать отчёт.
-        ///     }
+        ///        category: Коммунальные расходы   // Введите категорию за которую нужно паказать отчёт.
+        ///        fullName: Иван Иванов               // Введите полное имя пользователя, отчёт которого нужно показать.
+        ///        year: int (2000)                    // Введите год за который нужно паказать отчёт.
+        ///        month: (январь или 01 или 1)        // Введите месяц за который нужно паказать отчёт.
         ///     
         /// </remarks>
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         /// <response code="400"> Отчёт не найден. </response>
         [HttpGet]
-        [Route("{typeExpense}/{fullName}/{year}/{month}")]
+        [Route("ExpensNameCategoryYearMonthReport/{category}/{fullName}/{year}/{month}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ExpensNameCategoryYearMonthReport(string typeExpense, string fullName, int year, string month)
+        public async Task<IActionResult> ExpensNameCategoryYearMonthReport(string category, string fullName, int year, string month)
         {
             if (year <= 0) return BadRequest($"год: [{year}] не может быть меньше или равен нулю");
-            var report = await _reportSer.Service_ExpensNameCategoryYearMonth(typeExpense, fullName, year, month);
+            var report = await _reportSer.Service_ExpensNameCategoryYearMonth(category, fullName, year, month);
             if (report.Result == null) return BadRequest(report);
             return Ok(report);
         }
@@ -206,9 +196,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     GET /report
         ///     
-        ///     {
-        ///        "fullName": Иван Иванов // Введите полное имя пользователя, которого нужно показать отчёт.
-        ///     }
+        ///        fullName: Иван Иванов // Введите полное имя пользователя, которого нужно показать отчёт.
         ///     
         /// </remarks>
         /// <response code="200"> Запрос прошёл. (Успех) </response>
@@ -228,35 +216,25 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <summary>
         /// Отчёт определенной категории за все года.
         /// </summary>
-        /// <param name="typeExpense"></param>
+        /// <param name="category"></param>
         /// <returns>Вывод отчёта.</returns>
         /// <remarks>
         /// Образец запроса:
-        ///   
-        ///  Виды категорий:
-        ///     1. Коммунальные расходы
-        ///     2. Еда
-        ///     3. Здоровье и красота
-        ///     4. Образование
-        ///     5. Накопление
-        ///     6. Другое
         /// 
         ///     GET /report
         ///     
-        ///     {
-        ///        "typeExpense": Коммунальные расходы   // Введите категорию за которую нужно паказать отчёт.
-        ///     }
+        ///        typeExpense: Коммунальные расходы   // Введите категорию за которую нужно паказать отчёт.
         ///     
         /// </remarks>
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         /// <response code="400"> Отчёт не найден. </response>
         [HttpGet]
-        [Route("{typeExpense}")]
+        [Route("{category}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ExpensCategoryFullYaerReport(string typeExpense)
+        public async Task<IActionResult> ExpensCategoryFullYaerReport(string category)
         {
-            var report = await _reportSer.Service_ExpensCategoryFullYaer(typeExpense);
+            var report = await _reportSer.Service_ExpensCategoryFullYaer(category);
             if (report.Result == null) return BadRequest(report);
             return Ok(report);
         }
@@ -265,38 +243,28 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <summary>
         /// Отчёт определенной категории за конкретный год.
         /// </summary>
-        /// <param name="typeExpense"></param>
+        /// <param name="category"></param>
         /// <param name="year"></param>
         /// <returns>Вывод отчёта.</returns>
         /// <remarks>
         /// Образец запроса:
-        ///   
-        ///  Виды категорий:
-        ///     1. Коммунальные расходы
-        ///     2. Еда
-        ///     3. Здоровье и красота
-        ///     4. Образование
-        ///     5. Накопление
-        ///     6. Другое
         /// 
         ///     GET /report
         ///     
-        ///     {
-        ///        "typeExpense": Коммунальные расходы   // Введите категорию за которую нужно паказать отчёт.
-        ///        "year": int (2000)                    // Введите год за который нужно паказать отчёт.
-        ///     }
+        ///        category: Коммунальные расходы   // Введите категорию за которую нужно паказать отчёт.
+        ///        year: int (2000)                    // Введите год за который нужно паказать отчёт.
         ///     
         /// </remarks>
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         /// <response code="400"> Отчёт не найден. </response>
         [HttpGet]
-        [Route("{typeExpense}/{year}")]
+        [Route("{category}/{year}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ExpensCategoryYaerReport(string typeExpense, int year)
+        public async Task<IActionResult> ExpensCategoryYaerReport(string category, int year)
         {
             if (year <= 0) return BadRequest($"год: [{year}] не может быть меньше или равен нулю");
-            var report = await _reportSer.Service_ExpensCategoryYaer(typeExpense, year);
+            var report = await _reportSer.Service_ExpensCategoryYaer(category, year);
             if (report.Result == null) return BadRequest(report);
             return Ok(report);
         }

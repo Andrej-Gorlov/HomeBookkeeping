@@ -10,10 +10,10 @@ namespace HomeBookkeepingWebApi.Domain.DTO
     {
         public int СreditСardId { get; set; }
         public int UserId { get; set; }
-        public string? CardName { get; set; }
+        public string? BankName { get; set; }
         public string? UserFullName { get; set; }
         public string? Number { get; set; }
-        public string? R_Account { get; set; }
+        public string? L_Account { get; set; }
         public decimal Sum { get; set; }
     }
 }

@@ -1,0 +1,64 @@
+﻿@model IEnumerable<HomeBookkeeping.Web.Models.HomeBookkeeping.UserDTOBase>
+
+    <br /><br />
+
+    <div class="container p-4 border bg-light">
+        <div class="row pb-2">
+            <div class="col ">
+                <h1 class="text-primary"> Список пользователей </h1>
+            </div>
+
+            <div class="col text-end pt-1">
+                <a asp-action="UserCreate" class="btn btn-outline-primary">
+                    <i class="fas fa-plus"></i> Создать нового пользователя </a>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Имя
+                    </th>
+                    <th>
+                        Email
+                    </th>
+                    <th>
+                        Номер телефона
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @item.FullName
+                        </td>
+                        <td>
+                            @item.Email
+                        </td>
+                        <td>
+                            @item.PhoneNumber
+                        </td>
+                        <td>
+                            <a asp-action="UserEdit" class="btn btn-outline-primary" 
+                            asp-route-userId="@item.UserId">
+                            <i class="fas fa-edit"></i>
+                            </a>
+
+                             <a asp-action="UserDelete" class="btn btn-outline-primary" 
+                            asp-route-userId="@item.UserId">
+                            <i class="fas fa-trash"></i>
+                            </a>
+
+                             <a  asp-controller="СreditСard" asp-action="СreditСardUserIndex" class="btn btn-outline-primary" 
+                            asp-route-fullName="@item.FullName">
+                            <i class="fas fa-credit-card"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>

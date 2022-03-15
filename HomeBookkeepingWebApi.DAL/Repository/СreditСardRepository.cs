@@ -45,9 +45,9 @@ namespace HomeBookkeepingWebApi.DAL.Repository
             }
         }
 
-        public async Task<СreditСardDTO> Enrollment(string nameCard, string number, decimal sum)
+        public async Task<СreditСardDTO> Enrollment(string nameBank, string number, decimal sum)
         {
-            СreditСard creditСard = await _db.СreditСard.FirstOrDefaultAsync(x => x.CardName == nameCard && x.Number.Replace(" ", "") == number.Replace(" ", ""));
+            СreditСard creditСard = await _db.СreditСard.FirstOrDefaultAsync(x => x.BankName == nameBank && x.Number.Replace(" ", "") == number.Replace(" ", ""));
             creditСard.Sum += sum;
             await _db.SaveChangesAsync();
             return _mapper.Map<СreditСard, СreditСardDTO>(creditСard);
@@ -56,6 +56,12 @@ namespace HomeBookkeepingWebApi.DAL.Repository
         public async Task<IEnumerable<СreditСardDTO>> Get()
         {
             List<СreditСard> creditСardList = await _db.СreditСard.ToListAsync();
+            return _mapper.Map<List<СreditСardDTO>>(creditСardList);
+        }
+
+        public async Task<IEnumerable<СreditСardDTO>> Get(string fullName)
+        {
+            List<СreditСard> creditСardList = await _db.СreditСard.Where(x=>x.UserFullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", "")). ToListAsync();
             return _mapper.Map<List<СreditСardDTO>>(creditСardList);
         }
 

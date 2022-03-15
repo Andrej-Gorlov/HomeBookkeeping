@@ -10,6 +10,7 @@ namespace HomeBookkeepingWebApi.DAL.Interfaces
     public interface ITransactionRepository
     {
         Task<IEnumerable<TransactionDTO>> Get();
+        Task<TransactionDTO> GetById(int id);
         Task<TransactionDTO> Add(TransactionDTO entity);
         Task<bool> Delete(int id);
         Task<bool> Delete(DateTime data);

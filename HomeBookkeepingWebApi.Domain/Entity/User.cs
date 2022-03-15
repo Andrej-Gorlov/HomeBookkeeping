@@ -12,11 +12,11 @@ namespace HomeBookkeepingWebApi.Domain.Entity
         [Key]
         public int UserId { get; set; }
 
-        [Display(Name = "Полное имя"), Required(ErrorMessage = "Укажите имя")] 
+        [Required(ErrorMessage = "Укажите имя")] 
         public string? FullName { get; set; }
 
-        [Display(Name = "Кридитная карта"), Required(ErrorMessage = "Укажите данные кридитной карты")]
-        public HashSet<СreditСard>? СreditСard { get; set; }
+        [Required(ErrorMessage = "Укажите данные кридитной карты")]
+        public HashSet<СreditСard>? СreditСards { get; set; }
 
         public string? Email { get; set; }
         public string? PhoneNumber { get; set; }

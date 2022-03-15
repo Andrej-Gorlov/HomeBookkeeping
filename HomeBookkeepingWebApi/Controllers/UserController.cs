@@ -36,15 +36,13 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     GET /user
         ///     
-        ///     {
-        ///        "Id": int // Введите id пользователя, которого нужно показать.
-        ///     }
+        ///        Id: int // Введите id пользователя, которого нужно показать.
         ///     
         /// </remarks>
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         /// <response code="400"> Пользователь не найдена </response>
         [HttpGet]
-        [Route("e/{id:int}")]
+        [Route("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetByIdUser(int id)
@@ -62,9 +60,30 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <param name="userDTO"></param>
         /// <returns>Создаётся пользователь</returns>
         /// <remarks>
+        /// 
+        ///     Свойство ["userId" и "сreditСard"] указываться не обязательно.
+        /// 
         /// Образец ввовда данных:
         ///
         ///     POST /user
+        ///     
+        ///     {
+        ///       "userId": 0,                    // id пользователя.
+        ///       "fullName": "string",           // Полное имя пользователя.
+        ///       "сreditСard": [                 // Данные кредитной карты.
+        ///         {
+        ///           "сreditСardId": 0,          // id кредитной карты.
+        ///           "userId": 0,                // id пользователя, которому принадлежит кредитная карта.
+        ///           "cardName": "string",       // Hазвание кредитной карты.
+        ///           "userFullName": "string",   // Полное имя пользователя, которому принадлежит кредитная карта.
+        ///           "number": "string",         // Номер кредитной карты.
+        ///           "r_Account": "string",      // Расчетный счёт крединой карты.
+        ///           "sum": 0                    // Баланс кредитной карты.
+        ///         }         
+        ///       ],                            
+        ///       "email": "string",              // Электронная почта.
+        ///       "phoneNumber": "string"         // Номер телефона.
+        ///     }
         ///
         /// </remarks>
         /// <response code="201"> Пользователь создан. </response>
@@ -88,6 +107,24 @@ namespace HomeBookkeepingWebApi.Controllers
         /// Образец ввовда данных:
         ///
         ///     PUT /user
+        ///     
+        ///     {
+        ///       "userId": 0,                    // id пользователя.
+        ///       "fullName": "string",           // Полное имя пользователя.
+        ///       "сreditСard": [                 // Данные кредитной карты.
+        ///         {
+        ///           "сreditСardId": 0,          // id кредитной карты.
+        ///           "userId": 0,                // id пользователя, которому принадлежит кредитная карта.
+        ///           "cardName": "string",       // Hазвание кредитной карты.
+        ///           "userFullName": "string",   // Полное имя пользователя, которому принадлежит кредитная карта.
+        ///           "number": "string",         // Номер кредитной карты.
+        ///           "r_Account": "string",      // Расчетный счёт крединой карты.
+        ///           "sum": 0                    // Баланс кредитной карты.
+        ///         }         
+        ///       ],                            
+        ///       "email": "string",              // Электронная почта.
+        ///       "phoneNumber": "string"         // Номер телефона.
+        ///     }
         ///
         /// </remarks>
         /// <response code="200"> Пользователь обновлен. </response>
@@ -113,16 +150,14 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     DELETE /creditcard
         ///     
-        ///     {
-        ///        "Id": int // Введите id пользователя, которого нужно удалить.
-        ///     }
+        ///        Id: int // Введите id пользователя, которого нужно удалить.
         ///     
         /// </remarks>
         /// <response code="204"> Пользователь удалён. (нет содержимого) </response>
         /// <response code="404"> Пользователь c указанным id не найден. </response>
         /// <response code="400"> Недопустимое значение ввода </response>
         [HttpDelete]
-        [Route("w/{id}")]
+        [Route("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -145,15 +180,13 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     GET /user
         ///     
-        ///     {
-        ///        "fullName": Иван Иванов // Введите полное имя пользователя, которого нужно показать.
-        ///     }
+        ///        fullName: Иван Иванов // Введите полное имя пользователя, которого нужно показать.
         ///     
         /// </remarks>
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         /// <response code="400"> Пользователь не найден. </response>
         [HttpGet]
-        [Route("q/{fullName}")]
+        [Route("{fullName}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetFullNameUser(string fullName)

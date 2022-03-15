@@ -14,7 +14,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <summary>
         /// Список всех кредитных карт
         /// </summary>
-        /// <returns>Вывод всех существующих кредитных карт</returns>
+        /// <returns>Вывод всех кредитных карт</returns>
         /// <remarks>
         /// Образец выовда запроса:
         ///
@@ -27,6 +27,23 @@ namespace HomeBookkeepingWebApi.Controllers
         public async Task<IActionResult> GetСreditСards() => Ok(await _creditСardSer.Service_Get());
 
         /// <summary>
+        /// Список всех кредитных карт принадлежащему пользователю
+        /// </summary>
+        /// <param name="fullName"></param>
+        /// <returns>Вывод всех кредитных карт принадлежащему пользователю</returns>
+        /// <remarks>
+        /// Образец выовда запроса:
+        ///
+        ///     fullName: Иван Иванов // Введите полное имя пользователя чьи кредитные карты нужно показать.
+        ///
+        /// </remarks> 
+        /// <response code="200"> Запрос прошёл. (Успех) </response>
+        [HttpGet]
+        [Route("listСreditСardsUser/{fullName}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetСreditСards(string fullName) => Ok(await _creditСardSer.Service_Get(fullName));
+
+        /// <summary>
         /// Вывод кредитной карты по id.
         /// </summary>
         /// <remarks>
@@ -36,9 +53,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     GET /creditcard
         ///     
-        ///     {
-        ///        "СreditСardId": int // Введите id кредитной карты, которую нужно показать.
-        ///     }
+        ///        СreditСardId: int // Введите id кредитной карты, которую нужно показать.
         ///     
         /// </remarks>
         /// <response code="200"> Запрос прошёл. (Успех) </response>
@@ -61,10 +76,23 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <param name="creditСardDTO"></param>
         /// <returns>Создаётся кредитная карта</returns>
         /// <remarks>
+        /// 
+        ///     Свойство ["сreditСardId" и "sum"] указываться не обязательно.
+        ///     
         /// Образец ввовда данных:
         ///
         ///     POST /creditcard
-        ///
+        ///     
+        ///     {
+        ///         "сreditСardId": 0,         // id кредитной карты.
+        ///         "userId": 0,               // id пользователя, которому принадлежит кредитная карта.
+        ///         "cardName": "string",      // Hазвание кредитной карты.
+        ///         "userFullName": "string",  // Полное имя пользователя, которому принадлежит кредитная карта.
+        ///         "number": "string",        // Номер кредитной карты.
+        ///         "r_Account": "string",     // Расчетный счёт крединой карты.
+        ///         "sum": 0                   // Баланс кредитной карты.
+        ///     }
+        ///     
         /// </remarks>
         /// <response code="201"> Кредитная карта создана. </response>
         /// <response code="400"> Введены недопустимые данные. </response>
@@ -87,6 +115,16 @@ namespace HomeBookkeepingWebApi.Controllers
         /// Образец ввовда данных:
         ///
         ///     PUT /creditcard
+        ///     
+        ///     {
+        ///         "сreditСardId": 0,         // id кредитной карты.
+        ///         "userId": 0,               // id пользователя, которому принадлежит кредитная карта.
+        ///         "cardName": "string",      // Hазвание кредитной карты.
+        ///         "userFullName": "string",  // Полное имя пользователя, которому принадлежит кредитная карта.
+        ///         "number": "string",        // Номер кредитной карты.
+        ///         "r_Account": "string",     // Расчетный счёт крединой карты.
+        ///         "sum": 0                   // Баланс кредитной карты.
+        ///     }
         ///
         /// </remarks>
         /// <response code="200"> Кредитная карта обновлена. </response>
@@ -111,9 +149,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     DELETE /creditcard
         ///     
-        ///     {
-        ///        "СreditСardId": int // Введите id кредитной карты, которую нужно удалить.
-        ///     }
+        ///        СreditСardId: int // Введите id кредитной карты, которую нужно удалить.
         ///     
         /// </remarks>
         /// <response code="204"> Кредитная карта удалена. (нет содержимого) </response>
@@ -135,7 +171,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <summary>
         /// Зачисление денежных средств на кредитную карту
         /// </summary>
-        /// <param name="nameCard"></param>
+        /// <param name="nameBank"></param>
         /// <param name="number"></param>
         /// <param name="sum"></param>
         /// <returns>Денежные средства зачислены на кредитную карту</returns>
@@ -145,7 +181,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         /// Образец ввовда данных:
         /// 
-        ///     nameCard: Сбер                  Введите названия кредитной карты
+        ///     nameBank: Сбер                  Введите названия кредитной карты
         ///     numbe: 0000 0000 00000 00000    Введите номер кредитной карты
         ///     sum: 00.00                      Введите сумму для зачисления на кредитную карту
         /// 
@@ -153,13 +189,13 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="201"> Денежные средства зачислены. </response>
         /// <response code="400"> Введены недопустимые данные. </response>
         [HttpPost]
-        [Route("{nameCard}/{number}/{sum}")]
+        [Route("{nameBank}/{number}/{sum}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> EnrollmentСreditСard(string nameCard, string number, decimal sum)
+        public async Task<IActionResult> EnrollmentСreditСard(string nameBank, string number, decimal sum)
         {
             if (sum < 0) return BadRequest($"Сумма: [{sum}] для зачисления, не может быть меньше нуля");
-            var creditСard = await _creditСardSer.Service_Enrollment(nameCard, number, sum);
+            var creditСard = await _creditСardSer.Service_Enrollment(nameBank, number, sum);
             if (creditСard.Result == null) return BadRequest(creditСard); //
             return CreatedAtAction(nameof(GetСreditСards), creditСard);//(GetСreditСard)?
         }

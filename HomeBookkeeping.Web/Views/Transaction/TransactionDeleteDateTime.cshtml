@@ -1,0 +1,39 @@
+﻿@model HomeBookkeeping.Web.Models.HomeBookkeeping.TransactionDTOBase
+
+<form asp-action="TransactionDeleteDateTime">
+
+    <br />
+    <div class="container border p-3 bg-light">
+        <h1 class="text-primary">Удалить транзакцию</h1>
+
+        <hr />
+        <div class="row">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="col-3">
+                <label asp-for="DateOperations" class="control-label pt-2" style="font-size:20px;"></label>
+            </div>
+            <div class="col-8 pb-3">
+                <input asp-for="DateOperations"  value="2000-01-01T00:01:01.001" class="form-control">
+                <span asp-validation-for="DateOperations" class="text-danger"></span>
+            </div>
+
+
+            <div class="col-5 offset-2">
+                <a asp-action="TransactionGet" class="btn btn-outline-primary form-control">Вернуться</a>
+            </div>
+            <div class="col-5">
+                <input type="submit" value="Удалить" class="btn btn-outline-primary form-control" />
+            </div>
+
+        </div>
+
+        <div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+}

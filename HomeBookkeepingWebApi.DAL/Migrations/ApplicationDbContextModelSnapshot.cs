@@ -30,15 +30,15 @@ namespace HomeBookkeepingWebApi.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("СreditСardId"), 1L, 1);
 
-                    b.Property<string>("CardName")
+                    b.Property<string>("BankName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("L_Account")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Number")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("R_Account")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -62,9 +62,9 @@ namespace HomeBookkeepingWebApi.DAL.Migrations
                         new
                         {
                             СreditСardId = 1,
-                            CardName = "Сбер",
+                            BankName = "Сбер",
+                            L_Account = "40817810100011234567",
                             Number = "0000 0000 0000 0000",
-                            R_Account = "0000000000001",
                             Sum = 8000m,
                             UserFullName = "Горлов Андрей",
                             UserId = 1
@@ -72,9 +72,9 @@ namespace HomeBookkeepingWebApi.DAL.Migrations
                         new
                         {
                             СreditСardId = 2,
-                            CardName = "ВТБ",
+                            BankName = "ВТБ",
+                            L_Account = "40817810200021234568",
                             Number = "0000 0000 0000 0001",
-                            R_Account = "0000000000002",
                             Sum = 3000m,
                             UserFullName = "Горлов Андрей",
                             UserId = 1
@@ -82,9 +82,9 @@ namespace HomeBookkeepingWebApi.DAL.Migrations
                         new
                         {
                             СreditСardId = 3,
-                            CardName = "Сбер",
+                            BankName = "Сбер",
+                            L_Account = "40817810300031234569",
                             Number = "0000 0000 0000 0002",
-                            R_Account = "0000000000003",
                             Sum = 5000m,
                             UserFullName = "Горлова Ольга",
                             UserId = 2
@@ -92,9 +92,9 @@ namespace HomeBookkeepingWebApi.DAL.Migrations
                         new
                         {
                             СreditСardId = 4,
-                            CardName = "Мир",
+                            BankName = "Мир",
+                            L_Account = "40817810400041234560",
                             Number = "0000 0000 0000 0000",
-                            R_Account = "0000000000004",
                             Sum = 3000m,
                             UserFullName = "Горлова Ольга",
                             UserId = 2
@@ -240,7 +240,7 @@ namespace HomeBookkeepingWebApi.DAL.Migrations
             modelBuilder.Entity("HomeBookkeepingWebApi.Domain.Entity.СreditСard", b =>
                 {
                     b.HasOne("HomeBookkeepingWebApi.Domain.Entity.User", null)
-                        .WithMany("СreditСard")
+                        .WithMany("СreditСards")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -248,7 +248,7 @@ namespace HomeBookkeepingWebApi.DAL.Migrations
 
             modelBuilder.Entity("HomeBookkeepingWebApi.Domain.Entity.User", b =>
                 {
-                    b.Navigation("СreditСard");
+                    b.Navigation("СreditСards");
                 });
 #pragma warning restore 612, 618
         }

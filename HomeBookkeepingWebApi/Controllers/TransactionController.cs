@@ -20,7 +20,19 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <remarks>
         /// Образец ввовда данных:
         ///
+        ///     Свойство ["id"] указываться не обязательно.
+        ///     
         ///     POST /user
+        ///     
+        ///     {
+        ///       "id": 0,                                        /// id транзакции.
+        ///       "userFullName": "string",                       /// Полное имя пользователя совершившего транзакцию.
+        ///       "numberCardUser": "string",                     /// Номер карты с которой списаны денежные средства.
+        ///       "recipientName": "string",                      /// Имя/Названия организации получателя.
+        ///       "dateOperations": "2022-03-03T11:25:16.544Z",   /// Дата проведения транзакции.
+        ///       "sum": 0,                                       /// Сумма транзакции.
+        ///       "category": "string"                            /// Категория.
+        ///     }
         ///
         /// </remarks>
         /// <response code="201"> Tранзакция создана. </response>
@@ -45,9 +57,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     DELETE /transaction
         ///     
-        ///     {
-        ///        "Id": int // Введите id транзакции, которую нужно удалить.
-        ///     }
+        ///        Id: int // Введите id транзакции, которую нужно удалить.
         ///     
         /// </remarks>
         /// <response code="204"> Транзакция удалён. (нет содержимого) </response>
@@ -81,14 +91,12 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     DELETE /transaction
         ///     
-        ///     {
-        ///        "year": int (2000)  // Введите год транзакции, которую нужно удалить.
-        ///        "month": int (1)    // Введите месяц транзакции, которую нужно удалить.
-        ///        "day": int (1)      // Введите день транзакции, которую нужно удалить.
-        ///        "hour": int (0)     // Введите час транзакции, которую нужно удалить.
-        ///        "minute": int (0)   // Введите минуту транзакции, которую нужно удалить.
-        ///        "ysecond": int (0)  // Введите секунду транзакции, которую нужно удалить.
-        ///     }
+        ///        year: int (2000)  // Введите год транзакции, которую нужно удалить.
+        ///        month: int (1)    // Введите месяц транзакции, которую нужно удалить.
+        ///        day: int (1)      // Введите день транзакции, которую нужно удалить.
+        ///        hour: int (0)     // Введите час транзакции, которую нужно удалить.
+        ///        minute: int (0)   // Введите минуту транзакции, которую нужно удалить.
+        ///        ysecond: int (0)  // Введите секунду транзакции, которую нужно удалить.
         ///     
         /// </remarks>
         /// <response code="204"> Транзакция удалён. (нет содержимого) </response>
@@ -124,5 +132,32 @@ namespace HomeBookkeepingWebApi.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetСreditСards() => Ok(await _transactionSer.Service_Get());
+
+        /// <summary>
+        /// Вывод транзакции по id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Вывод данных транзакции</returns>
+        /// <remarks>
+        /// Образец запроса:
+        /// 
+        ///     GET /transaction
+        ///     
+        ///        Id: int // Введите id транзакции, которую нужно показать.
+        ///     
+        /// </remarks>
+        /// <response code="200"> Запрос прошёл. (Успех) </response>
+        /// <response code="400"> Транзакция не найдена </response>
+        [HttpGet]
+        [Route("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetByIdTransaction(int id)
+        {
+            if (id <= 0) return BadRequest($"id: [{id}] не может быть меньше или равно нулю");
+            var transaction = await _transactionSer.Service_GetById(id);
+            if (transaction.Result == null) return BadRequest(transaction);
+            return Ok(transaction);
+        }
     }
 }

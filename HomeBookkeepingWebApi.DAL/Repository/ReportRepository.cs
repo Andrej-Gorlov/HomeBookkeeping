@@ -23,12 +23,13 @@ namespace HomeBookkeepingWebApi.DAL.Repository
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<TemporaryData_ReportCategotyDTO>> ExpensCategoryFullYaer(string category)
+
+        public async Task<IEnumerable<TemporaryDataReportCategoty>> ExpensCategoryFullYaer(string category)
         {
             var listUser = await _db.User.Select(x => x.FullName).Distinct().ToListAsync();
             List<int> listYear = await _db.Transaction.Select(x => x.DateOperations.Year).Distinct().ToListAsync();
             var nameCategory = _db.Transaction.FirstOrDefault(x => x.Category.ToUpper().Replace(" ", "") == category.ToUpper().Replace(" ", ""));
-            List<TemporaryData_ReportCategoty> TemporaryDRC = new();
+            List<TemporaryDataReportCategoty> listTemporaryDRC = new();
             foreach (var itemUser in listUser)
             {
                 foreach (var itemYear in listYear)
@@ -37,57 +38,57 @@ namespace HomeBookkeepingWebApi.DAL.Repository
                     foreach (var itemMonth in listMonth)
                     {
                         DateTime dateTime = DefinePoly.DefinitionDateTime(itemYear, itemMonth.ToString());
-                        TemporaryData_ReportCategoty temporaryDRC = new()
+                        TemporaryDataReportCategoty temporaryDRC = new()
                         {
                             FullName = itemUser,
                             DateTime = dateTime,
                             Category = nameCategory.Category,
-                            recipientDatas = ListRecipient(dateTime, nameCategory.Category, itemUser, true),
+                            recipientsData = ListRecipient(dateTime, nameCategory.Category, itemUser, true),
                             Sum = (decimal)_db.Transaction.Where(x => x.UserFullName == itemUser &&
                                                            x.DateOperations.Year == dateTime.Year &&
                                                            x.DateOperations.Month == dateTime.Month &&
                                                            x.Category == nameCategory.Category).Sum(x => x.Sum)
                         };
-                        TemporaryDRC.Add(temporaryDRC);
+                        if(temporaryDRC.Sum!=0) listTemporaryDRC.Add(temporaryDRC);
                     }
                 }
             }
-            return _mapper.Map<List<TemporaryData_ReportCategotyDTO>>(TemporaryDRC);
+            return listTemporaryDRC;
         }
 
-        public async Task<IEnumerable<TemporaryData_ReportCategotyDTO>> ExpensCategoryYaer(string category, int year)
+        public async Task<IEnumerable<TemporaryDataReportCategoty>> ExpensCategoryYaer(string category, int year)
         {
             var nameCategory = _db.Transaction.FirstOrDefault(x => x.Category.ToUpper().Replace(" ", "") == category.ToUpper().Replace(" ", ""));
             var listUser = await _db.User.Select(x => x.FullName).Distinct().ToListAsync();
-            List<TemporaryData_ReportCategoty> TemporaryDRC = new();
+            List<TemporaryDataReportCategoty> listTemporaryDRC = new();
             foreach (var itemUser in listUser)
             {
                 List<int> listMonth = _db.Transaction.Where(x => x.DateOperations.Year == year).Select(x => x.DateOperations.Month).Distinct().ToList();
                 foreach (var itemMonth in listMonth)
                 {
                     DateTime dateTime = DefinePoly.DefinitionDateTime(year, itemMonth.ToString());
-                    TemporaryData_ReportCategoty temporaryDRC = new()
+                    TemporaryDataReportCategoty temporaryDRC = new()
                     {
                         FullName = itemUser,
                         DateTime = dateTime,
                         Category = nameCategory.Category,
-                        recipientDatas = ListRecipient(dateTime, nameCategory.Category, itemUser, true),
+                        recipientsData = ListRecipient(dateTime, nameCategory.Category, itemUser, true),
                         Sum = (decimal)_db.Transaction.Where(x => x.UserFullName == itemUser &&
                                                        x.DateOperations.Year == dateTime.Year &&
                                                        x.DateOperations.Month == dateTime.Month &&
                                                        x.Category == nameCategory.Category).Sum(x => x.Sum)
                     };
-                    TemporaryDRC.Add(temporaryDRC);
+                    if(temporaryDRC.Sum!=0) listTemporaryDRC.Add(temporaryDRC);
                 }
             }
-            return _mapper.Map<List<TemporaryData_ReportCategotyDTO>>(TemporaryDRC);
+            return listTemporaryDRC;
         }
 
-        public async Task<IEnumerable<TemporaryData_ReportTimeDTO>> ExpensFull()
+        public async Task<IEnumerable<TemporaryDataReportTime>> ExpensFull()
         {
             var listUser = await _db.User.Select(x => x.FullName).Distinct().ToListAsync();
             List<int> listYear = await _db.Transaction.Select(x => x.DateOperations.Year).Distinct().ToListAsync();
-            List<TemporaryData_ReportTime> temporaryDRT = new();
+            List<TemporaryDataReportTime> listTemporaryDRT = new();
             foreach (var itemName in listUser)
             {
                 foreach (var itemYear in listYear)
@@ -96,37 +97,37 @@ namespace HomeBookkeepingWebApi.DAL.Repository
                     foreach (var itemMonth in listMonth)
                     {
                         DateTime dateTime = DefinePoly.DefinitionDateTime(itemYear, itemMonth.ToString());
-                        TemporaryData_ReportTime temDRT = new()
+                        TemporaryDataReportTime temDRT = new()
                         {
                             FullName = itemName,
                             DateTime = dateTime,
-                            Category = ListTypeExpense(dateTime, itemName, true),
+                            Сategories = ListTypeExpense(dateTime, itemName, true),
                             Sum = (decimal)_db.Transaction.Where(
                                 x => x.DateOperations.Year == dateTime.Year
                                 && x.DateOperations.Month == dateTime.Month
                                 && x.UserFullName == itemName).Sum(x => x.Sum)
                         };
-                        temporaryDRT.Add(temDRT);
+                        if(temDRT.Sum!=0) listTemporaryDRT.Add(temDRT);
                     }
                 }
             }
-            return _mapper.Map<List<TemporaryData_ReportTimeDTO>>(temporaryDRT);
+            return listTemporaryDRT;
         }
 
-        public async Task<IEnumerable<TemporaryData_ReportCategotyDTO>> ExpensNameCategoryYear(string category, string fullName, int year)
+        public async Task<IEnumerable<TemporaryDataReportCategoty>> ExpensNameCategoryYear(string category, string fullName, int year)
         {
             var name = await _db.User.FirstOrDefaultAsync(x => x.FullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", ""));
             List<int> listMonth = _db.Transaction.Where(x => x.DateOperations.Year == year).Select(x => x.DateOperations.Month).Distinct().ToList();
-            List<TemporaryData_ReportCategoty> listTRC = new();
+            List<TemporaryDataReportCategoty> listTRC = new();
             foreach (var item in listMonth)
             {
                 DateTime dateTime = DefinePoly.DefinitionDateTime(year, item.ToString());
-                TemporaryData_ReportCategoty tDRC = new()
+                TemporaryDataReportCategoty tDRC = new()
                 {
                     FullName = name.FullName,
                     DateTime = dateTime,
                     Category = category,
-                    recipientDatas = ListRecipient(dateTime, category, name.FullName),
+                    recipientsData = ListRecipient(dateTime, category, name.FullName),
                     Sum = (decimal)_db.Transaction.Where(
                         x => x.UserFullName == name.FullName &&
                         x.DateOperations.Year == dateTime.Year &&
@@ -134,21 +135,21 @@ namespace HomeBookkeepingWebApi.DAL.Repository
                         x.Category.ToUpper().Replace(" ", "") == category.ToUpper().Replace(" ", ""))
                         .Sum(x => x.Sum)
                 };
-                listTRC.Add(tDRC);
+                if(tDRC.Sum!=0) listTRC.Add(tDRC);
             }
-            return _mapper.Map<List<TemporaryData_ReportCategotyDTO>>(listTRC);
+            return listTRC;
         }
 
-        public async Task<TemporaryData_ReportCategotyDTO> ExpensNameCategoryYearMonth(string category, string fullName, int year, string month)
+        public async Task<TemporaryDataReportCategoty> ExpensNameCategoryYearMonth(string category, string fullName, int year, string month)
         {
             DateTime dateTime = DefinePoly.DefinitionDateTime(year, month);
             var name = await _db.User.FirstOrDefaultAsync(x => x.FullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", ""));
-            TemporaryData_ReportCategoty tDRC = new()
+            TemporaryDataReportCategoty tDRC = new()
             {
                 FullName = name.FullName,
                 DateTime = dateTime,
                 Category = category,
-                recipientDatas = ListRecipient(dateTime, category, name.FullName, true),
+                recipientsData = ListRecipient(dateTime, category, name.FullName, true),
                 Sum = (decimal)_db.Transaction.Where(
                     x => x.UserFullName == name.FullName &&
                     x.DateOperations.Year == dateTime.Year &&
@@ -156,77 +157,82 @@ namespace HomeBookkeepingWebApi.DAL.Repository
                     x.Category.ToUpper().Replace(" ", "") == category.ToUpper().Replace(" ", ""))
                     .Sum(x => x.Sum)
             };
-            return _mapper.Map<TemporaryData_ReportCategotyDTO>(tDRC);
+            return tDRC;
         }
 
-        public async Task<IEnumerable<TemporaryData_ReportTimeDTO>> ExpensNameFullYear(string fullName)
+        public async Task<IEnumerable<TemporaryDataReportTime>> ExpensNameFullYear(string fullName)
         {
             var name = await _db.User.FirstOrDefaultAsync(x => x.FullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", ""));
             List<int> listYear = await _db.Transaction.Select(x => x.DateOperations.Year).Distinct().ToListAsync();
-            List<TemporaryData_ReportTime> listTD_RT = new();
+            List<TemporaryDataReportTime> listTD_RT = new();
             foreach (var itemYear in listYear)
             {
                 List<int> listMonth = _db.Transaction.Where(x => x.DateOperations.Year == itemYear).Select(x => x.DateOperations.Month).Distinct().ToList();
                 foreach (var itemMonth in listMonth)
                 {
                     DateTime dateTime = DefinePoly.DefinitionDateTime(itemYear, itemMonth.ToString());
-                    TemporaryData_ReportTime temporaryDRT = new()
+                    TemporaryDataReportTime temporaryDRT = new()
                     {
                         FullName = name.FullName,
                         DateTime = dateTime,
-                        Category = ListTypeExpense(dateTime, name.FullName, true),
+                        Сategories = ListTypeExpense(dateTime, name.FullName, true),
                         Sum = (decimal)_db.Transaction.Where(x => x.DateOperations.Year == dateTime.Year
                                                             && x.DateOperations.Month == dateTime.Month
                                                             && x.UserFullName == name.FullName).Sum(x => x.Sum)
                     };
-                    listTD_RT.Add(temporaryDRT);
+                    if(temporaryDRT.Sum!=0) listTD_RT.Add(temporaryDRT);
                 }
             }
-            return _mapper.Map<List<TemporaryData_ReportTimeDTO>>(listTD_RT);
+            return listTD_RT;
         }
 
-        public async Task<List<TemporaryData_ReportTimeDTO>> ExpensNameYear(string fullName, int year)
+        public async Task<IEnumerable<TemporaryDataReportTime>> ExpensNameYear(string fullName, int year)
         {
             var name = await _db.User.FirstOrDefaultAsync(x => x.FullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", ""));
-            List<TemporaryData_ReportTime> listTD_RT = new ();
+            List<TemporaryDataReportTime> listTD_RT = new ();
             List<int> listMonth = _db.Transaction.Where(x => x.DateOperations.Year == year).Select(x => x.DateOperations.Month).Distinct().ToList();
             foreach (var item in listMonth)
             {
                 DateTime dateTime = DefinePoly.DefinitionDateTime(year, item.ToString());
-                TemporaryData_ReportTime temporaryDRT = new()
+                TemporaryDataReportTime temporaryDRT = new()
                 {
                     FullName = name.FullName,
                     DateTime = dateTime,
-                    Category = ListTypeExpense(dateTime, name.FullName, true),
+                    Сategories = ListTypeExpense(dateTime, name.FullName, true),
                     Sum = (decimal)_db.Transaction.Where(x => x.DateOperations.Year == dateTime.Year &&
                                                          x.DateOperations.Month == dateTime.Month &&
                                                          x.UserFullName == name.FullName).Sum(x => x.Sum)
                 };
-                listTD_RT.Add(temporaryDRT);
+                if (temporaryDRT.Sum!=0) listTD_RT.Add(temporaryDRT);
             }
-            return _mapper.Map<List <TemporaryData_ReportTimeDTO>>(listTD_RT);
+            return listTD_RT;
         }
 
-        public async Task<TemporaryData_ReportTimeDTO> ExpensNameYearMonth(string fullName, int year, string month)
+        public async Task<TemporaryDataReportTime> ExpensNameYearMonth(string fullName, int year, string month)
         {
             DateTime dateTime = DefinePoly.DefinitionDateTime(year, month);
             var name = await _db.User.FirstOrDefaultAsync(x => x.FullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", ""));
-            TemporaryData_ReportTime temporaryDRT = new()
+            TemporaryDataReportTime temporaryDRT = new()
             {
                 FullName = name.FullName,
                 DateTime = dateTime,
-                Category = ListTypeExpense(dateTime, name.FullName, true),
+                Сategories = ListTypeExpense(dateTime, name.FullName, true),
                 Sum = (decimal)_db.Transaction.Where(x => x.DateOperations.Year == dateTime.Year &&
                                                      x.DateOperations.Month == dateTime.Month &&
                                                      x.UserFullName == name.FullName).Sum(x => x.Sum)
             };
-            return _mapper.Map<TemporaryData_ReportTimeDTO>(temporaryDRT);
+            return temporaryDRT;
         }
 
         public async Task<List<string>> GetAllCategory()
         {
             var listCategory = await _db.Transaction.Select(x => x.Category).Distinct().ToArrayAsync();
             return _mapper.Map<List<string>>(listCategory);
+        }
+        public async Task<List<string>> GetAllFullNameUser()
+        {
+            var listFullName = await _db.Transaction.Select(x => x.UserFullName).Distinct().ToArrayAsync();
+            return _mapper.Map<List<string>>(listFullName);
         }
 
         //--------------------------- Private method ---------------------------\\
@@ -241,14 +247,14 @@ namespace HomeBookkeepingWebApi.DAL.Repository
                 typeEAS.NameTypeExpense = category;
                 if (Month)
                 {
-                    typeEAS.Recipient = ListRecipient(dateTime, category, fullName, true);
+                    typeEAS.Recipients = ListRecipient(dateTime, category, fullName, true);
 
                     typeEAS.SumTypeExpense = (decimal)_db.Transaction.Where(x => x.DateOperations.Year == dateTime.Year &&
                         x.DateOperations.Month == dateTime.Month && x.Category == category && x.UserFullName == fullName).Sum(x => x.Sum);
                 }
                 else
                 {
-                    typeEAS.Recipient = ListRecipient(dateTime, category, fullName);
+                    typeEAS.Recipients = ListRecipient(dateTime, category, fullName);
 
                     typeEAS.SumTypeExpense = (decimal)_db.Transaction.Where(x => x.DateOperations.Year == dateTime.Year &&
                         x.Category == category && x.UserFullName == fullName).Sum(x => x.Sum);
@@ -258,15 +264,15 @@ namespace HomeBookkeepingWebApi.DAL.Repository
             }
             return listTypeExpense;
         }
-        private List<TemporaryData_RecipientData> ListRecipient(DateTime dateTime, string category, string fullName, bool Month = false)
+        private List<TemporaryDataRecipient> ListRecipient(DateTime dateTime, string category, string fullName, bool Month = false)
         {
-            List<TemporaryData_RecipientData> listRecipientData = new();
+            List<TemporaryDataRecipient> listRecipientData = new();
 
             List<string> listRecipientName = _db.Transaction/*.Where(x => x.DateOperations == dateTime)*/.Select(x => x.RecipientName).Distinct().ToList();
 
             foreach (var item in listRecipientName)
             {
-                TemporaryData_RecipientData recipient = new();
+                TemporaryDataRecipient recipient = new();
                 recipient.NameRecipient = item;
                 if (Month)
                     recipient.NameRecipientSum = (decimal)_db.Transaction.Where(x => x.DateOperations.Year == dateTime.Year &&
@@ -279,5 +285,6 @@ namespace HomeBookkeepingWebApi.DAL.Repository
             }
             return listRecipientData;
         }
+
     }
 }

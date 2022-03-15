@@ -1,4 +1,4 @@
-﻿using HomeBookkeepingWebApi.Domain.DTO;
+﻿using HomeBookkeepingWebApi.Domain.Entity.TemporaryData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,27 +10,28 @@ namespace HomeBookkeepingWebApi.DAL.Interfaces
     public interface IReportRepository
     {
         Task<List<string>> GetAllCategory();
+        Task<List<string>> GetAllFullNameUser();
         // Отчёт определенного user за конкретный год
-        Task<List<TemporaryData_ReportTimeDTO>> ExpensNameYear(string fullName, int year);
+        Task<IEnumerable<TemporaryDataReportTime>> ExpensNameYear(string fullName, int year);
         // Отчёт определенного user за конкретный год и месяц 
-        Task<TemporaryData_ReportTimeDTO> ExpensNameYearMonth(string fullName, int year, string month);
+        Task<TemporaryDataReportTime> ExpensNameYearMonth(string fullName, int year, string month);
 
 
         // Отчёт категории определенного user за конкретный год
-        Task<IEnumerable<TemporaryData_ReportCategotyDTO>> ExpensNameCategoryYear(string category, string fullName, int year);
+        Task<IEnumerable<TemporaryDataReportCategoty>> ExpensNameCategoryYear(string category, string fullName, int year);
         //Отчёт категории определенного user за конкретный год и месяц 
-        Task<TemporaryData_ReportCategotyDTO> ExpensNameCategoryYearMonth(string category, string fullName, int year, string month);
+        Task<TemporaryDataReportCategoty> ExpensNameCategoryYearMonth(string category, string fullName, int year, string month);
 
 
         // Полный отчёт
-        Task<IEnumerable<TemporaryData_ReportTimeDTO>> ExpensFull();
+        Task<IEnumerable<TemporaryDataReportTime>> ExpensFull();
         // Отчёт за все года определенного user
-        Task<IEnumerable<TemporaryData_ReportTimeDTO>> ExpensNameFullYear(string fullName);
+        Task<IEnumerable<TemporaryDataReportTime>> ExpensNameFullYear(string fullName);
 
 
         // Отчёт определенной категории за все года
-        Task<IEnumerable<TemporaryData_ReportCategotyDTO>> ExpensCategoryFullYaer(string category);
+        Task<IEnumerable<TemporaryDataReportCategoty>> ExpensCategoryFullYaer(string category);
         // Отчёт определенной категории за конкретный год
-        Task<IEnumerable<TemporaryData_ReportCategotyDTO>> ExpensCategoryYaer(string category, int year);
+        Task<IEnumerable<TemporaryDataReportCategoty>> ExpensCategoryYaer(string category, int year);
     }
 }

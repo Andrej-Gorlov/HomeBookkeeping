@@ -53,5 +53,15 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             baseResponse.Result = transactionDTO;
             return baseResponse;
         }
+
+        public async Task<IBaseResponse<TransactionDTO>> Service_GetById(int id)
+        {
+            var baseResponse = new BaseResponse<TransactionDTO>();
+            TransactionDTO model = await _transactionRep.GetById(id);
+            if (model == null) baseResponse.DisplayMessage = $"Транзакция под id [{id}] не найдена";
+            else baseResponse.DisplayMessage = $"Вывод транзакций под id [{id}]";
+            baseResponse.Result = model;
+            return baseResponse;
+        }
     }
 }

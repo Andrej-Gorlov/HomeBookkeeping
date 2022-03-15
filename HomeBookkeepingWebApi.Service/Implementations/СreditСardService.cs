@@ -34,10 +34,10 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<СreditСardDTO>> Service_Enrollment(string nameCard, string number, decimal sum)
+        public async Task<IBaseResponse<СreditСardDTO>> Service_Enrollment(string nameBank, string number, decimal sum)
         {
             var baseResponse = new BaseResponse<СreditСardDTO>();
-            СreditСardDTO model = await _creditСR.Enrollment(nameCard, number, sum);
+            СreditСardDTO model = await _creditСR.Enrollment(nameBank, number, sum);
             baseResponse.DisplayMessage = $"Денежные средства зачислены на карту №{number}";
             baseResponse.Result = model;
             return baseResponse;
@@ -49,6 +49,16 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             IEnumerable<СreditСardDTO> creditСardsDTO = await _creditСR.Get();
             if (creditСardsDTO == null) baseResponse.DisplayMessage = "Список всех кредитных карт пуст.";
             else baseResponse.DisplayMessage = "Список всех кредитных карт.";
+            baseResponse.Result = creditСardsDTO;
+            return baseResponse;
+        }
+
+        public async Task<IBaseResponse<IEnumerable<СreditСardDTO>>> Service_Get(string fullName)
+        {
+            var baseResponse = new BaseResponse<IEnumerable<СreditСardDTO>>();
+            IEnumerable<СreditСardDTO> creditСardsDTO = await _creditСR.Get(fullName);
+            if (creditСardsDTO == null) baseResponse.DisplayMessage = $"Список всех кредитных карт принадлежащему пользователю {fullName} пуст.";
+            else baseResponse.DisplayMessage = $"Список всех кредитных карт принадлежащему пользователю {fullName}.";
             baseResponse.Result = creditСardsDTO;
             return baseResponse;
         }

@@ -24,16 +24,31 @@ namespace HomeBookkeepingWebApi.DAL.Repository
         public async Task<UserDTO> Create(UserDTO entity)
         {
             User user = _mapper.Map<UserDTO, User>(entity);
-            _db.User.Add(user);
-            await _db.SaveChangesAsync();
-            return _mapper.Map<User, UserDTO>(user);
+            if (user.СreditСards.Count!=0)
+            {
+                _db.User.Add(user);
+                await _db.SaveChangesAsync();
+                return _mapper.Map<User, UserDTO>(user);
+            }
+            else
+            {
+                СreditСard сreditСard = new();
+                сreditСard.UserFullName = entity.FullName;
+                сreditСard.BankName = "-";
+                сreditСard.Number = "-";
+                сreditСard.L_Account = "-";
+                user.СreditСards.Add(сreditСard);
+                _db.User.Add(user);
+                await _db.SaveChangesAsync();
+                return _mapper.Map<User, UserDTO>(user);
+            }
         }
 
         public async Task<bool> Delete(int id)
         {
             try
             {
-                User user = await _db.User.Include(s => s.СreditСard).FirstOrDefaultAsync(x => x.UserId == id);
+                User user = await _db.User.Include(s => s.СreditСards).FirstOrDefaultAsync(x => x.UserId == id);
                 if (user == null) return false;
                 _db.User.Remove(user);
                 await _db.SaveChangesAsync();
@@ -47,19 +62,19 @@ namespace HomeBookkeepingWebApi.DAL.Repository
 
         public async Task<IEnumerable<UserDTO>> Get()
         {
-            List<User> userList = await _db.User.Include(x => x.СreditСard).ToListAsync();
+            List<User> userList = await _db.User.Include(x => x.СreditСards).ToListAsync();
             return _mapper.Map<List<UserDTO>>(userList); ;
         }
 
         public async Task<UserDTO> GetByFullName(string fullName)
         {
-            User user = await _db.User.Where(x => x.FullName == fullName).Include(s => s.СreditСard).FirstOrDefaultAsync();
+            User user = await _db.User.Where(x => x.FullName == fullName).Include(s => s.СreditСards).FirstOrDefaultAsync();
             return _mapper.Map<UserDTO>(user);
         }
 
         public async Task<UserDTO> GetById(int id)
         {
-            User user = await _db.User.Where(x => x.UserId == id).Include(s => s.СreditСard).FirstOrDefaultAsync();
+            User user = await _db.User.Where(x => x.UserId == id).Include(s => s.СreditСards).FirstOrDefaultAsync();
             return _mapper.Map<UserDTO>(user);
         }
 

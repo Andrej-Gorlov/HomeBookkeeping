@@ -40,36 +40,36 @@ namespace HomeBookkeepingWebApi.DAL
                 СreditСardId = 1,
                 UserId = 1,
                 UserFullName = "Горлов Андрей",
-                CardName = "Сбер",
+                BankName = "Сбер",
                 Number = "0000 0000 0000 0000",
-                R_Account = "0000000000001",
+                L_Account = "40817810100011234567",
                 Sum = 8000
             }, new СreditСard
             {
                 СreditСardId = 2,
                 UserId = 1,
                 UserFullName = "Горлов Андрей",
-                CardName = "ВТБ",
+                BankName = "ВТБ",
                 Number = "0000 0000 0000 0001",
-                R_Account = "0000000000002",
+                L_Account = "40817810200021234568",
                 Sum = 3000
             }, new СreditСard
             {
                 СreditСardId = 3,
                 UserId = 2,
                 UserFullName = "Горлова Ольга",
-                CardName = "Сбер",
+                BankName = "Сбер",
                 Number = "0000 0000 0000 0002",
-                R_Account = "0000000000003",
+                L_Account = "40817810300031234569",
                 Sum = 5000
             }, new СreditСard
             {
                 СreditСardId = 4,
                 UserId = 2,
                 UserFullName = "Горлова Ольга",
-                CardName = "Мир",
+                BankName = "Мир",
                 Number = "0000 0000 0000 0000",
-                R_Account = "0000000000004",
+                L_Account = "40817810400041234560",
                 Sum = 3000
             });
 

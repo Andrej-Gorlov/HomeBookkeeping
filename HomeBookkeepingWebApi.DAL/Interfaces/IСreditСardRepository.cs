@@ -9,6 +9,7 @@ namespace HomeBookkeepingWebApi.DAL.Interfaces
 {
     public interface IСreditСardRepository : IBaseRepository<СreditСardDTO>
     {
-        Task<СreditСardDTO> Enrollment(string nameCard, string number, decimal sum);
+        Task<СreditСardDTO> Enrollment(string nameBank, string number, decimal sum);
+        Task<IEnumerable<СreditСardDTO>> Get(string fullName);
     }
 }

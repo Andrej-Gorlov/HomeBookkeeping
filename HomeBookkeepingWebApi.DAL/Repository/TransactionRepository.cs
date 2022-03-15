@@ -101,5 +101,11 @@ namespace HomeBookkeepingWebApi.DAL.Repository
             List<Transaction> transactionList = await _db.Transaction.ToListAsync();
             return _mapper.Map<List<TransactionDTO>>(transactionList);
         }
+
+        public async Task<TransactionDTO> GetById(int id)
+        {
+            Transaction transaction = await _db.Transaction.FirstOrDefaultAsync(x=>x.Id==id);
+            return _mapper.Map<TransactionDTO>(transaction);
+        }
     }
 }

@@ -11,6 +11,7 @@ namespace HomeBookkeepingWebApi.Service.Interfaces
     public interface ITransactionService
     {
         Task<IBaseResponse<IEnumerable<TransactionDTO>>> Service_Get();
+        Task<IBaseResponse<TransactionDTO>> Service_GetById(int id);
         Task<IBaseResponse<TransactionDTO>> Service_Add(TransactionDTO entity);
         Task<IBaseResponse<bool>> Service_Delete(int id);
         Task<IBaseResponse<bool>> Service_Delete(DateTime data); 

@@ -1,5 +1,5 @@
 ﻿using HomeBookkeepingWebApi.DAL.Interfaces;
-using HomeBookkeepingWebApi.Domain.DTO;
+using HomeBookkeepingWebApi.Domain.Entity.TemporaryData;
 using HomeBookkeepingWebApi.Domain.Response;
 using HomeBookkeepingWebApi.Service.Interfaces;
 using System;
@@ -15,10 +15,10 @@ namespace HomeBookkeepingWebApi.Service.Implementations
         readonly IReportRepository _reportRep;
         public ReportService(IReportRepository reportRep) => _reportRep = reportRep;
 
-        public async Task<IBaseResponse<IEnumerable<TemporaryData_ReportCategotyDTO>>> Service_ExpensCategoryFullYaer(string category)
+        public async Task<IBaseResponse<IEnumerable<TemporaryDataReportCategoty>>> Service_ExpensCategoryFullYaer(string category)
         {
-            var baseResponse = new BaseResponse<IEnumerable<TemporaryData_ReportCategotyDTO>>();
-            IEnumerable<TemporaryData_ReportCategotyDTO> temporaryDRC_DTO = await _reportRep.ExpensCategoryFullYaer(category);
+            var baseResponse = new BaseResponse<IEnumerable<TemporaryDataReportCategoty>>();
+            IEnumerable<TemporaryDataReportCategoty> temporaryDRC_DTO = await _reportRep.ExpensCategoryFullYaer(category);
             if (temporaryDRC_DTO == null)
                 baseResponse.DisplayMessage = $"Список всех расходов по категории [{category}] за все года пуст.";
             else
@@ -27,10 +27,10 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<IEnumerable<TemporaryData_ReportCategotyDTO>>> Service_ExpensCategoryYaer(string category, int year)
+        public async Task<IBaseResponse<IEnumerable<TemporaryDataReportCategoty>>> Service_ExpensCategoryYaer(string category, int year)
         {
-            var baseResponse = new BaseResponse<IEnumerable<TemporaryData_ReportCategotyDTO>>();
-            IEnumerable<TemporaryData_ReportCategotyDTO> temporaryDRC_DTO = await _reportRep.ExpensCategoryYaer(category, year);
+            var baseResponse = new BaseResponse<IEnumerable<TemporaryDataReportCategoty>>();
+            IEnumerable<TemporaryDataReportCategoty> temporaryDRC_DTO = await _reportRep.ExpensCategoryYaer(category, year);
             if (temporaryDRC_DTO == null)
                 baseResponse.DisplayMessage = $"Список всех расходов по категории [{category}] за год [{year}] пуст.";
             else
@@ -39,10 +39,10 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<IEnumerable<TemporaryData_ReportTimeDTO>>> Service_ExpensFull()
+        public async Task<IBaseResponse<IEnumerable<TemporaryDataReportTime>>> Service_ExpensFull()
         {
-            var baseResponse = new BaseResponse<IEnumerable<TemporaryData_ReportTimeDTO>>();
-            IEnumerable<TemporaryData_ReportTimeDTO> temporaryDRT_DTO = await _reportRep.ExpensFull();
+            var baseResponse = new BaseResponse<IEnumerable<TemporaryDataReportTime>>();
+            IEnumerable<TemporaryDataReportTime> temporaryDRT_DTO = await _reportRep.ExpensFull();
             if (temporaryDRT_DTO == null)
                 baseResponse.DisplayMessage = $"Список всех расходов пуст.";
             else
@@ -51,10 +51,10 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<IEnumerable<TemporaryData_ReportCategotyDTO>>> Service_ExpensNameCategoryYear(string category, string fullName, int year)
+        public async Task<IBaseResponse<IEnumerable<TemporaryDataReportCategoty>>> Service_ExpensNameCategoryYear(string category, string fullName, int year)
         {
-            var baseResponse = new BaseResponse<IEnumerable<TemporaryData_ReportCategotyDTO>>();
-            IEnumerable<TemporaryData_ReportCategotyDTO> temporaryDRT_DTO = await _reportRep.ExpensNameCategoryYear(category, fullName, year);
+            var baseResponse = new BaseResponse<IEnumerable<TemporaryDataReportCategoty>>();
+            IEnumerable<TemporaryDataReportCategoty> temporaryDRT_DTO = await _reportRep.ExpensNameCategoryYear(category, fullName, year);
             if (temporaryDRT_DTO == null)
                 baseResponse.DisplayMessage = $"Список расходов по категории [{category}] пользователя [{fullName}] за год [{year}] пуст.";
             else
@@ -63,10 +63,12 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<TemporaryData_ReportCategotyDTO>> Service_ExpensNameCategoryYearMonth(string category, string fullName, int year, string month)
+        public async Task<IBaseResponse<TemporaryDataReportCategoty>> Service_ExpensNameCategoryYearMonth(string category, string fullName, int year, string month)
         {
-            var baseResponse = new BaseResponse<TemporaryData_ReportCategotyDTO>();
-            TemporaryData_ReportCategotyDTO model = await _reportRep.ExpensNameCategoryYearMonth(category, fullName, year, month);
+            var baseResponse = new BaseResponse<TemporaryDataReportCategoty>();
+            TemporaryDataReportCategoty model = await _reportRep.ExpensNameCategoryYearMonth(category, fullName, year, month);
+            if (model.Sum == 0)
+                baseResponse.DisplayMessage = $"Пользователь [{fullName}] за [{month}]/[{year}] г. по категории [{category}] не совершал расходов.";
             if (model == null)
                 baseResponse.DisplayMessage = $"Отчёт по категории [{category}] пользователя [{fullName}] за год [{year}] и месеца [{month}] не найден.";
             else
@@ -75,10 +77,10 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<IEnumerable<TemporaryData_ReportTimeDTO>>> Service_ExpensNameFullYear(string fullName)
+        public async Task<IBaseResponse<IEnumerable<TemporaryDataReportTime>>> Service_ExpensNameFullYear(string fullName)
         {
-            var baseResponse = new BaseResponse<IEnumerable<TemporaryData_ReportTimeDTO>>();
-            IEnumerable<TemporaryData_ReportTimeDTO> temporaryDRT_DTO = await _reportRep.ExpensNameFullYear(fullName);
+            var baseResponse = new BaseResponse<IEnumerable<TemporaryDataReportTime>>();
+            IEnumerable<TemporaryDataReportTime> temporaryDRT_DTO = await _reportRep.ExpensNameFullYear(fullName);
             if (temporaryDRT_DTO == null)
                 baseResponse.DisplayMessage = $"Список расходов пользователя [{fullName}] за все года пуст.";
             else
@@ -87,10 +89,10 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<List<TemporaryData_ReportTimeDTO>>> Service_ExpensNameYear(string fullName, int year)
+        public async Task<IBaseResponse<IEnumerable<TemporaryDataReportTime>>> Service_ExpensNameYear(string fullName, int year)
         {
-            var baseResponse = new BaseResponse<List<TemporaryData_ReportTimeDTO>>();
-            List<TemporaryData_ReportTimeDTO> temporaryDRT_DTO = await _reportRep.ExpensNameYear(fullName, year);
+            var baseResponse = new BaseResponse<IEnumerable<TemporaryDataReportTime>>();
+            IEnumerable<TemporaryDataReportTime> temporaryDRT_DTO = await _reportRep.ExpensNameYear(fullName, year);
             if (temporaryDRT_DTO == null)
                 baseResponse.DisplayMessage = $"Список расходов пользователя [{fullName}] за все год [{year}] пуст.";
             else
@@ -99,10 +101,12 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<TemporaryData_ReportTimeDTO>> Service_ExpensNameYearMonth(string fullName, int year, string month)
+        public async Task<IBaseResponse<TemporaryDataReportTime>> Service_ExpensNameYearMonth(string fullName, int year, string month)
         {
-            var baseResponse = new BaseResponse<TemporaryData_ReportTimeDTO>();
-            TemporaryData_ReportTimeDTO model = await _reportRep.ExpensNameYearMonth(fullName, year, month);
+            var baseResponse = new BaseResponse<TemporaryDataReportTime>();
+            TemporaryDataReportTime model = await _reportRep.ExpensNameYearMonth(fullName, year, month);
+            if (model.Sum == 0)
+                baseResponse.DisplayMessage = $"Пользователь [{fullName}] за [{month}]/[{year}] г. не совершал расходов.";
             if (model == null)
                 baseResponse.DisplayMessage = $"Отчёт пользователя [{fullName}] за год [{year}] и месеца [{month}] не найден.";
             else
@@ -119,6 +123,18 @@ namespace HomeBookkeepingWebApi.Service.Implementations
                 baseResponse.DisplayMessage = $"Список категорий.";
             else
                 baseResponse.DisplayMessage = $"Список категорий пуст.";
+            baseResponse.Result = model.ToList();
+            return baseResponse;
+        }
+
+        public async Task<IBaseResponse<List<string>>> Service_GetAllFullNameUser()
+        {
+            var baseResponse = new BaseResponse<List<string>>();
+            var model = await _reportRep.GetAllFullNameUser();
+            if (model.Count() > 0)
+                baseResponse.DisplayMessage = $"Список пользователей.";
+            else
+                baseResponse.DisplayMessage = $"Список пользователей пуст.";
             baseResponse.Result = model.ToList();
             return baseResponse;
         }

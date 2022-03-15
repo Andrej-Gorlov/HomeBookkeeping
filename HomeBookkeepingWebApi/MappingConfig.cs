@@ -13,10 +13,6 @@ namespace HomeBookkeepingWebApi
                 x.CreateMap<Transaction, TransactionDTO>().ReverseMap();
                 x.CreateMap<User, UserDTO>().ReverseMap();
                 x.CreateMap<СreditСard, СreditСardDTO>().ReverseMap();
-
-                x.CreateMap<TemporaryData_ReportTime, TemporaryData_ReportTimeDTO>().ReverseMap();
-                x.CreateMap<TemporaryData_ReportCategoty, TemporaryData_ReportCategotyDTO>().ReverseMap();
-                x.CreateMap<TemporaryData_RecipientData, TemporaryData_RecipientDataDTO>().ReverseMap();
             });
             return mappingConfig;
         }

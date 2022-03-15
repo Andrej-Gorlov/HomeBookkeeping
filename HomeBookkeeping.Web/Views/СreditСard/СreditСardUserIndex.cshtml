@@ -1,0 +1,71 @@
+﻿@model IEnumerable<HomeBookkeeping.Web.Models.HomeBookkeeping.СreditСardDTOBase>
+
+    <br /><br />
+
+    <div class="container p-4 border bg-light">
+        <div class="row pb-2">
+            <div class="col ">
+                <h1 class="text-primary"> Список кредитных карт - @Model.FirstOrDefault().UserFullName</h1>
+            </div>
+            <div class="col text-end pt-1">
+                <a asp-action="СreditСardUserCreate" class="btn btn-outline-primary"
+                asp-route-userName="@Model.FirstOrDefault().UserFullName" asp-route-userId="@Model.FirstOrDefault().UserId">
+                    <i class="fas fa-plus"></i> Создать новую кредитную карту </a>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Название банка
+                    </th>
+                    <th>
+                        Номер карты
+                    </th>
+                    <th>
+                        Лицевой счёт
+                    </th>
+                    <th>
+                        Баланс
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @item.BankName
+                        </td>
+                        <td>
+                            @item.Number
+                        </td>
+                        <td>
+                            @item.L_Account
+                        </td>
+                        <td>
+                            @item.Sum
+                        </td>
+                        <td>
+                            <a asp-action="СreditСardEdit" class="btn btn-outline-primary" 
+                            asp-route-creditСardId="@item.СreditСardId">
+                            <i class="fas fa-edit"></i>
+                            </a>
+
+                             <a asp-action="СreditСardDelete" class="btn btn-outline-primary" 
+                            asp-route-creditСardId="@item.СreditСardId">
+                            <i class="fas fa-trash"></i>
+                            </a>
+
+                            <a asp-action="СreditСardEnrollment" class="btn btn-outline-primary" 
+                            asp-route-creditСardId="@item.СreditСardId">
+                            <i class="fas fa-ruble-sign"></i>
+                            </a>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
