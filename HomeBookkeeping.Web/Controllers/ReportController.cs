@@ -21,59 +21,22 @@ namespace HomeBookkeeping.Web.Controllers
 
         public IActionResult ReportIndex()=>View();
 
-        public async Task <IActionResult> DataInputNameYear()
+        public async Task <IActionResult> DataInputNameYear()=> View(await Dat());
+
+        public async Task<IActionResult> DataInputNameYearMonth()=> View(await Dat());
+
+        public async Task<IActionResult> DataInputNameCategoryYear()=> View(await Dat());
+
+        public async Task<IActionResult> DataInputNameCategoryYearMonth()=> View(await Dat());
+
+        public IActionResult FullReport()
         {
-            return View(await Dat());
+            return RedirectToAction(nameof(ReportExpens), new { reportVM = new ReportVM() });
         }
 
 
-        public async Task<IActionResult> DataInputNameYearMonth()
-        {
-            List<TransactionDTOBase> listTransaction = new();
-            var respons = await _transactionService.GetTransactionsAsync<ResponseBase>();
-            if (respons != null)
-            {
-                listTransaction = JsonConvert.DeserializeObject<List<TransactionDTOBase>>(Convert.ToString(respons.Result));
-            }
-            ReportVM reportVM = new ReportVM()
-            {
-                YearList = listTransaction.Select(x => new SelectListItem
-                {
-                    Text = x.DateOperations.Year.ToString(),
-                }).DistinctBy(x => x.Text),
-                FullNameList = listTransaction.Select(x => new SelectListItem
-                {
-                    Text = x.UserFullName
-                }).DistinctBy(x => x.Text),
-            };
-            return View(reportVM);
-        }
-        public async Task<IActionResult> DataInputNameCategoryYear()
-        {
-            List<TransactionDTOBase> listTransaction = new();
-            var respons = await _transactionService.GetTransactionsAsync<ResponseBase>();
-            if (respons != null)
-            {
-                listTransaction = JsonConvert.DeserializeObject<List<TransactionDTOBase>>(Convert.ToString(respons.Result));
-            }
-            ReportVM reportVM = new ReportVM()
-            {
-                CategoryList = listTransaction.Select(x=>new SelectListItem
-                {
-                    Text=x.Category
-                }).DistinctBy(x => x.Text),
-                YearList = listTransaction.Select(x => new SelectListItem
-                {
-                    Text = x.DateOperations.Year.ToString(),
-                }).DistinctBy(x => x.Text),
-                FullNameList = listTransaction.Select(x => new SelectListItem
-                {
-                    Text = x.UserFullName
-                }).DistinctBy(x => x.Text),
-            };
-            return View(reportVM);
-        }
-        public async Task<IActionResult> DataInputNameCategoryYearMonth()
+
+        private async Task<ReportVM> Dat()
         {
             List<TransactionDTOBase> listTransaction = new();
             var respons = await _transactionService.GetTransactionsAsync<ResponseBase>();
@@ -96,35 +59,7 @@ namespace HomeBookkeeping.Web.Controllers
                     Text = x.UserFullName
                 }).DistinctBy(x => x.Text),
             };
-            return View(reportVM);
-        }
-
-
-
-        private async Task<IActionResult> Dat()
-        {
-            List<TransactionDTOBase> listTransaction = new();
-            var respons = await _transactionService.GetTransactionsAsync<ResponseBase>();
-            if (respons != null)
-            {
-                listTransaction = JsonConvert.DeserializeObject<List<TransactionDTOBase>>(Convert.ToString(respons.Result));
-            }
-            ReportVM reportVM = new ReportVM()
-            {
-                CategoryList = listTransaction.Select(x => new SelectListItem
-                {
-                    Text = x.Category
-                }).DistinctBy(x => x.Text),
-                YearList = listTransaction.Select(x => new SelectListItem
-                {
-                    Text = x.DateOperations.Year.ToString(),
-                }).DistinctBy(x => x.Text),
-                FullNameList = listTransaction.Select(x => new SelectListItem
-                {
-                    Text = x.UserFullName
-                }).DistinctBy(x => x.Text),
-            };
-            return View(reportVM);
+            return reportVM;
         }
 
 
@@ -134,6 +69,13 @@ namespace HomeBookkeeping.Web.Controllers
         public async Task<IActionResult> ReportExpens(ReportVM reportVM)
         {
             List<TemporaryDataReportTimeBase> listTDRT = new();
+            if (reportVM==null)
+            {
+                var respons = await _reportService.ExpensFullReportAsync<ResponseBase>();
+                if (respons != null)
+                    listTDRT = JsonConvert.DeserializeObject<List<TemporaryDataReportTimeBase>>(Convert.ToString(respons.Result));
+                return View(listTDRT);
+            }
             if (reportVM.month == null)
             {
                 var respons = await _reportService.ExpensNameYearReportAsync<ResponseBase>(reportVM.fullName, reportVM.year);
