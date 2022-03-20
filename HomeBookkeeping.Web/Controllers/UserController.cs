@@ -12,6 +12,8 @@ namespace HomeBookkeeping.Web.Controllers
         private readonly IUserService _userService;
         public UserController(IUserService userService)=> _userService = userService;
 
+
+        [HttpGet]
         public async Task <IActionResult> UserIndex()
         {
             List<UserDTOBase> listUsers = new();
@@ -23,10 +25,10 @@ namespace HomeBookkeeping.Web.Controllers
             return View(listUsers);
 
         }
-        public async Task<IActionResult> UserCreate()
-        {
-            return View();
-        }
+
+
+        [HttpGet]
+        public IActionResult UserCreate()=> View();
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UserCreate(UserDTOBase model)
@@ -41,7 +43,7 @@ namespace HomeBookkeeping.Web.Controllers
         }
 
 
-
+        [HttpGet]
         public async Task<IActionResult> UserEdit(int userId)
         {
             var respons = await _userService.GetByIdUserAsync<ResponseBase>(userId);
@@ -66,8 +68,7 @@ namespace HomeBookkeeping.Web.Controllers
         }
 
 
-
-
+        [HttpGet]
         public async Task<IActionResult> UserDelete(int userId)
         {          
             var respons = await _userService.GetByIdUserAsync<ResponseBase>(userId);

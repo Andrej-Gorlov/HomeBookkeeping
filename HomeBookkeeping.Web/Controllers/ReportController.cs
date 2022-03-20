@@ -19,18 +19,28 @@ namespace HomeBookkeeping.Web.Controllers
             _transactionService = transactionService;
         }
 
-        public IActionResult ReportIndex()=>View();
 
+        [HttpGet]
+        public IActionResult ReportIndex()=>View();
+        [HttpGet]
         public async Task <IActionResult> ParamsNameUserYear()=> View(await Data());
+        [HttpGet]
         public async Task<IActionResult> ParamsNameUserYearMonth()=> View(await Data());
+        [HttpGet]
         public async Task<IActionResult> ParamsNameCategoryNameUserYear()=> View(await Data());
+        [HttpGet]
         public async Task<IActionResult> ParamsNameCategoryNameUserYearMonth()=> View(await Data());
+        [HttpGet]
         public async Task<IActionResult> FullReport()=> await FullReport(new ReportVM());
+        [HttpGet]
         public async Task<IActionResult> ParameterNameCategory() => View(await Data());
+        [HttpGet]
         public async Task<IActionResult> ParamsCategoryYaer() => View(await Data());
+        [HttpGet]
         public async Task<IActionResult> ParameterNameUser() => View(await Data());
 
 
+        [HttpGet]
         private async Task<ReportVM> Data()
         {
             List<TransactionDTOBase> listTransaction = new();

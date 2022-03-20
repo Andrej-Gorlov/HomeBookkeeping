@@ -13,7 +13,7 @@ namespace HomeBookkeeping.Web.Controllers
         private readonly IСreditСardService _creditСardService;
         public СreditСardController(IСreditСardService creditСardService) => _creditСardService = creditСardService;
 
-
+        [HttpGet]
         public async Task<IActionResult> СreditСardIndex()
         {
             List<СreditСardDTOBase> listСreditСard = new();
@@ -24,6 +24,7 @@ namespace HomeBookkeeping.Web.Controllers
             }
             return View(listСreditСard);
         }
+        [HttpGet]
         public async Task <IActionResult> СreditСardUserIndex(string fullName)
         {
             List<СreditСardDTOBase> listСreditСard = new();
@@ -36,8 +37,8 @@ namespace HomeBookkeeping.Web.Controllers
         }
 
 
-
-        public async Task<IActionResult> СreditСardUserCreate(string userName, int userId)
+        [HttpGet]
+        public IActionResult СreditСardUserCreate(string userName, int userId)
         {
             СreditСardDTOBase сreditСard = new()
             {
@@ -60,7 +61,7 @@ namespace HomeBookkeeping.Web.Controllers
         }
 
 
-
+        [HttpGet]
         public async Task<IActionResult> СreditСardCreate()
         {
             List<СreditСardDTOBase> listСreditСard = new();
@@ -105,7 +106,7 @@ namespace HomeBookkeeping.Web.Controllers
         }
 
 
-
+        [HttpGet]
         public async Task<IActionResult> СreditСardEdit(int creditСardId, bool isPageUser=false)
         {
             var respons = await _creditСardService.GetByIdСreditСardAsync<ResponseBase>(creditСardId);
@@ -134,7 +135,7 @@ namespace HomeBookkeeping.Web.Controllers
         }
 
 
-
+        [HttpGet]
         public async Task<IActionResult> СreditСardDelete(int creditСardId, bool isPageUser=false)
         {
             var respons = await _creditСardService.GetByIdСreditСardAsync<ResponseBase>(creditСardId);
@@ -162,7 +163,7 @@ namespace HomeBookkeeping.Web.Controllers
         }
 
 
-
+        [HttpGet]
         public async Task<IActionResult> СreditСardEnrollment(int creditСardId, bool isPageUser = false)
         {
             var respons = await _creditСardService.GetByIdСreditСardAsync<ResponseBase>(creditСardId);
