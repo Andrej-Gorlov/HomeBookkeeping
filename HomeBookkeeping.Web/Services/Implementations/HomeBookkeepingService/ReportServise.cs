@@ -10,76 +10,75 @@ namespace HomeBookkeeping.Web.Services.Implementations.HomeBookkeepingService
 
 
 
-        public async Task<T> ExpensCategoryFullYaerReportAsync<T>(string category)
+        public async Task<T> ReportByCategoryAllYearsAsync<T>(string category)
         {
             return await this.SendAsync<T>(new ApiRequest()
             {
                 Api_Type = StaticDitels.ApiType.GET,
-                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/"+ category
+                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ReportByCategoryAllYears/" + category
             });
         }
 
-        public async Task<T> ExpensCategoryYaerReportAsync<T>(string category, int year)
+        public async Task<T> ReportByCategoryYaerAsync<T>(string category, int year)
         {
             return await this.SendAsync<T>(new ApiRequest()
             {
                 Api_Type = StaticDitels.ApiType.GET,
-                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/" + category+"/"+ year
+                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ReportByCategoryYaer/" + category+"/"+ year
             });
         }
 
-        public async Task<T> ExpensFullReportAsync<T>()
+        public async Task<T> FullReportAsync<T>()
         {
             return await this.SendAsync<T>(new ApiRequest()
             {
                 Api_Type = StaticDitels.ApiType.GET,
-                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report"
+                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/full"
             });
         }
 
-        public async Task<T> ExpensNameCategoryYearMonthReportAsync<T>(string category, string fullName, int year, string month)
+        public async Task<T> ReportByCategoryNameUserYearMonthAsync<T>(string category, string fullName, int year, string month)
         {
             return await this.SendAsync<T>(new ApiRequest()
             {
                 Api_Type = StaticDitels.ApiType.GET,
-                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ExpensNameCategoryYearMonthReport/" + category + "/" + fullName+"/"+ year+"/"+ month
+                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ReportByCategoryNameUserYearMonth/" + category + "/" + fullName+"/"+ year+"/"+ month
             });
         }
 
-        public async Task<T> ExpensNameCategoryYearReportAsync<T>(string category, string fullName, int year)
+        public async Task<T> ReportByCategoryNameUserYearAsync<T>(string category, string fullName, int year)
         {
             return await this.SendAsync<T>(new ApiRequest()
             {
                 Api_Type = StaticDitels.ApiType.GET,
-                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ExpensNameCategoryYearReport/" + category + "/" + fullName + "/" + year 
+                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ReportByCategoryNameUserYear/" + category + "/" + fullName + "/" + year 
             });
         }
 
-        public async Task<T> ExpensNameFullYearReportAsync<T>(string fullName)
+        public async Task<T> ReportAllYearsNameUserAsync<T>(string fullName)
         {
             return await this.SendAsync<T>(new ApiRequest()
             {
                 Api_Type = StaticDitels.ApiType.GET,
-                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/" + fullName
+                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ReportAllYearsNameUser/" + fullName
             });
         }
 
-
-        public async Task<T> ExpensNameYearMonthReportAsync<T>(string fullName, int year, string month)
+        public async Task<T> ReportByNameUserYearMonthAsync<T>(string fullName, int year, string month)
         {
             return await this.SendAsync<T>(new ApiRequest()
             {
                 Api_Type = StaticDitels.ApiType.GET,
-                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ExpensNameYearMonthReport/" + fullName + "/" +year+"/"+month
+                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ReportByNameUserYearMonth/" + fullName + "/" +year+"/"+month
             });
         }
 
-        public async Task<T> ExpensNameYearReportAsync<T>(string fullName, int year)
+        public async Task<T> ReportByNameUserAsync<T>(string fullName, int year)
         {
             return await this.SendAsync<T>(new ApiRequest()
             {
                 Api_Type = StaticDitels.ApiType.GET,
-                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ExpensNameYearReport/" + fullName + "/" + year
+                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ReportByNameUserYear/" + fullName + "/" + year
             });
         }
 

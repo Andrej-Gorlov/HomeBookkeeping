@@ -4,13 +4,13 @@
     {
         Task<T> GetAllCategory<T>();
         Task<T> GetAllFullNameUser<T>();
-        Task<T> ExpensNameYearReportAsync<T>(string fullName, int year);
-        Task<T> ExpensNameYearMonthReportAsync<T>(string fullName, int year, string month);
-        Task<T> ExpensNameCategoryYearReportAsync<T>(string category, string fullName, int year);
-        Task<T> ExpensNameCategoryYearMonthReportAsync<T>(string category, string fullName, int year, string month);
-        Task<T> ExpensFullReportAsync<T>();
-        Task<T> ExpensNameFullYearReportAsync<T>(string fullName);
-        Task<T> ExpensCategoryFullYaerReportAsync<T>(string category);
-        Task<T> ExpensCategoryYaerReportAsync<T>(string category, int year);
+        Task<T> ReportByNameUserAsync<T>(string fullName, int year);
+        Task<T> ReportByNameUserYearMonthAsync<T>(string fullName, int year, string month);
+        Task<T> ReportByCategoryNameUserYearAsync<T>(string category, string fullName, int year);
+        Task<T> ReportByCategoryNameUserYearMonthAsync<T>(string category, string fullName, int year, string month);
+        Task<T> FullReportAsync<T>();
+        Task<T> ReportAllYearsNameUserAsync<T>(string fullName);
+        Task<T> ReportByCategoryAllYearsAsync<T>(string category);
+        Task<T> ReportByCategoryYaerAsync<T>(string category, int year);
     }
 }

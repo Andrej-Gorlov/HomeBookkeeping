@@ -12,26 +12,26 @@ namespace HomeBookkeepingWebApi.DAL.Interfaces
         Task<List<string>> GetAllCategory();
         Task<List<string>> GetAllFullNameUser();
         // Отчёт определенного user за конкретный год
-        Task<IEnumerable<TemporaryDataReportTime>> ExpensNameYear(string fullName, int year);
+        Task<IEnumerable<Report>> ReportByNameUserYear(string fullName, int year);
         // Отчёт определенного user за конкретный год и месяц 
-        Task<TemporaryDataReportTime> ExpensNameYearMonth(string fullName, int year, string month);
+        Task<Report> ReportByNameUserYearMonth(string fullName, int year, string month);
 
 
         // Отчёт категории определенного user за конкретный год
-        Task<IEnumerable<TemporaryDataReportCategoty>> ExpensNameCategoryYear(string category, string fullName, int year);
+        Task<IEnumerable<ReportCategory>> ReportByCategoryNameUserYear(string category, string fullName, int year);
         //Отчёт категории определенного user за конкретный год и месяц 
-        Task<TemporaryDataReportCategoty> ExpensNameCategoryYearMonth(string category, string fullName, int year, string month);
+        Task<ReportCategory> ReportByCategoryNameUserYearMonth(string category, string fullName, int year, string month);
 
 
         // Полный отчёт
-        Task<IEnumerable<TemporaryDataReportTime>> ExpensFull();
+        Task<IEnumerable<Report>> FullReport();
         // Отчёт за все года определенного user
-        Task<IEnumerable<TemporaryDataReportTime>> ExpensNameFullYear(string fullName);
+        Task<IEnumerable<Report>> ReportAllYearsNameUser(string fullName);
 
 
-        // Отчёт определенной категории за все года
-        Task<IEnumerable<TemporaryDataReportCategoty>> ExpensCategoryFullYaer(string category);
+        // Отчёт определенной категории за все года 
+        Task<IEnumerable<ReportCategory>> ReportByCategoryAllYears(string category);
         // Отчёт определенной категории за конкретный год
-        Task<IEnumerable<TemporaryDataReportCategoty>> ExpensCategoryYaer(string category, int year);
+        Task<IEnumerable<ReportCategory>> ReportByCategoryYaer(string category, int year);
     }
 }

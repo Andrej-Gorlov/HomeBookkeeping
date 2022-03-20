@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomeBookkeepingWebApi.Controllers
 {
-    [Route("api/creditcard")]
+    [Route("api/")]
     [Produces("application/json")]
     public class СreditСardController : ControllerBase
     {
@@ -18,11 +18,12 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <remarks>
         /// Образец выовда запроса:
         ///
-        ///     GET /creditcard
+        ///     GET /creditcards
         ///
         /// </remarks> 
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         [HttpGet]
+        [Route("creditcards")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetСreditСards() => Ok(await _creditСardSer.Service_Get());
 
@@ -39,7 +40,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// </remarks> 
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         [HttpGet]
-        [Route("listСreditСardsUser/{fullName}")]
+        [Route("creditcards/listСreditСardsUser/{fullName}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetСreditСards(string fullName) => Ok(await _creditСardSer.Service_Get(fullName));
 
@@ -51,7 +52,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <returns>Вывод данных кредитной карты</returns>
         /// Образец запроса:
         /// 
-        ///     GET /creditcard
+        ///     GET /creditcard/{id:int}
         ///     
         ///        СreditСardId: int // Введите id кредитной карты, которую нужно показать.
         ///     
@@ -59,7 +60,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         /// <response code="400"> Кредитная карта не найдена </response>
         [HttpGet]
-        [Route("{id:int}")]
+        [Route("creditcard/{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetByIdСreditСard(int id)
@@ -97,6 +98,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="201"> Кредитная карта создана. </response>
         /// <response code="400"> Введены недопустимые данные. </response>
         [HttpPost]
+        [Route("creditcard")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateСreditСard([FromBody] СreditСardDTO creditСardDTO)
@@ -130,6 +132,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="200"> Кредитная карта обновлена. </response>
         /// <response code="404"> Кредитная карта не найдена. </response>
         [HttpPut]
+        [Route("creditcard")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateСreditСard([FromBody] СreditСardDTO creditСardDTO)
@@ -147,7 +150,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <remarks>
         /// Образец запроса:
         /// 
-        ///     DELETE /creditcard
+        ///     DELETE /creditcard/{id}
         ///     
         ///        СreditСardId: int // Введите id кредитной карты, которую нужно удалить.
         ///     
@@ -156,7 +159,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="404"> Кредитная карта c указанным id не найдена. </response>
         /// <response code="400"> Недопустимое значение ввода </response>
         [HttpDelete]
-        [Route("{id}")]
+        [Route("creditcard/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -189,7 +192,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="201"> Денежные средства зачислены. </response>
         /// <response code="400"> Введены недопустимые данные. </response>
         [HttpPost]
-        [Route("{nameBank}/{number}/{sum}")]
+        [Route("creditcard/{nameBank}/{number}/{sum}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> EnrollmentСreditСard(string nameBank, string number, decimal sum)

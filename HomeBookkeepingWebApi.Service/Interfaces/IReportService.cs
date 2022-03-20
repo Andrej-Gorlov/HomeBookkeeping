@@ -12,19 +12,19 @@ namespace HomeBookkeepingWebApi.Service.Interfaces
     {
         Task<IBaseResponse<List<string>>> Service_GetAllCategory();
         Task<IBaseResponse<List<string>>> Service_GetAllFullNameUser();
-        Task<IBaseResponse<IEnumerable<TemporaryDataReportTime>>> Service_ExpensNameYear(string fullName, int year);
-        Task<IBaseResponse<TemporaryDataReportTime>> Service_ExpensNameYearMonth(string fullName, int year, string month);
+        Task<IBaseResponse<IEnumerable<Report>>> Service_ReportByNameUserYear(string fullName, int year);
+        Task<IBaseResponse<Report>> Service_ReportByNameUserYearMonth(string fullName, int year, string month);
 
 
-        Task<IBaseResponse<IEnumerable<TemporaryDataReportCategoty>>> Service_ExpensNameCategoryYear(string category, string fullName, int year);
-        Task<IBaseResponse<TemporaryDataReportCategoty>> Service_ExpensNameCategoryYearMonth(string category, string fullName, int year, string month);
+        Task<IBaseResponse<IEnumerable<ReportCategory>>> Service_ReportByCategoryNameUserYear(string category, string fullName, int year);
+        Task<IBaseResponse<ReportCategory>> Service_ReportByCategoryNameUserYearMonth(string category, string fullName, int year, string month);
 
 
-        Task<IBaseResponse<IEnumerable<TemporaryDataReportTime>>> Service_ExpensFull();
-        Task<IBaseResponse<IEnumerable<TemporaryDataReportTime>>> Service_ExpensNameFullYear(string fullName);
+        Task<IBaseResponse<IEnumerable<Report>>> Service_FullReport();
+        Task<IBaseResponse<IEnumerable<Report>>> Service_ReportAllYearsNameUser(string fullName);
 
 
-        Task<IBaseResponse<IEnumerable<TemporaryDataReportCategoty>>> Service_ExpensCategoryFullYaer(string category);
-        Task<IBaseResponse<IEnumerable<TemporaryDataReportCategoty>>> Service_ExpensCategoryYaer(string category, int year);
+        Task<IBaseResponse<IEnumerable<ReportCategory>>> Service_ReportByCategoryAllYears(string category);
+        Task<IBaseResponse<IEnumerable<ReportCategory>>> Service_ReportByCategoryYaer(string category, int year);
     }
 }

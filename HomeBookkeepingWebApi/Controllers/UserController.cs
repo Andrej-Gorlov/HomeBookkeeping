@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomeBookkeepingWebApi.Controllers
 {
-    [Route("api/user")]
+    [Route("api/")]
     [Produces("application/json")]
     public class UserController : ControllerBase
     {
@@ -18,11 +18,12 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <returns>Вывод всех пользователей</returns>
         /// <remarks>
         ///
-        ///     GET /user
+        ///     GET /users
         ///
         /// </remarks> 
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         [HttpGet]
+        [Route("users")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUsers() => Ok(await _userSer.Service_Get());
 
@@ -34,7 +35,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <remarks>
         /// Образец запроса:
         /// 
-        ///     GET /user
+        ///     GET /user/{id:int}
         ///     
         ///        Id: int // Введите id пользователя, которого нужно показать.
         ///     
@@ -42,7 +43,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         /// <response code="400"> Пользователь не найдена </response>
         [HttpGet]
-        [Route("{id:int}")]
+        [Route("user/{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetByIdUser(int id)
@@ -61,7 +62,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <returns>Создаётся пользователь</returns>
         /// <remarks>
         /// 
-        ///     Свойство ["userId" и "сreditСard"] указываться не обязательно.
+        ///     Свойство ["userId" и "сreditСard"] указывать не обязательно.
         /// 
         /// Образец ввовда данных:
         ///
@@ -89,6 +90,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="201"> Пользователь создан. </response>
         /// <response code="400"> Введены недопустимые данные. </response>
         [HttpPost]
+        [Route("user")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateUser([FromBody] UserDTO userDTO)
@@ -130,6 +132,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="200"> Пользователь обновлен. </response>
         /// <response code="404"> Пользователь не найден. </response>
         [HttpPut]
+        [Route("user")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateUser([FromBody] UserDTO userDTO)
@@ -148,7 +151,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <remarks>
         /// Образец запроса:
         /// 
-        ///     DELETE /creditcard
+        ///     DELETE /user/{id}
         ///     
         ///        Id: int // Введите id пользователя, которого нужно удалить.
         ///     
@@ -157,7 +160,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="404"> Пользователь c указанным id не найден. </response>
         /// <response code="400"> Недопустимое значение ввода </response>
         [HttpDelete]
-        [Route("{id}")]
+        [Route("user/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -171,14 +174,14 @@ namespace HomeBookkeepingWebApi.Controllers
 
 
         /// <summary>
-        /// Вывод данных о пользователя по полному имени.
+        /// Вывод данных пользователя по полному имени.
         /// </summary>
         /// <param name="fullName"></param>
         /// <returns>Вывод данных пользователя</returns>
         /// <remarks>
         /// Образец запроса:
         /// 
-        ///     GET /user
+        ///     GET /user/{fullName}
         ///     
         ///        fullName: Иван Иванов // Введите полное имя пользователя, которого нужно показать.
         ///     
@@ -186,7 +189,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         /// <response code="400"> Пользователь не найден. </response>
         [HttpGet]
-        [Route("{fullName}")]
+        [Route("user/{fullName}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetFullNameUser(string fullName)

@@ -1,0 +1,76 @@
+﻿@using HomeBookkeeping.Web.Models.ViewModels
+@model HomeBookkeeping.Web.Models.ViewModels.ReportVM
+
+
+<form asp-action="ReportCategory">
+    <br />
+    <div class="container border p-3 bg-light">
+        <h1 class="text-primary">Bвод данных</h1>
+
+        <hr />
+        <div class="row">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+                    <div class="col-2">
+                        <label asp-for="category" class="control-label pt-2" style="font-size:20px;"></label>
+                    </div>
+                    <!--раскрывающий список-->
+                    <div class="col-10 pb-3">
+                        <select asp-for="category" asp-items="@Model.CategoryList" class="form-select">
+                            <option disabled selected>Выбор пользователя</option>
+                        </select>
+                        <span asp-validation-for="category" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-2">
+                        <label asp-for="fullName" class="control-label pt-2" style="font-size:20px;"></label>
+                    </div>
+                    <!--раскрывающий список-->
+                    <div class="col-10 pb-3">
+                        <select asp-for="fullName" asp-items="@Model.FullNameList" class="form-select">
+                            <option disabled selected>Выбор пользователя</option>
+                        </select>
+                        <span asp-validation-for="fullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-2">
+                        <label asp-for="year" class="control-label pt-2" style="font-size:20px;"></label>
+                    </div>
+                    <!--раскрывающий список-->
+                    <div class="col-10 pb-3">
+                        <select asp-for="year" asp-items="@Model.YearList" class="form-select">
+                            <option disabled selected>Выбор года</option>
+                        </select>
+                        <span asp-validation-for="year" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-2">
+                        <label asp-for="month" class="control-label pt-2" style="font-size:20px;"></label>
+                    </div>
+                    <!--раскрывающий список-->
+                    <div class="col-10 pb-3">
+                        <select asp-for="month" asp-items="@new SelectList(Enum.GetNames(typeof(Months)))" class="form-select">
+                            <option disabled selected>Выбор месяца</option>
+                        </select>
+                    </div>
+
+
+            <div class="col-5 offset-2">
+                <a asp-action="ReportIndex" class="btn btn-outline-primary form-control">Вернуться</a>
+            </div>
+            <div class="col-5">
+                <input type="submit" value="Сформировать" class="btn btn-outline-primary form-control" />
+            </div>
+
+        </div>
+
+        <div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+}

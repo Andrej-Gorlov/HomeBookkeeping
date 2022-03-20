@@ -1,6 +1,9 @@
 ﻿@model HomeBookkeeping.Web.Models.ViewModels.TransactionVM
 
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
 <form asp-action="TransactionAdd">
+   
     <br />
     <div class="container border p-3 bg-light">
         <h1 class="text-primary">Создать транзакцию</h1>
@@ -10,28 +13,28 @@
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+                            <div class="col-2">
+                                <label asp-for="Transaction.UserFullName" class="control-label pt-2" style="font-size:20px;"></label>
+                            </div>
+                            <div class="col-10 pb-3">
+                                <select asp-for="СreditСard.UserId" class="form-select" id="userId"
+                                        asp-items="@(new SelectList(@ViewBag.UserList,"UserId","FullName"))">
+                                        <option disabled selected>Выбор пользователя</option>
+                                </select>
+                                <span asp-validation-for="Transaction.UserFullName" class="text-danger"></span>
+                            </div>
 
-                    <div class="col-2">
-                        <label asp-for="Transaction.UserFullName" class="control-label pt-2" style="font-size:20px;"></label>
-                    </div>
-                    <!--раскрывающий список-->
-                    <div class="col-10 pb-3">
-                        <select asp-for="Transaction.UserFullName" asp-items="@Model.FullNameList" class="form-select">
-                            <option disabled selected>Выбор пользователя</option>
-                        </select>
-                        <span asp-validation-for="Transaction.UserFullName" class="text-danger"></span>
-                    </div>
 
-                    <div class="col-2">
-                        <label asp-for="Transaction.NumberCardUser" class="control-label pt-2" style="font-size:20px;"></label>
-                    </div>
-                    <!--раскрывающий список-->
-                    <div class="col-10 pb-3">
-                        <select asp-for="Transaction.NumberCardUser" asp-items="@Model.NumberCardList" class="form-select">
-                            <option disabled selected>Выбор пользователя</option>
-                        </select>
-                        <span asp-validation-for="Transaction.NumberCardUser" class="text-danger"></span>
-                    </div>
+                            <div class="col-2">
+                                <label asp-for="Transaction.NumberCardUser" class="control-label pt-2" style="font-size:20px;"></label>
+                            </div>
+                            <div class="col-10 pb-3">
+                                <select asp-for="СreditСard.СreditСardId" class="form-select" id="creditСardId"
+                                 >
+                                </select>
+                                <span asp-validation-for="Transaction.NumberCardUser" class="text-danger"></span>
+                            </div>
+
 
 
             <div class="col-2">
@@ -47,7 +50,7 @@
                 <label asp-for="Transaction.DateOperations" class="control-label pt-2" style="font-size:20px;"></label>
             </div>
             <div class="col-10 pb-3">
-                <input asp-for="Transaction.DateOperations" class="form-control" />
+                <input asp-for="Transaction.DateOperations"  class="form-control" />
                 <span asp-validation-for="Transaction.DateOperations" class="text-danger"></span>
             </div>
 
@@ -79,11 +82,37 @@
 
         </div>
 
-        <div>
-        </div>
     </div>
 </form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial"/>
 }
+
+
+ <script type="text/javascript">
+    $(document).ready(function () {
+        getСreditСardByUserId();
+    })
+    $("#userId").change(function () {
+        getСreditСardByUserId();
+    });
+    var getСreditСardByUserId = function () {
+         $.ajax({
+            url: '@Url.Action("GetСreditСardByUserId","Transaction")',
+            type: 'GET',
+            data: {
+                userId:$('#userId').val(),
+            },
+            success: function (data) {
+                $('#creditСardId').find('option').remove()
+                $(data).each(
+                    function (index, item) {
+                        $('#creditСardId').append('<option value="'+ item.id +'">' + item.number+ '</option>')
+                    });
+            },
+            error: function () {
+            }
+           });
+    }
+</script>

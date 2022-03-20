@@ -17,7 +17,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <returns>Вывод списка.</returns>
         /// <remarks>
         ///
-        ///     GET /report
+        ///     GET /report/listCategory
         ///
         /// </remarks> 
         /// <response code="200"> Запрос прошёл. (Успех) </response>
@@ -31,7 +31,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <returns>Вывод списка.</returns>
         /// <remarks>
         ///
-        ///     GET /report
+        ///     GET /report/listFullNameUser
         ///
         /// </remarks> 
         /// <response code="200"> Запрос прошёл. (Успех) </response>
@@ -59,13 +59,13 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         /// <response code="400"> Отчёт не найден. </response>
         [HttpGet]
-        [Route("ExpensNameYearReport/{fullName}/{year}")]
+        [Route("ReportByNameUserYear/{fullName}/{year}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ExpensNameYearReport(string fullName, int year)
+        public async Task<IActionResult> ReportByNameUserYear(string fullName, int year)
         {
             if (year <= 0) return BadRequest($"год: [{year}] не может быть меньше или равен нулю");
-            var report = await _reportSer.Service_ExpensNameYear(fullName, year);
+            var report = await _reportSer.Service_ReportByNameUserYear(fullName, year);
             if (report.Result == null) return BadRequest(report);
             return Ok(report);
         }
@@ -91,13 +91,13 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         /// <response code="400"> Отчёт не найден. </response>
         [HttpGet]
-        [Route("ExpensNameYearMonthReport/{fullName}/{year}/{month}")]
+        [Route("ReportByNameUserYearMonth/{fullName}/{year}/{month}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ExpensNameYearMonthReport(string fullName, int year, string month)
+        public async Task<IActionResult> ReportByNameUserYearMonth(string fullName, int year, string month)
         {
             if (year <= 0) return BadRequest($"год: [{year}] не может быть меньше или равен нулю");
-            var report = await _reportSer.Service_ExpensNameYearMonth(fullName, year, month);
+            var report = await _reportSer.Service_ReportByNameUserYearMonth(fullName, year, month);
             if (report.Result == null) return BadRequest(report);
             return Ok(report);
         }
@@ -124,13 +124,13 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         /// <response code="400"> Отчёт не найден. </response>
         [HttpGet]
-        [Route("ExpensNameCategoryYearReport/{category}/{fullName}/{year}")]
+        [Route("ReportByCategoryNameUserYear/{category}/{fullName}/{year}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ExpensNameCategoryYearReport(string category, string fullName, int year)
+        public async Task<IActionResult> ReportByCategoryNameUserYear(string category, string fullName, int year)
         {
             if (year <= 0) return BadRequest($"год: [{year}] не может быть меньше или равен нулю");
-            var report = await _reportSer.Service_ExpensNameCategoryYear(category, fullName, year);
+            var report = await _reportSer.Service_ReportByCategoryNameUserYear(category, fullName, year);
             if (report.Result == null) return BadRequest(report);
             return Ok(report);
         }
@@ -159,13 +159,13 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         /// <response code="400"> Отчёт не найден. </response>
         [HttpGet]
-        [Route("ExpensNameCategoryYearMonthReport/{category}/{fullName}/{year}/{month}")]
+        [Route("ReportByCategoryNameUserYearMonth/{category}/{fullName}/{year}/{month}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ExpensNameCategoryYearMonthReport(string category, string fullName, int year, string month)
+        public async Task<IActionResult> ReportByCategoryNameUserYearMonth(string category, string fullName, int year, string month)
         {
             if (year <= 0) return BadRequest($"год: [{year}] не может быть меньше или равен нулю");
-            var report = await _reportSer.Service_ExpensNameCategoryYearMonth(category, fullName, year, month);
+            var report = await _reportSer.Service_ReportByCategoryNameUserYearMonth(category, fullName, year, month);
             if (report.Result == null) return BadRequest(report);
             return Ok(report);
         }
@@ -177,13 +177,14 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <returns>Вывод отчёта.</returns>
         /// <remarks>
         ///
-        ///     GET /report
+        ///     GET /report/full
         ///
         /// </remarks> 
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         [HttpGet]
+        [Route("full")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> ExpensFullReport() => Ok(await _reportSer.Service_ExpensFull());
+        public async Task<IActionResult> ExpensFullReport() => Ok(await _reportSer.Service_FullReport());
 
 
         /// <summary>
@@ -202,12 +203,12 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         /// <response code="400"> Отчёт не найден. </response>
         [HttpGet]
-        [Route("{fullName}")]
+        [Route("ReportAllYearsNameUser/{fullName}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ExpensNameFullYearReport(string fullName)
+        public async Task<IActionResult> ReportAllYearsNameUser(string fullName)
         {
-            var report = await _reportSer.Service_ExpensNameFullYear(fullName);
+            var report = await _reportSer.Service_ReportAllYearsNameUser(fullName);
             if (report.Result == null) return BadRequest(report);
             return Ok(report);
         }
@@ -229,12 +230,12 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         /// <response code="400"> Отчёт не найден. </response>
         [HttpGet]
-        [Route("{category}")]
+        [Route("ReportByCategoryAllYears/{category}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ExpensCategoryFullYaerReport(string category)
+        public async Task<IActionResult> ReportByCategoryAllYears(string category)
         {
-            var report = await _reportSer.Service_ExpensCategoryFullYaer(category);
+            var report = await _reportSer.Service_ReportByCategoryAllYears(category);
             if (report.Result == null) return BadRequest(report);
             return Ok(report);
         }
@@ -258,13 +259,13 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         /// <response code="400"> Отчёт не найден. </response>
         [HttpGet]
-        [Route("{category}/{year}")]
+        [Route("ReportByCategoryYaer/{category}/{year}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ExpensCategoryYaerReport(string category, int year)
+        public async Task<IActionResult> ReportByCategoryYaer(string category, int year)
         {
             if (year <= 0) return BadRequest($"год: [{year}] не может быть меньше или равен нулю");
-            var report = await _reportSer.Service_ExpensCategoryYaer(category, year);
+            var report = await _reportSer.Service_ReportByCategoryYaer(category, year);
             if (report.Result == null) return BadRequest(report);
             return Ok(report);
         }

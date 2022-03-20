@@ -53,7 +53,7 @@ namespace HomeBookkeeping.Web.Services.Implementations.HomeBookkeepingService
             return await this.SendAsync<T>(new ApiRequest()
             {
                 Api_Type = StaticDitels.ApiType.GET,
-                Url = StaticDitels.HomeBookkeepingApiBase + "/api/creditcard"
+                Url = StaticDitels.HomeBookkeepingApiBase + "/api/creditcards"
             });
         }
 
@@ -62,7 +62,7 @@ namespace HomeBookkeeping.Web.Services.Implementations.HomeBookkeepingService
             return await this.SendAsync<T>(new ApiRequest()
             {
                 Api_Type = StaticDitels.ApiType.GET,
-                Url = StaticDitels.HomeBookkeepingApiBase + "/api/creditcard/listСreditСardsUser/" + fullName
+                Url = StaticDitels.HomeBookkeepingApiBase + "/api/creditcards/listСreditСardsUser/" + fullName
             });
         }
 

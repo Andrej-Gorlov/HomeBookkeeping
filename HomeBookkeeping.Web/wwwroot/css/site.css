@@ -282,3 +282,132 @@ body {
 .openBlock_2 > li:hover {
     color: rgb(255, 0, 212);
 }
+
+
+
+
+
+
+
+
+
+
+
+/*побочные кнопки*/
+/*.side_buttons_l {
+    margin: 30px auto;
+    padding: 0;
+    text-align: center;
+    display: block;
+}*/
+
+.bucn_3_3s {
+    color: #188cb6;
+/*    border: 1px solid #188cb6;*/
+    background-color: #fff;
+    font-size: 18px;
+    font-family: verdana;
+    overflow: hidden;
+    display: inline-block;
+    outline: medium none;
+    padding: 10px 70px;
+    position: relative;
+    text-decoration: none;
+    z-index: 1;
+   /* -webkit-box-shadow: 0 0 4px #999;
+    -moz-box-shadow: 0 0 4px #999;
+    -o-box-shadow: 0 0 4px #999;
+    box-shadow: 0 0 4px #999;*/
+}
+
+    .bucn_3_3s::after {
+        background-color: #0b7fa9;
+        left: 50%;
+        top: 50%;
+        height: 0;
+        width: 150%;
+        transform: translateY(-50%) translateX(-50%) rotate(90deg);
+        opacity: 0.5;
+        position: absolute;
+        content: "";
+        transition: all 0.75s ease 0s;
+        z-index: -1;
+    }
+
+    .bucn_3_3s:hover::after {
+        height: 700% !important;
+        opacity: 1;
+    }
+
+    .bucn_3_3s:hover, .bucn_3_3s:active {
+        color: #fff;
+        text-shadow: 0 1px 2px #333;
+    }
+
+/**::before, *::after {
+    box-sizing: border-box;
+}*/
+
+
+/*<div class="side_buttons" > 
+    <a href="#" class="bucn_3_3s" >  нопка</a >
+</div >*/
+
+
+/*.side_buttons_r {
+    margin: 30px auto;
+    padding: 0;
+    text-align: center;
+    display: block;
+}*/
+
+.bucn_3_3z {
+    color: #488700;
+    border: 1px solid #488700;
+    background-color: #fff;
+    font-size: 18px;
+    font-family: verdana;
+    overflow: hidden;
+    display: inline-block;
+    outline: medium none;
+    padding: 10px 70px;
+    position: relative;
+    text-decoration: none;
+    z-index: 5;
+/*    -webkit-box-shadow: 0 0 4px #999;
+    -moz-box-shadow: 0 0 4px #999;
+    -o-box-shadow: 0 0 4px #999;
+    box-shadow: 0 0 4px #999;*/
+}
+
+    .bucn_3_3z::after {
+        background-color: #357400;
+        left: 50%;
+        top: 50%;
+        height: 0;
+        width: 150%;
+        transform: translateY(-50%) translateX(-50%) rotate(90deg);
+        opacity: 0.5;
+        position: absolute;
+        content: "";
+        transition: all 0.75s ease 0s;
+        z-index: -1;
+    }
+
+    .bucn_3_3z:hover::after {
+        height: 700% !important;
+        opacity: 1;
+    }
+
+    .bucn_3_3z:hover, .bucn_3_3z:active {
+        color: #fff;
+        text-shadow: 0 1px 2px #333;
+    }
+
+/**::before, *::after {
+    box-sizing: border-box;
+}
+*/
+/*</style >
+
+<div class="side_buttons_r" > <a href="#" class="bucn_3_3z" >  нопка</a > </div >*/

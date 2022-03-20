@@ -53,7 +53,7 @@ namespace HomeBookkeeping.Web.Services.Implementations.HomeBookkeepingService
             return await this.SendAsync<T>(new ApiRequest()
             {
                 Api_Type = StaticDitels.ApiType.GET,
-                Url = StaticDitels.HomeBookkeepingApiBase + "/api/transaction"
+                Url = StaticDitels.HomeBookkeepingApiBase + "/api/transactions"
             });
         }
 

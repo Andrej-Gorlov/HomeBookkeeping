@@ -21,22 +21,17 @@ namespace HomeBookkeeping.Web.Controllers
 
         public IActionResult ReportIndex()=>View();
 
-        public async Task <IActionResult> DataInputNameYear()=> View(await Dat());
-
-        public async Task<IActionResult> DataInputNameYearMonth()=> View(await Dat());
-
-        public async Task<IActionResult> DataInputNameCategoryYear()=> View(await Dat());
-
-        public async Task<IActionResult> DataInputNameCategoryYearMonth()=> View(await Dat());
-
-        public IActionResult FullReport()
-        {
-            return RedirectToAction(nameof(ReportExpens), new { reportVM = new ReportVM() });
-        }
+        public async Task <IActionResult> ParamsNameUserYear()=> View(await Data());
+        public async Task<IActionResult> ParamsNameUserYearMonth()=> View(await Data());
+        public async Task<IActionResult> ParamsNameCategoryNameUserYear()=> View(await Data());
+        public async Task<IActionResult> ParamsNameCategoryNameUserYearMonth()=> View(await Data());
+        public async Task<IActionResult> FullReport()=> await FullReport(new ReportVM());
+        public async Task<IActionResult> ParameterNameCategory() => View(await Data());
+        public async Task<IActionResult> ParamsCategoryYaer() => View(await Data());
+        public async Task<IActionResult> ParameterNameUser() => View(await Data());
 
 
-
-        private async Task<ReportVM> Dat()
+        private async Task<ReportVM> Data()
         {
             List<TransactionDTOBase> listTransaction = new();
             var respons = await _transactionService.GetTransactionsAsync<ResponseBase>();
@@ -61,34 +56,38 @@ namespace HomeBookkeeping.Web.Controllers
             };
             return reportVM;
         }
-
-
-        //-----------------------------------------------------------------------------------------------------
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ReportExpens(ReportVM reportVM)
+        public async Task<IActionResult> FullReport(ReportVM reportVM)
         {
-            List<TemporaryDataReportTimeBase> listTDRT = new();
-            if (reportVM==null)
+            List<ReportBase> listTDRT = new();
+            if (reportVM.fullName==null && reportVM.month==null && reportVM.year == 0)
             {
-                var respons = await _reportService.ExpensFullReportAsync<ResponseBase>();
+                var respons = await _reportService.FullReportAsync<ResponseBase>();
                 if (respons != null)
-                    listTDRT = JsonConvert.DeserializeObject<List<TemporaryDataReportTimeBase>>(Convert.ToString(respons.Result));
+                    listTDRT = JsonConvert.DeserializeObject<List<ReportBase>>(Convert.ToString(respons.Result));
+                return View(listTDRT);
+            }
+            if (reportVM.month == null && reportVM.year==0)
+            {
+                var respons = await _reportService.ReportAllYearsNameUserAsync<ResponseBase>(reportVM.fullName);
+                if (respons != null)
+                    listTDRT = JsonConvert.DeserializeObject<List<ReportBase>>(Convert.ToString(respons.Result));
                 return View(listTDRT);
             }
             if (reportVM.month == null)
             {
-                var respons = await _reportService.ExpensNameYearReportAsync<ResponseBase>(reportVM.fullName, reportVM.year);
+                var respons = await _reportService.ReportByNameUserAsync<ResponseBase>(reportVM.fullName, reportVM.year);
                 if (respons != null)
-                    listTDRT = JsonConvert.DeserializeObject<List<TemporaryDataReportTimeBase>>(Convert.ToString(respons.Result));
+                    listTDRT = JsonConvert.DeserializeObject<List<ReportBase>>(Convert.ToString(respons.Result));
                 return View(listTDRT);
             }
-            if (reportVM.month != null)
+            if (reportVM.fullName!=null && reportVM.year!=0 && reportVM.month!=null)
             {
-                TemporaryDataReportTimeBase TDRT = new();
-                var respons = await _reportService.ExpensNameYearMonthReportAsync<ResponseBase>(reportVM.fullName, reportVM.year, reportVM.month);
+                ReportBase TDRT = new();
+                var respons = await _reportService.ReportByNameUserYearMonthAsync<ResponseBase>(reportVM.fullName, reportVM.year, reportVM.month);
                 if (respons != null)
-                    TDRT = JsonConvert.DeserializeObject<TemporaryDataReportTimeBase>(Convert.ToString(respons.Result));
+                    TDRT = JsonConvert.DeserializeObject<ReportBase>(Convert.ToString(respons.Result));
                 listTDRT.Add(TDRT);
                 return View(listTDRT);
             }
@@ -96,22 +95,36 @@ namespace HomeBookkeeping.Web.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ReportExpensCategory(ReportVM reportVM)
+        public async Task<IActionResult> ReportCategory(ReportVM reportVM)
         {
-            List<TemporaryDataReportCategotyBase> listTDRC = new();
-            if (reportVM.month == null)
+            List<ReportCategoryBase> listTDRC = new();
+            if (reportVM.year==0 && reportVM.month==null && reportVM.fullName == null)
             {
-                var respons = await _reportService.ExpensNameCategoryYearReportAsync<ResponseBase>(reportVM.category, reportVM.fullName, reportVM.year);
+                var respons = await _reportService.ReportByCategoryAllYearsAsync<ResponseBase>(reportVM.category);
                 if (respons != null)
-                    listTDRC = JsonConvert.DeserializeObject<List<TemporaryDataReportCategotyBase>>(Convert.ToString(respons.Result));
+                    listTDRC = JsonConvert.DeserializeObject<List<ReportCategoryBase>>(Convert.ToString(respons.Result));
                 return View(listTDRC);
             }
-            if (reportVM.month != null)
+            if (reportVM.month == null && reportVM.fullName==null)
             {
-                TemporaryDataReportCategotyBase TDRC = new();
-                var respons = await _reportService.ExpensNameCategoryYearMonthReportAsync<ResponseBase>(reportVM.category,reportVM.fullName, reportVM.year, reportVM.month);
+                var respons = await _reportService.ReportByCategoryYaerAsync<ResponseBase>(reportVM.category, reportVM.year);
                 if (respons != null)
-                    TDRC = JsonConvert.DeserializeObject<TemporaryDataReportCategotyBase>(Convert.ToString(respons.Result));
+                    listTDRC = JsonConvert.DeserializeObject<List<ReportCategoryBase>>(Convert.ToString(respons.Result));
+                return View(listTDRC);
+            }
+            if (reportVM.month == null)
+            {
+                var respons = await _reportService.ReportByCategoryNameUserYearAsync<ResponseBase>(reportVM.category, reportVM.fullName, reportVM.year);
+                if (respons != null)
+                    listTDRC = JsonConvert.DeserializeObject<List<ReportCategoryBase>>(Convert.ToString(respons.Result));
+                return View(listTDRC);
+            }
+            if(reportVM.category!=null && reportVM.fullName!=null && reportVM.year!=0 && reportVM.month != null)
+            {
+                ReportCategoryBase TDRC = new();
+                var respons = await _reportService.ReportByCategoryNameUserYearMonthAsync<ResponseBase>(reportVM.category,reportVM.fullName, reportVM.year, reportVM.month);
+                if (respons != null)
+                    TDRC = JsonConvert.DeserializeObject<ReportCategoryBase>(Convert.ToString(respons.Result));
                 listTDRC.Add(TDRC);
                 return View(listTDRC);
             }

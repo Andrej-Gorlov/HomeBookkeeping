@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomeBookkeepingWebApi.Controllers
 {
-    [Route("api/transaction")]
+    [Route("api/")]
     [Produces("application/json")]
     public class TransactionController : ControllerBase
     {
@@ -22,7 +22,7 @@ namespace HomeBookkeepingWebApi.Controllers
         ///
         ///     Свойство ["id"] указываться не обязательно.
         ///     
-        ///     POST /user
+        ///     POST /transaction
         ///     
         ///     {
         ///       "id": 0,                                        /// id транзакции.
@@ -38,6 +38,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="201"> Tранзакция создана. </response>
         /// <response code="400"> Введены недопустимые данные. </response>
         [HttpPost]
+        [Route("transaction")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddTransaction([FromBody] TransactionDTO transactionDTO)
@@ -55,7 +56,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <remarks>
         /// Образец запроса:
         /// 
-        ///     DELETE /transaction
+        ///     DELETE /transaction/{id}
         ///     
         ///        Id: int // Введите id транзакции, которую нужно удалить.
         ///     
@@ -64,7 +65,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="404"> Транзакция c указанным id не найден. </response>
         /// <response code="400"> Недопустимое значение ввода </response>
         [HttpDelete]
-        [Route("{id}")]
+        [Route("transaction/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -89,7 +90,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <remarks>
         /// Образец запроса:
         /// 
-        ///     DELETE /transaction
+        ///     DELETE /transaction/{year}/{month}/{day}/{hour}/{minute}/{second}
         ///     
         ///        year: int (2000)  // Введите год транзакции, которую нужно удалить.
         ///        month: int (1)    // Введите месяц транзакции, которую нужно удалить.
@@ -103,7 +104,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="404"> Транзакция c указанной датой и временем не найден. </response>
         /// <response code="400"> Недопустимое значение ввода </response>
         [HttpDelete]
-        [Route("{year}/{month}/{day}/{hour}/{minute}/{second}")]
+        [Route("transaction/{year}/{month}/{day}/{hour}/{minute}/{second}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -125,11 +126,12 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <remarks>
         /// Образец выовда запроса:
         ///
-        ///     GET /transaction
+        ///     GET /transactions
         ///
         /// </remarks> 
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         [HttpGet]
+        [Route("transactions")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetСreditСards() => Ok(await _transactionSer.Service_Get());
 
@@ -141,7 +143,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <remarks>
         /// Образец запроса:
         /// 
-        ///     GET /transaction
+        ///     GET /transaction/{id:int}
         ///     
         ///        Id: int // Введите id транзакции, которую нужно показать.
         ///     
@@ -149,7 +151,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <response code="200"> Запрос прошёл. (Успех) </response>
         /// <response code="400"> Транзакция не найдена </response>
         [HttpGet]
-        [Route("{id:int}")]
+        [Route("transaction/{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetByIdTransaction(int id)
