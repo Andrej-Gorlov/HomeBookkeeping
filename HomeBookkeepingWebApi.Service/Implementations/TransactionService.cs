@@ -15,7 +15,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
         private ITransactionRepository _transactionRep;
         public TransactionService(ITransactionRepository transactionRep) => _transactionRep = transactionRep;
 
-        public async Task<IBaseResponse<TransactionDTO>> Service_Add(TransactionDTO entity)
+        public async Task<IBaseResponse<TransactionDTO>> ServiceAdd(TransactionDTO entity)
         {
             var baseResponse = new BaseResponse<TransactionDTO>();
             TransactionDTO model = await _transactionRep.Add(entity);
@@ -24,7 +24,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<bool>> Service_Delete(int id)
+        public async Task<IBaseResponse<bool>> ServiceDelete(int id)
         {
             var baseResponse = new BaseResponse<bool>();
             bool IsSuccess = await _transactionRep.Delete(id);
@@ -34,7 +34,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<bool>> Service_Delete(DateTime data)
+        public async Task<IBaseResponse<bool>> ServiceDelete(DateTime data)
         {
             var baseResponse = new BaseResponse<bool>();
             bool IsSuccess = await _transactionRep.Delete(data);
@@ -44,7 +44,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<IEnumerable<TransactionDTO>>> Service_Get()
+        public async Task<IBaseResponse<IEnumerable<TransactionDTO>>> ServiceGet()
         {
             var baseResponse = new BaseResponse<IEnumerable<TransactionDTO>>();
             IEnumerable<TransactionDTO> transactionDTO = await _transactionRep.Get();
@@ -54,7 +54,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<TransactionDTO>> Service_GetById(int id)
+        public async Task<IBaseResponse<TransactionDTO>> ServiceGetById(int id)
         {
             var baseResponse = new BaseResponse<TransactionDTO>();
             TransactionDTO model = await _transactionRep.GetById(id);

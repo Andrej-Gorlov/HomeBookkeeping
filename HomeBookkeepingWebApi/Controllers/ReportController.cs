@@ -24,7 +24,7 @@ namespace HomeBookkeepingWebApi.Controllers
         [HttpGet]
         [Route("listCategory")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllCategory() => Ok(await _reportSer.Service_GetAllCategory());
+        public async Task<IActionResult> GetAllCategory() => Ok(await _reportSer.ServiceGetAllCategory());
         /// <summary>
         /// Список всех пользователей совершившиx транзакции.
         /// </summary>
@@ -38,7 +38,7 @@ namespace HomeBookkeepingWebApi.Controllers
         [HttpGet]
         [Route("listFullNameUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> AllFullNameUser() => Ok(await _reportSer.Service_GetAllFullNameUser());
+        public async Task<IActionResult> AllFullNameUser() => Ok(await _reportSer.ServiceGetAllFullNameUser());
 
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace HomeBookkeepingWebApi.Controllers
         public async Task<IActionResult> ReportByNameUserYear(string fullName, int year)
         {
             if (year <= 0) return BadRequest($"год: [{year}] не может быть меньше или равен нулю");
-            var report = await _reportSer.Service_ReportByNameUserYear(fullName, year);
+            var report = await _reportSer.ServiceReportByNameUserYear(fullName, year);
             if (report.Result == null) return BadRequest(report);
             return Ok(report);
         }
@@ -97,7 +97,7 @@ namespace HomeBookkeepingWebApi.Controllers
         public async Task<IActionResult> ReportByNameUserYearMonth(string fullName, int year, string month)
         {
             if (year <= 0) return BadRequest($"год: [{year}] не может быть меньше или равен нулю");
-            var report = await _reportSer.Service_ReportByNameUserYearMonth(fullName, year, month);
+            var report = await _reportSer.ServiceReportByNameUserYearMonth(fullName, year, month);
             if (report.Result == null) return BadRequest(report);
             return Ok(report);
         }
@@ -130,7 +130,7 @@ namespace HomeBookkeepingWebApi.Controllers
         public async Task<IActionResult> ReportByCategoryNameUserYear(string category, string fullName, int year)
         {
             if (year <= 0) return BadRequest($"год: [{year}] не может быть меньше или равен нулю");
-            var report = await _reportSer.Service_ReportByCategoryNameUserYear(category, fullName, year);
+            var report = await _reportSer.ServiceReportByCategoryNameUserYear(category, fullName, year);
             if (report.Result == null) return BadRequest(report);
             return Ok(report);
         }
@@ -165,7 +165,7 @@ namespace HomeBookkeepingWebApi.Controllers
         public async Task<IActionResult> ReportByCategoryNameUserYearMonth(string category, string fullName, int year, string month)
         {
             if (year <= 0) return BadRequest($"год: [{year}] не может быть меньше или равен нулю");
-            var report = await _reportSer.Service_ReportByCategoryNameUserYearMonth(category, fullName, year, month);
+            var report = await _reportSer.ServiceReportByCategoryNameUserYearMonth(category, fullName, year, month);
             if (report.Result == null) return BadRequest(report);
             return Ok(report);
         }
@@ -184,7 +184,7 @@ namespace HomeBookkeepingWebApi.Controllers
         [HttpGet]
         [Route("full")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> ExpensFullReport() => Ok(await _reportSer.Service_FullReport());
+        public async Task<IActionResult> ExpensFullReport() => Ok(await _reportSer.ServiceFullReport());
 
 
         /// <summary>
@@ -208,7 +208,7 @@ namespace HomeBookkeepingWebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ReportAllYearsNameUser(string fullName)
         {
-            var report = await _reportSer.Service_ReportAllYearsNameUser(fullName);
+            var report = await _reportSer.ServiceReportAllYearsNameUser(fullName);
             if (report.Result == null) return BadRequest(report);
             return Ok(report);
         }
@@ -235,7 +235,7 @@ namespace HomeBookkeepingWebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ReportByCategoryAllYears(string category)
         {
-            var report = await _reportSer.Service_ReportByCategoryAllYears(category);
+            var report = await _reportSer.ServiceReportByCategoryAllYears(category);
             if (report.Result == null) return BadRequest(report);
             return Ok(report);
         }
@@ -265,7 +265,7 @@ namespace HomeBookkeepingWebApi.Controllers
         public async Task<IActionResult> ReportByCategoryYaer(string category, int year)
         {
             if (year <= 0) return BadRequest($"год: [{year}] не может быть меньше или равен нулю");
-            var report = await _reportSer.Service_ReportByCategoryYaer(category, year);
+            var report = await _reportSer.ServiceReportByCategoryYaer(category, year);
             if (report.Result == null) return BadRequest(report);
             return Ok(report);
         }

@@ -15,7 +15,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
         private IUserRepository _userRep;
         public UserService(IUserRepository userRep) => _userRep = userRep;
 
-        public async Task<IBaseResponse<UserDTO>> Service_Create(UserDTO entity)
+        public async Task<IBaseResponse<UserDTO>> ServiceCreate(UserDTO entity)
         {
             var baseResponse = new BaseResponse<UserDTO>();
             UserDTO model = await _userRep.Create(entity);
@@ -24,7 +24,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<bool>> Service_Delete(int id)
+        public async Task<IBaseResponse<bool>> ServiceDelete(int id)
         {
             var baseResponse = new BaseResponse<bool>();
             bool IsSuccess = await _userRep.Delete(id);
@@ -34,7 +34,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<IEnumerable<UserDTO>>> Service_Get()
+        public async Task<IBaseResponse<IEnumerable<UserDTO>>> ServiceGet()
         {
             var baseResponse = new BaseResponse<IEnumerable<UserDTO>>();
             IEnumerable<UserDTO> usersDTO = await _userRep.Get();
@@ -44,7 +44,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<UserDTO>> Service_GetByFullName(string fullName)
+        public async Task<IBaseResponse<UserDTO>> ServiceGetByFullName(string fullName)
         {
             var baseResponse = new BaseResponse<UserDTO>();
             UserDTO model = await _userRep.GetByFullName(fullName);
@@ -54,7 +54,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<UserDTO>> Service_GetById(int id)
+        public async Task<IBaseResponse<UserDTO>> ServiceGetById(int id)
         {
             var baseResponse = new BaseResponse<UserDTO>();
             UserDTO model = await _userRep.GetById(id);
@@ -64,7 +64,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<UserDTO>> Service_Update(UserDTO entity)
+        public async Task<IBaseResponse<UserDTO>> ServiceUpdate(UserDTO entity)
         {
             var baseResponse = new BaseResponse<UserDTO>();
             UserDTO model = await _userRep.Update(entity);

@@ -15,7 +15,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
         private IСreditСardRepository _creditСR;
         public СreditСardService(IСreditСardRepository creditСR) => _creditСR = creditСR;
 
-        public async Task<IBaseResponse<СreditСardDTO>> Service_Create(СreditСardDTO entity)
+        public async Task<IBaseResponse<СreditСardDTO>> ServiceCreate(СreditСardDTO entity)
         {
             var baseResponse = new BaseResponse<СreditСardDTO>();
             СreditСardDTO model = await _creditСR.Create(entity);
@@ -24,7 +24,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<bool>> Service_Delete(int id)
+        public async Task<IBaseResponse<bool>> ServiceDelete(int id)
         {
             var baseResponse = new BaseResponse<bool>();
             bool IsSuccess = await _creditСR.Delete(id);
@@ -34,7 +34,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<СreditСardDTO>> Service_Enrollment(string nameBank, string number, decimal sum)
+        public async Task<IBaseResponse<СreditСardDTO>> ServiceEnrollment(string nameBank, string number, decimal sum)
         {
             var baseResponse = new BaseResponse<СreditСardDTO>();
             СreditСardDTO model = await _creditСR.Enrollment(nameBank, number, sum);
@@ -43,7 +43,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<IEnumerable<СreditСardDTO>>> Service_Get()
+        public async Task<IBaseResponse<IEnumerable<СreditСardDTO>>> ServiceGet()
         {
             var baseResponse = new BaseResponse<IEnumerable<СreditСardDTO>>();
             IEnumerable<СreditСardDTO> creditСardsDTO = await _creditСR.Get();
@@ -53,7 +53,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<IEnumerable<СreditСardDTO>>> Service_Get(string fullName)
+        public async Task<IBaseResponse<IEnumerable<СreditСardDTO>>> ServiceGet(string fullName)
         {
             var baseResponse = new BaseResponse<IEnumerable<СreditСardDTO>>();
             IEnumerable<СreditСardDTO> creditСardsDTO = await _creditСR.Get(fullName);
@@ -63,7 +63,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<СreditСardDTO>> Service_GetById(int id)
+        public async Task<IBaseResponse<СreditСardDTO>> ServiceGetById(int id)
         {
             var baseResponse = new BaseResponse<СreditСardDTO>();
             СreditСardDTO model = await _creditСR.GetById(id);
@@ -73,7 +73,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<СreditСardDTO>> Service_Update(СreditСardDTO entity)
+        public async Task<IBaseResponse<СreditСardDTO>> ServiceUpdate(СreditСardDTO entity)
         {
             var baseResponse = new BaseResponse<СreditСardDTO>();
             СreditСardDTO model = await _creditСR.Update(entity);

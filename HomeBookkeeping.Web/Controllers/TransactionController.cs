@@ -112,5 +112,29 @@ namespace HomeBookkeeping.Web.Controllers
             model.DateOperations.Hour, model.DateOperations.Minute, model.DateOperations.Second);
             return RedirectToAction(nameof(TransactionGet));
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> TransactionDownload() 
+        {
+            List<UserDTOBase> listUser = new();
+            var respons = await _userService.GetUsersAsync<ResponseBase>();
+            listUser = JsonConvert.DeserializeObject<List<UserDTOBase>>(Convert.ToString(respons.Result));
+            ViewBag.UserList = listUser;
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TransactionDownload(TransactionVM model)
+        {
+            var responsCreditСard = await _creditСardService.GetByIdСreditСardAsync<ResponseBase>(model.СreditСard.СreditСardId);
+            СreditСardDTOBase? creditСard = JsonConvert.DeserializeObject<СreditСardDTOBase>(Convert.ToString(responsCreditСard.Result));
+            string? userFullName = creditСard.UserFullName;
+            string? numberCardUser = creditСard.Number;
+
+
+
+            return View();
+        }
     }
 }

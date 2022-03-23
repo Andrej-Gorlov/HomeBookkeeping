@@ -43,7 +43,7 @@ namespace HomeBookkeepingWebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddTransaction([FromBody] TransactionDTO transactionDTO)
         {
-            var transaction = await _transactionSer.Service_Add(transactionDTO);
+            var transaction = await _transactionSer.ServiceAdd(transactionDTO);
             if (transaction.Result == null) return BadRequest(transaction);
             return Ok(transactionDTO);
         }
@@ -72,7 +72,7 @@ namespace HomeBookkeepingWebApi.Controllers
         public async Task<IActionResult> DeleteTransaction(int id)
         {
             if (id <= 0) return BadRequest($"id: [{id}] не может быть меньше или равно нулю");
-            var transaction = await _transactionSer.Service_Delete(id);
+            var transaction = await _transactionSer.ServiceDelete(id);
             if (transaction.Result == false) return NotFound(transaction);
             return NoContent();
         }
@@ -114,7 +114,7 @@ namespace HomeBookkeepingWebApi.Controllers
             if (month <= 0) return BadRequest($"месяц: [{month}] не может быть меньше или равен нулю");
             if (day <= 0) return BadRequest($"день: [{day}] не может быть меньше или равен нулю");
             DateTime data = new DateTime(year, month, day, hour, minute, second);
-            var transaction = await _transactionSer.Service_Delete(data);
+            var transaction = await _transactionSer.ServiceDelete(data);
             if (transaction.Result == false) return NotFound(transaction);
             return NoContent();
         }
@@ -133,7 +133,7 @@ namespace HomeBookkeepingWebApi.Controllers
         [HttpGet]
         [Route("transactions")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetСreditСards() => Ok(await _transactionSer.Service_Get());
+        public async Task<IActionResult> GetСreditСards() => Ok(await _transactionSer.ServiceGet());
 
         /// <summary>
         /// Вывод транзакции по id.
@@ -157,7 +157,7 @@ namespace HomeBookkeepingWebApi.Controllers
         public async Task<IActionResult> GetByIdTransaction(int id)
         {
             if (id <= 0) return BadRequest($"id: [{id}] не может быть меньше или равно нулю");
-            var transaction = await _transactionSer.Service_GetById(id);
+            var transaction = await _transactionSer.ServiceGetById(id);
             if (transaction.Result == null) return BadRequest(transaction);
             return Ok(transaction);
         }

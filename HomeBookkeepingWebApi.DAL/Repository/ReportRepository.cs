@@ -268,7 +268,7 @@ namespace HomeBookkeepingWebApi.DAL.Repository
         {
             List<ReportRecipient> listRecipientData = new();
 
-            List<string> listRecipientName = _db.Transaction/*.Where(x => x.DateOperations == dateTime)*/.Select(x => x.RecipientName).Distinct().ToList();
+            List<string> listRecipientName = _db.Transaction.Select(x => x.RecipientName).Distinct().ToList();
 
             foreach (var item in listRecipientName)
             {

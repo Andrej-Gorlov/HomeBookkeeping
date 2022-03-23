@@ -9,10 +9,10 @@ namespace HomeBookkeepingWebApi.Service.Interfaces
 {
     public interface IBaseService<T>
     {
-        Task<IBaseResponse<IEnumerable<T>>> Service_Get();
-        Task<IBaseResponse<T>> Service_GetById(int id);
-        Task<IBaseResponse<T>> Service_Create(T entity);
-        Task<IBaseResponse<T>> Service_Update(T entity);
-        Task<IBaseResponse<bool>> Service_Delete(int id);
+        Task<IBaseResponse<IEnumerable<T>>> ServiceGet();
+        Task<IBaseResponse<T>> ServiceGetById(int id);
+        Task<IBaseResponse<T>> ServiceCreate(T entity);
+        Task<IBaseResponse<T>> ServiceUpdate(T entity);
+        Task<IBaseResponse<bool>> ServiceDelete(int id);
     }
 }

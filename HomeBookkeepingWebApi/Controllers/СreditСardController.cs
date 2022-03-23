@@ -25,7 +25,7 @@ namespace HomeBookkeepingWebApi.Controllers
         [HttpGet]
         [Route("creditcards")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetСreditСards() => Ok(await _creditСardSer.Service_Get());
+        public async Task<IActionResult> GetСreditСards() => Ok(await _creditСardSer.ServiceGet());
 
         /// <summary>
         /// Список всех кредитных карт принадлежащему пользователю
@@ -42,7 +42,7 @@ namespace HomeBookkeepingWebApi.Controllers
         [HttpGet]
         [Route("creditcards/listСreditСardsUser/{fullName}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetСreditСards(string fullName) => Ok(await _creditСardSer.Service_Get(fullName));
+        public async Task<IActionResult> GetСreditСards(string fullName) => Ok(await _creditСardSer.ServiceGet(fullName));
 
         /// <summary>
         /// Вывод кредитной карты по id.
@@ -66,7 +66,7 @@ namespace HomeBookkeepingWebApi.Controllers
         public async Task<IActionResult> GetByIdСreditСard(int id)
         {
             if (id <= 0) return BadRequest($"id: [{id}] не может быть меньше или равно нулю");
-            var creditСard = await _creditСardSer.Service_GetById(id);
+            var creditСard = await _creditСardSer.ServiceGetById(id);
             if (creditСard.Result == null) return BadRequest(creditСard);
             return Ok(creditСard);
         }
@@ -103,7 +103,7 @@ namespace HomeBookkeepingWebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateСreditСard([FromBody] СreditСardDTO creditСardDTO)
         {
-            var creditСard = await _creditСardSer.Service_Create(creditСardDTO);
+            var creditСard = await _creditСardSer.ServiceCreate(creditСardDTO);
             if (creditСard.Result == null) return BadRequest(creditСard); //
             return CreatedAtAction(nameof(GetСreditСards), creditСardDTO);//(GetСreditСard)?
         }
@@ -137,7 +137,7 @@ namespace HomeBookkeepingWebApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateСreditСard([FromBody] СreditСardDTO creditСardDTO)
         {
-            var creditСard = await _creditСardSer.Service_Update(creditСardDTO);
+            var creditСard = await _creditСardSer.ServiceUpdate(creditСardDTO);
             if (creditСard.Result == null) return BadRequest(creditСard);
             return Ok(creditСard);
         }
@@ -166,7 +166,7 @@ namespace HomeBookkeepingWebApi.Controllers
         public async Task<IActionResult> DeleteСreditСard(int id)
         {
             if (id <= 0) return BadRequest($"id: [{id}] не может быть меньше или равно нулю");
-            var сreditСard = await _creditСardSer.Service_Delete(id);
+            var сreditСard = await _creditСardSer.ServiceDelete(id);
             if (сreditСard.Result == false) return NotFound(сreditСard);
             return NoContent();
         }
@@ -198,7 +198,7 @@ namespace HomeBookkeepingWebApi.Controllers
         public async Task<IActionResult> EnrollmentСreditСard(string nameBank, string number, decimal sum)
         {
             if (sum < 0) return BadRequest($"Сумма: [{sum}] для зачисления, не может быть меньше нуля");
-            var creditСard = await _creditСardSer.Service_Enrollment(nameBank, number, sum);
+            var creditСard = await _creditСardSer.ServiceEnrollment(nameBank, number, sum);
             if (creditСard.Result == null) return BadRequest(creditСard); //
             return CreatedAtAction(nameof(GetСreditСards), creditСard);//(GetСreditСard)?
         }

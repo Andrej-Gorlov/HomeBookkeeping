@@ -10,6 +10,6 @@ namespace HomeBookkeepingWebApi.Service.Interfaces
 {
     public interface IUserService : IBaseService<UserDTO>
     {
-        Task<IBaseResponse<UserDTO>> Service_GetByFullName(string fullName);
+        Task<IBaseResponse<UserDTO>> ServiceGetByFullName(string fullName);
     }
 }

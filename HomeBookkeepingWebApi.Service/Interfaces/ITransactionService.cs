@@ -10,10 +10,10 @@ namespace HomeBookkeepingWebApi.Service.Interfaces
 {
     public interface ITransactionService
     {
-        Task<IBaseResponse<IEnumerable<TransactionDTO>>> Service_Get();
-        Task<IBaseResponse<TransactionDTO>> Service_GetById(int id);
-        Task<IBaseResponse<TransactionDTO>> Service_Add(TransactionDTO entity);
-        Task<IBaseResponse<bool>> Service_Delete(int id);
-        Task<IBaseResponse<bool>> Service_Delete(DateTime data); 
+        Task<IBaseResponse<IEnumerable<TransactionDTO>>> ServiceGet();
+        Task<IBaseResponse<TransactionDTO>> ServiceGetById(int id);
+        Task<IBaseResponse<TransactionDTO>> ServiceAdd(TransactionDTO entity);
+        Task<IBaseResponse<bool>> ServiceDelete(int id);
+        Task<IBaseResponse<bool>> ServiceDelete(DateTime data); 
     }
 }

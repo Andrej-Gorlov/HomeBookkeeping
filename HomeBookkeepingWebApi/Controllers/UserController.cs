@@ -25,7 +25,7 @@ namespace HomeBookkeepingWebApi.Controllers
         [HttpGet]
         [Route("users")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetUsers() => Ok(await _userSer.Service_Get());
+        public async Task<IActionResult> GetUsers() => Ok(await _userSer.ServiceGet());
 
         /// <summary>
         /// Вывод пользователя по id.
@@ -49,7 +49,7 @@ namespace HomeBookkeepingWebApi.Controllers
         public async Task<IActionResult> GetByIdUser(int id)
         {
             if (id <= 0) return BadRequest($"id: [{id}] не может быть меньше или равно нулю");
-            var user = await _userSer.Service_GetById(id);
+            var user = await _userSer.ServiceGetById(id);
             if (user.Result == null) return BadRequest(user);
             return Ok(user);
         }
@@ -95,7 +95,7 @@ namespace HomeBookkeepingWebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateUser([FromBody] UserDTO userDTO)
         {
-            var user = await _userSer.Service_Create(userDTO);
+            var user = await _userSer.ServiceCreate(userDTO);
             if (user.Result == null) return BadRequest(user); //
             return CreatedAtAction(nameof(GetUsers), userDTO);//(GetUsers)?
         }
@@ -137,7 +137,7 @@ namespace HomeBookkeepingWebApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateUser([FromBody] UserDTO userDTO)
         {
-            var user = await _userSer.Service_Update(userDTO);
+            var user = await _userSer.ServiceUpdate(userDTO);
             if (user.Result == null) return BadRequest(user);
             return Ok(user);
         }
@@ -167,7 +167,7 @@ namespace HomeBookkeepingWebApi.Controllers
         public async Task<IActionResult> DeleteUser(int id)
         {
             if (id <= 0) return BadRequest($"id: [{id}] не может быть меньше или равно нулю");
-            var user = await _userSer.Service_Delete(id);
+            var user = await _userSer.ServiceDelete(id);
             if (user.Result == false) return NotFound(user);
             return NoContent();
         }
@@ -194,7 +194,7 @@ namespace HomeBookkeepingWebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetFullNameUser(string fullName)
         {
-            var user = await _userSer.Service_GetByFullName(fullName);
+            var user = await _userSer.ServiceGetByFullName(fullName);
             if (user.Result == null) return BadRequest(user);
             return Ok(user);
         }

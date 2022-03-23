@@ -15,7 +15,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
         readonly IReportRepository _reportRep;
         public ReportService(IReportRepository reportRep) => _reportRep = reportRep;
 
-        public async Task<IBaseResponse<IEnumerable<ReportCategory>>> Service_ReportByCategoryAllYears(string category)
+        public async Task<IBaseResponse<IEnumerable<ReportCategory>>> ServiceReportByCategoryAllYears(string category)
         {
             var baseResponse = new BaseResponse<IEnumerable<ReportCategory>>();
             IEnumerable<ReportCategory> temporaryDRC_DTO = await _reportRep.ReportByCategoryAllYears(category);
@@ -27,7 +27,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<IEnumerable<ReportCategory>>> Service_ReportByCategoryYaer(string category, int year)
+        public async Task<IBaseResponse<IEnumerable<ReportCategory>>> ServiceReportByCategoryYaer(string category, int year)
         {
             var baseResponse = new BaseResponse<IEnumerable<ReportCategory>>();
             IEnumerable<ReportCategory> temporaryDRC_DTO = await _reportRep.ReportByCategoryYaer(category, year);
@@ -39,7 +39,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<IEnumerable<Report>>> Service_FullReport()
+        public async Task<IBaseResponse<IEnumerable<Report>>> ServiceFullReport()
         {
             var baseResponse = new BaseResponse<IEnumerable<Report>>();
             IEnumerable<Report> temporaryDRT_DTO = await _reportRep.FullReport();
@@ -51,7 +51,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<IEnumerable<ReportCategory>>> Service_ReportByCategoryNameUserYear(string category, string fullName, int year)
+        public async Task<IBaseResponse<IEnumerable<ReportCategory>>> ServiceReportByCategoryNameUserYear(string category, string fullName, int year)
         {
             var baseResponse = new BaseResponse<IEnumerable<ReportCategory>>();
             IEnumerable<ReportCategory> temporaryDRT_DTO = await _reportRep.ReportByCategoryNameUserYear(category, fullName, year);
@@ -63,7 +63,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<ReportCategory>> Service_ReportByCategoryNameUserYearMonth(string category, string fullName, int year, string month)
+        public async Task<IBaseResponse<ReportCategory>> ServiceReportByCategoryNameUserYearMonth(string category, string fullName, int year, string month)
         {
             var baseResponse = new BaseResponse<ReportCategory>();
             ReportCategory model = await _reportRep.ReportByCategoryNameUserYearMonth(category, fullName, year, month);
@@ -77,7 +77,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<IEnumerable<Report>>> Service_ReportAllYearsNameUser(string fullName)
+        public async Task<IBaseResponse<IEnumerable<Report>>> ServiceReportAllYearsNameUser(string fullName)
         {
             var baseResponse = new BaseResponse<IEnumerable<Report>>();
             IEnumerable<Report> temporaryDRT_DTO = await _reportRep.ReportAllYearsNameUser(fullName);
@@ -89,7 +89,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<IEnumerable<Report>>> Service_ReportByNameUserYear(string fullName, int year)
+        public async Task<IBaseResponse<IEnumerable<Report>>> ServiceReportByNameUserYear(string fullName, int year)
         {
             var baseResponse = new BaseResponse<IEnumerable<Report>>();
             IEnumerable<Report> temporaryDRT_DTO = await _reportRep.ReportByNameUserYear(fullName, year);
@@ -101,7 +101,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<Report>> Service_ReportByNameUserYearMonth(string fullName, int year, string month)
+        public async Task<IBaseResponse<Report>> ServiceReportByNameUserYearMonth(string fullName, int year, string month)
         {
             var baseResponse = new BaseResponse<Report>();
             Report model = await _reportRep.ReportByNameUserYearMonth(fullName, year, month);
@@ -115,7 +115,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<List<string>>> Service_GetAllCategory()
+        public async Task<IBaseResponse<List<string>>> ServiceGetAllCategory()
         {
             var baseResponse = new BaseResponse<List<string>>();
             var model = await _reportRep.GetAllCategory();
@@ -127,7 +127,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<List<string>>> Service_GetAllFullNameUser()
+        public async Task<IBaseResponse<List<string>>> ServiceGetAllFullNameUser()
         {
             var baseResponse = new BaseResponse<List<string>>();
             var model = await _reportRep.GetAllFullNameUser();
