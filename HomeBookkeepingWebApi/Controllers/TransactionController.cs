@@ -58,7 +58,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     DELETE /transaction/{id}
         ///     
-        ///        Id: int // Введите id транзакции, которую нужно удалить.
+        ///        Id: 0 // Введите id транзакции, которую нужно удалить.
         ///     
         /// </remarks>
         /// <response code="204"> Транзакция удалён. (нет содержимого) </response>
@@ -145,7 +145,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     GET /transaction/{id:int}
         ///     
-        ///        Id: int // Введите id транзакции, которую нужно показать.
+        ///        Id: 0 // Введите id транзакции, которую нужно показать.
         ///     
         /// </remarks>
         /// <response code="200"> Запрос прошёл. (Успех) </response>

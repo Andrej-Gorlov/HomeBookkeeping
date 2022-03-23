@@ -37,7 +37,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     GET /user/{id:int}
         ///     
-        ///        Id: int // Введите id пользователя, которого нужно показать.
+        ///        Id: 0 // Введите id пользователя, которого нужно показать.
         ///     
         /// </remarks>
         /// <response code="200"> Запрос прошёл. (Успех) </response>
@@ -129,7 +129,7 @@ namespace HomeBookkeepingWebApi.Controllers
         ///     }
         ///
         /// </remarks>
-        /// <response code="200"> Пользователь обновлен. </response>
+        /// <response code="200"> Запрос прошёл. (Успех) </response>
         /// <response code="404"> Пользователь не найден. </response>
         [HttpPut]
         [Route("user")]
@@ -138,7 +138,7 @@ namespace HomeBookkeepingWebApi.Controllers
         public async Task<IActionResult> UpdateUser([FromBody] UserDTO userDTO)
         {
             var user = await _userSer.ServiceUpdate(userDTO);
-            if (user.Result == null) return BadRequest(user);
+            if (user.Result == null) return NotFound(user);
             return Ok(user);
         }
 
@@ -153,7 +153,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     DELETE /user/{id}
         ///     
-        ///        Id: int // Введите id пользователя, которого нужно удалить.
+        ///        Id: 0 // Введите id пользователя, которого нужно удалить.
         ///     
         /// </remarks>
         /// <response code="204"> Пользователь удалён. (нет содержимого) </response>

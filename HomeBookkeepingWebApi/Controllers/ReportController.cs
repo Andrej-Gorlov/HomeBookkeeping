@@ -50,7 +50,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <remarks>
         /// Образец запроса:
         /// 
-        ///     GET /report
+        ///     GET /report/ReportByNameUserYear/{fullName}/{year}
         ///     
         ///        fullName: Иван Иванов   // Введите полное имя пользователя, отчёт которого нужно показать.
         ///        year: int (2000)        // Введите год за который нужно паказать отчёт.
@@ -81,7 +81,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <remarks>
         /// Образец запроса:
         /// 
-        ///     GET /report
+        ///     GET /report/ReportByNameUserYearMonth/{fullName}/{year}/{month}
         ///     
         ///        fullName: Иван Иванов             // Введите полное имя пользователя, отчёт которого нужно показать.
         ///        year: int (2000)                  // Введите год за который нужно паказать отчёт.
@@ -114,7 +114,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         /// Образец запроса:
         /// 
-        ///     GET /report
+        ///     GET /report/ReportByCategoryNameUserYear/{category}/{fullName}/{year}
         ///     
         ///        typeExpense: Коммунальные расходы   // Введите категорию за которую нужно паказать отчёт.
         ///        fullName: Иван Иванов               // Введите полное имя пользователя, отчёт которого нужно показать.
@@ -148,7 +148,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         /// Образец запроса:
         /// 
-        ///     GET /report
+        ///     GET /report/ReportByCategoryNameUserYearMonth/{category}/{fullName}/{year}/{month}
         ///     
         ///        category: Коммунальные расходы   // Введите категорию за которую нужно паказать отчёт.
         ///        fullName: Иван Иванов               // Введите полное имя пользователя, отчёт которого нужно показать.
@@ -195,7 +195,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <remarks>
         /// Образец запроса:
         /// 
-        ///     GET /report
+        ///     GET /report/ReportAllYearsNameUser/{fullName}
         ///     
         ///        fullName: Иван Иванов // Введите полное имя пользователя, которого нужно показать отчёт.
         ///     
@@ -222,7 +222,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <remarks>
         /// Образец запроса:
         /// 
-        ///     GET /report
+        ///     GET /report/ReportByCategoryAllYears/{category}
         ///     
         ///        typeExpense: Коммунальные расходы   // Введите категорию за которую нужно паказать отчёт.
         ///     
@@ -250,7 +250,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <remarks>
         /// Образец запроса:
         /// 
-        ///     GET /report
+        ///     GET /report/ReportByCategoryYaer/{category}/{year}
         ///     
         ///        category: Коммунальные расходы   // Введите категорию за которую нужно паказать отчёт.
         ///        year: int (2000)                    // Введите год за который нужно паказать отчёт.

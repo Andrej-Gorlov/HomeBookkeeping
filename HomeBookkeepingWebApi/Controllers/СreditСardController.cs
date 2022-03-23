@@ -54,7 +54,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     GET /creditcard/{id:int}
         ///     
-        ///        СreditСardId: int // Введите id кредитной карты, которую нужно показать.
+        ///        СreditСardId: 0 // Введите id кредитной карты, которую нужно показать.
         ///     
         /// </remarks>
         /// <response code="200"> Запрос прошёл. (Успех) </response>
@@ -152,7 +152,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     DELETE /creditcard/{id}
         ///     
-        ///        СreditСardId: int // Введите id кредитной карты, которую нужно удалить.
+        ///        СreditСardId: 0 // Введите id кредитной карты, которую нужно удалить.
         ///     
         /// </remarks>
         /// <response code="204"> Кредитная карта удалена. (нет содержимого) </response>
