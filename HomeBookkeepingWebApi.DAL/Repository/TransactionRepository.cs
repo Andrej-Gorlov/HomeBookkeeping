@@ -3,11 +3,6 @@ using HomeBookkeepingWebApi.DAL.Interfaces;
 using HomeBookkeepingWebApi.Domain.DTO;
 using HomeBookkeepingWebApi.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HomeBookkeepingWebApi.DAL.Repository
 {
@@ -20,10 +15,7 @@ namespace HomeBookkeepingWebApi.DAL.Repository
             _db = db;
             _mapper = mapper;
         }
-
-
-
-        public async Task<TransactionDTO> Add(TransactionDTO entity)
+        public async Task<TransactionDTO> AddAsync(TransactionDTO entity)
         {
             Transaction transaction = _mapper.Map<TransactionDTO, Transaction>(entity);
 
@@ -34,7 +26,10 @@ namespace HomeBookkeepingWebApi.DAL.Repository
                 x => x.UserFullName.ToUpper().Replace(" ", "") == transaction.UserFullName.ToUpper().Replace(" ", "")
                 && x.Number.ToUpper().Replace(" ", "") == transaction.NumberCardUser.ToUpper().Replace(" ", ""));
 
-            if (user == null || card == null) throw new NotImplementedException();
+            if (user == null || card == null)
+            {
+                throw new NullReferenceException("Не найден пользователь или номер карты указанный в транзакции.");
+            } 
 
             _db.Transaction.Add(transaction);
 
@@ -43,20 +38,22 @@ namespace HomeBookkeepingWebApi.DAL.Repository
             await _db.SaveChangesAsync();
             return _mapper.Map<Transaction, TransactionDTO>(transaction);
         }
-
-        public async Task<bool> Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             try
             {
-                Transaction transaction = await _db.Transaction.FirstOrDefaultAsync(x => x.Id == id);
-                if (transaction == null) return false;
-
+                Transaction? transaction = await _db.Transaction.FirstOrDefaultAsync(x => x.Id == id);
+                if (transaction is null)
+                {
+                    return false;
+                }
                 var card = await _db.СreditСard.FirstOrDefaultAsync(
                     x => x.UserFullName.ToUpper().Replace(" ", "") == transaction.UserFullName.ToUpper().Replace(" ", "")
                     && x.Number.ToUpper().Replace(" ", "") == transaction.NumberCardUser.ToUpper().Replace(" ", ""));
-
-                card.Sum += transaction.Sum;
-
+                if (card != null)
+                {
+                    card.Sum += transaction.Sum;
+                }
                 _db.Transaction.Remove(transaction);
                 await _db.SaveChangesAsync();
                 return true;
@@ -66,26 +63,28 @@ namespace HomeBookkeepingWebApi.DAL.Repository
                 return false;
             }
         }
-
-        public async Task<bool> Delete(DateTime data)
+        public async Task<bool> DeleteAsync(DateTime data)
         {
             try
             {
-                Transaction transaction = await _db.Transaction.FirstOrDefaultAsync(
+                Transaction? transaction = await _db.Transaction.FirstOrDefaultAsync(
                             x => x.DateOperations.Year == data.Year &&
                             x.DateOperations.Month == data.Month &&
                             x.DateOperations.Day == data.Day &&
                             x.DateOperations.Hour == data.Hour &&
                             x.DateOperations.Minute == data.Minute &&
                             x.DateOperations.Second == data.Second);
-                if (transaction == null) return false;
-
+                if (transaction is null)
+                {
+                    return false;
+                }
                 var card = await _db.СreditСard.FirstOrDefaultAsync(
                     x => x.UserFullName.ToUpper().Replace(" ", "") == transaction.UserFullName.ToUpper().Replace(" ", "")
                     && x.Number.ToUpper().Replace(" ", "") == transaction.NumberCardUser.ToUpper().Replace(" ", ""));
-
-                card.Sum += transaction.Sum;
-
+                if (card!=null)
+                {
+                    card.Sum += transaction.Sum;
+                }
                 _db.Transaction.Remove(transaction);
                 await _db.SaveChangesAsync();
                 return true;
@@ -95,17 +94,11 @@ namespace HomeBookkeepingWebApi.DAL.Repository
                 return false;
             }
         }
-
-        public async Task<IEnumerable<TransactionDTO>> Get()
-        {
-            List<Transaction> transactionList = await _db.Transaction.ToListAsync();
-            return _mapper.Map<List<TransactionDTO>>(transactionList);
-        }
-
-        public async Task<TransactionDTO> GetById(int id)
-        {
-            Transaction transaction = await _db.Transaction.FirstOrDefaultAsync(x=>x.Id==id);
-            return _mapper.Map<TransactionDTO>(transaction);
-        }
+        public async Task<IEnumerable<TransactionDTO>> GetAsync() =>
+            
+            _mapper.Map<List<TransactionDTO>>(await _db.Transaction.ToListAsync());
+        public async Task<TransactionDTO> GetByIdAsync(int id) =>
+           
+            _mapper.Map<TransactionDTO>(await _db.Transaction.FirstOrDefaultAsync(x => x.Id == id));
     }
 }

@@ -3,11 +3,6 @@ using HomeBookkeepingWebApi.DAL.Interfaces;
 using HomeBookkeepingWebApi.Domain.DTO;
 using HomeBookkeepingWebApi.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HomeBookkeepingWebApi.DAL.Repository
 {
@@ -20,21 +15,22 @@ namespace HomeBookkeepingWebApi.DAL.Repository
             _db = db;
             _mapper = mapper;
         }
-
-        public async Task<СreditСardDTO> Create(СreditСardDTO entity)
+        public async Task<СreditСardDTO> CreateAsync(СreditСardDTO entity)
         {
             СreditСard creditСard = _mapper.Map<СreditСardDTO, СreditСard>(entity);
             _db.СreditСard.Add(creditСard);
             await _db.SaveChangesAsync();
             return _mapper.Map<СreditСard, СreditСardDTO>(creditСard);
         }
-
-        public async Task<bool> Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             try
             {
                 СreditСard creditСard = await _db.СreditСard.FirstOrDefaultAsync(x => x.СreditСardId == id);
-                if (creditСard == null) return false;
+                if (creditСard is null) 
+                {
+                    return false;
+                }
                 _db.СreditСard.Remove(creditСard);
                 await _db.SaveChangesAsync();
                 return true;
@@ -44,36 +40,39 @@ namespace HomeBookkeepingWebApi.DAL.Repository
                 return false;
             }
         }
-
-        public async Task<СreditСardDTO> Enrollment(string nameBank, string number, decimal sum)
+        public async Task<СreditСardDTO> EnrollmentAsync(string nameBank, string number, decimal sum)
         {
-            СreditСard creditСard = await _db.СreditСard.FirstOrDefaultAsync(x => x.BankName == nameBank && x.Number.Replace(" ", "") == number.Replace(" ", ""));
-            creditСard.Sum += sum;
+            СreditСard? creditСard = await _db.СreditСard
+                .FirstOrDefaultAsync(x => x.BankName == nameBank 
+                && x.Number.Replace(" ", "") == number.Replace(" ", ""));
+
+            if (creditСard!=null)
+            {
+                creditСard.Sum += sum;
+            }
             await _db.SaveChangesAsync();
             return _mapper.Map<СreditСard, СreditСardDTO>(creditСard);
         }
+        public async Task<IEnumerable<СreditСardDTO>> GetAsync() =>
 
-        public async Task<IEnumerable<СreditСardDTO>> Get()
-        {
-            List<СreditСard> creditСardList = await _db.СreditСard.ToListAsync();
-            return _mapper.Map<List<СreditСardDTO>>(creditСardList);
-        }
+            _mapper.Map<List<СreditСardDTO>>(await _db.СreditСard.ToListAsync());
+        public async Task<IEnumerable<СreditСardDTO>> GetAsync(string fullName) =>
 
-        public async Task<IEnumerable<СreditСardDTO>> Get(string fullName)
-        {
-            List<СreditСard> creditСardList = await _db.СreditСard.Where(x=>x.UserFullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", "")). ToListAsync();
-            return _mapper.Map<List<СreditСardDTO>>(creditСardList);
-        }
-
-        public async Task<СreditСardDTO> GetById(int id)
-        {
-            СreditСard creditСard = await _db.СreditСard.Where(x => x.СreditСardId == id).FirstOrDefaultAsync();
-            return _mapper.Map<СreditСardDTO>(creditСard);
-        }
-
-        public async Task<СreditСardDTO> Update(СreditСardDTO entity)
+            _mapper.Map<List<СreditСardDTO>>(await _db.СreditСard
+                .Where(x => x.UserFullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", ""))
+                .ToListAsync());
+        public async Task<СreditСardDTO> GetByIdAsync(int id) =>
+            
+            _mapper.Map<СreditСardDTO>(await _db.СreditСard
+                .Where(x => x.СreditСardId == id)
+                .FirstOrDefaultAsync());
+        public async Task<СreditСardDTO> UpdateAsync(СreditСardDTO entity)
         {
             СreditСard creditСard = _mapper.Map<СreditСardDTO, СreditСard>(entity);
+            if (await _db.СreditСard.AsNoTracking().FirstOrDefaultAsync(x => x.СreditСardId == entity.СreditСardId) is null)
+            {
+                throw new NullReferenceException("Попытка обновить объект, которого нет в хранилище.");
+            }
             _db.СreditСard.Update(creditСard);
             await _db.SaveChangesAsync();
             return _mapper.Map<СreditСard, СreditСardDTO>(creditСard);

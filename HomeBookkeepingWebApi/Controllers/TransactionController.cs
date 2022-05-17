@@ -11,7 +11,6 @@ namespace HomeBookkeepingWebApi.Controllers
         private readonly ITransactionService _transactionSer;
         public TransactionController(ITransactionService transactionSer)=> _transactionSer = transactionSer;
 
-
         /// <summary>
         /// Создание новой транзакции.
         /// </summary>
@@ -43,8 +42,11 @@ namespace HomeBookkeepingWebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddTransaction([FromBody] TransactionDTO transactionDTO)
         {
-            var transaction = await _transactionSer.ServiceAdd(transactionDTO);
-            if (transaction.Result == null) return BadRequest(transaction);
+            var transaction = await _transactionSer.AddServiceAsync(transactionDTO);
+            if (transaction.Result is null)
+            {
+                return BadRequest(transaction);
+            }
             return Ok(transactionDTO);
         }
 
@@ -58,22 +60,28 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     DELETE /transaction/{id}
         ///     
-        ///        Id: 0 // Введите id транзакции, которую нужно удалить.
+        ///        Id: 0   // Введите id транзакции, которую нужно удалить.
         ///     
         /// </remarks>
         /// <response code="204"> Транзакция удалён. (нет содержимого) </response>
-        /// <response code="404"> Транзакция c указанным id не найден. </response>
         /// <response code="400"> Недопустимое значение ввода </response>
+        /// <response code="404"> Транзакция c указанным id не найден. </response>
         [HttpDelete]
         [Route("transaction/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteTransaction(int id)
         {
-            if (id <= 0) return BadRequest($"id: [{id}] не может быть меньше или равно нулю");
-            var transaction = await _transactionSer.ServiceDelete(id);
-            if (transaction.Result == false) return NotFound(transaction);
+            if (id <= 0)
+            {
+                return BadRequest($"id: [{id}] не может быть меньше или равно нулю");
+            }
+            var transaction = await _transactionSer.DeleteServiceAsync(id);
+            if (transaction.Result is false)
+            {
+                return NotFound(transaction);
+            }
             return NoContent();
         }
 
@@ -92,30 +100,34 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     DELETE /transaction/{year}/{month}/{day}/{hour}/{minute}/{second}
         ///     
-        ///        year: int (2000)  // Введите год транзакции, которую нужно удалить.
-        ///        month: int (1)    // Введите месяц транзакции, которую нужно удалить.
-        ///        day: int (1)      // Введите день транзакции, которую нужно удалить.
-        ///        hour: int (0)     // Введите час транзакции, которую нужно удалить.
-        ///        minute: int (0)   // Введите минуту транзакции, которую нужно удалить.
-        ///        ysecond: int (0)  // Введите секунду транзакции, которую нужно удалить.
+        ///        year: 0      // Введите год транзакции, которую нужно удалить.
+        ///        month: 0     // Введите месяц транзакции, которую нужно удалить.
+        ///        day: 0       // Введите день транзакции, которую нужно удалить.
+        ///        hour: 0      // Введите час транзакции, которую нужно удалить.
+        ///        minute: 0    // Введите минуту транзакции, которую нужно удалить.
+        ///        ysecond: 0   // Введите секунду транзакции, которую нужно удалить.
         ///     
         /// </remarks>
         /// <response code="204"> Транзакция удалён. (нет содержимого) </response>
-        /// <response code="404"> Транзакция c указанной датой и временем не найден. </response>
         /// <response code="400"> Недопустимое значение ввода </response>
+        /// <response code="404"> Транзакция c указанной датой и временем не найден. </response>
         [HttpDelete]
         [Route("transaction/{year}/{month}/{day}/{hour}/{minute}/{second}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteTransaction(int year, int month, int day, int hour, int minute, int second)
         {
             if (year <= 0) return BadRequest($"год: [{year}] не может быть меньше или равен нулю");
             if (month <= 0) return BadRequest($"месяц: [{month}] не может быть меньше или равен нулю");
             if (day <= 0) return BadRequest($"день: [{day}] не может быть меньше или равен нулю");
+            
             DateTime data = new DateTime(year, month, day, hour, minute, second);
-            var transaction = await _transactionSer.ServiceDelete(data);
-            if (transaction.Result == false) return NotFound(transaction);
+            var transaction = await _transactionSer.DeleteServiceAsync(data);
+            if (transaction.Result is false)
+            {
+                return NotFound(transaction);
+            }
             return NoContent();
         }
 
@@ -130,10 +142,20 @@ namespace HomeBookkeepingWebApi.Controllers
         ///
         /// </remarks> 
         /// <response code="200"> Запрос прошёл. (Успех) </response>
+        /// <response code="404"> Список всех транзакций не найден. </response>
         [HttpGet]
         [Route("transactions")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetСreditСards() => Ok(await _transactionSer.ServiceGet());
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetСreditСards()
+        {
+            var transactions = await _transactionSer.GetServiceAsync();
+            if (transactions.Result is null)
+            {
+                return NotFound(transactions);
+            }
+            return Ok(transactions);
+        }
 
         /// <summary>
         /// Вывод транзакции по id.
@@ -145,20 +167,28 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     GET /transaction/{id:int}
         ///     
-        ///        Id: 0 // Введите id транзакции, которую нужно показать.
+        ///        Id: 0   // Введите id транзакции, которую нужно показать.
         ///     
         /// </remarks>
         /// <response code="200"> Запрос прошёл. (Успех) </response>
-        /// <response code="400"> Транзакция не найдена </response>
+        /// <response code="400"> Недопустимое значение ввода </response>
+        /// <response code="404"> Транзакция не найдена </response>
         [HttpGet]
         [Route("transaction/{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetByIdTransaction(int id)
         {
-            if (id <= 0) return BadRequest($"id: [{id}] не может быть меньше или равно нулю");
-            var transaction = await _transactionSer.ServiceGetById(id);
-            if (transaction.Result == null) return BadRequest(transaction);
+            if (id <= 0)
+            {
+                return BadRequest($"id: [{id}] не может быть меньше или равно нулю");
+            }
+            var transaction = await _transactionSer.GetByIdServiceAsync(id);
+            if (transaction.Result is null)
+            {
+                return NotFound(transaction);
+            }
             return Ok(transaction);
         }
     }

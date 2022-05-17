@@ -3,11 +3,6 @@ using HomeBookkeepingWebApi.DAL.Interfaces;
 using HomeBookkeepingWebApi.Domain.DTO;
 using HomeBookkeepingWebApi.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HomeBookkeepingWebApi.DAL.Repository
 {
@@ -20,8 +15,7 @@ namespace HomeBookkeepingWebApi.DAL.Repository
             _db = db;
             _mapper = mapper;
         }
-
-        public async Task<UserDTO> Create(UserDTO entity)
+        public async Task<UserDTO> CreateAsync(UserDTO entity)
         {
             User user = _mapper.Map<UserDTO, User>(entity);
             if (user.СreditСards.Count!=0)
@@ -43,13 +37,15 @@ namespace HomeBookkeepingWebApi.DAL.Repository
                 return _mapper.Map<User, UserDTO>(user);
             }
         }
-
-        public async Task<bool> Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             try
             {
-                User user = await _db.User.Include(s => s.СreditСards).FirstOrDefaultAsync(x => x.UserId == id);
-                if (user == null) return false;
+                User? user = await _db.User.Include(s => s.СreditСards).FirstOrDefaultAsync(x => x.UserId == id);
+                if (user is null)
+                {
+                    return false;
+                }
                 _db.User.Remove(user);
                 await _db.SaveChangesAsync();
                 return true;
@@ -59,28 +55,28 @@ namespace HomeBookkeepingWebApi.DAL.Repository
                 return false;
             }
         }
+        public async Task<IEnumerable<UserDTO>> GetAsync() =>
 
-        public async Task<IEnumerable<UserDTO>> Get()
-        {
-            List<User> userList = await _db.User.Include(x => x.СreditСards).ToListAsync();
-            return _mapper.Map<List<UserDTO>>(userList); ;
-        }
+            _mapper.Map<List<UserDTO>>(await _db.User.Include(x => x.СreditСards).ToListAsync());
+        public async Task<UserDTO> GetByFullNameAsync(string fullName) =>
 
-        public async Task<UserDTO> GetByFullName(string fullName)
-        {
-            User user = await _db.User.Where(x => x.FullName == fullName).Include(s => s.СreditСards).FirstOrDefaultAsync();
-            return _mapper.Map<UserDTO>(user);
-        }
-
-        public async Task<UserDTO> GetById(int id)
-        {
-            User user = await _db.User.Where(x => x.UserId == id).Include(s => s.СreditСards).FirstOrDefaultAsync();
-            return _mapper.Map<UserDTO>(user);
-        }
-
-        public async Task<UserDTO> Update(UserDTO entity)
+            _mapper.Map<UserDTO>(await _db.User
+                .Where(x => x.FullName == fullName)
+                .Include(s => s.СreditСards)
+                .FirstOrDefaultAsync());
+        public async Task<UserDTO> GetByIdAsync(int id) =>
+            
+            _mapper.Map<UserDTO>(await _db.User
+                .Where(x => x.UserId == id)
+                .Include(s => s.СreditСards)
+                .FirstOrDefaultAsync());
+        public async Task<UserDTO> UpdateAsync(UserDTO entity)
         {
             User user = _mapper.Map<UserDTO, User>(entity);
+            if (await _db.User.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == entity.UserId) is null)
+            {
+                throw new NullReferenceException("Попытка обновить объект, которого нет в хранилище.");
+            }
             _db.User.Update(user);
             await _db.SaveChangesAsync();
             return _mapper.Map<User, UserDTO>(user);

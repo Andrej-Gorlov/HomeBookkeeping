@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using HomeBookkeepingWebApi.Domain.DTO;
 using HomeBookkeepingWebApi.Domain.Entity;
-using HomeBookkeepingWebApi.Domain.Entity.TemporaryData;
 
 namespace HomeBookkeepingWebApi
 {

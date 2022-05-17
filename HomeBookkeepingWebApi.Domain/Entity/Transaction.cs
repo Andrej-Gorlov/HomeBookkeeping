@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace HomeBookkeepingWebApi.Domain.Entity
 {
@@ -14,6 +9,7 @@ namespace HomeBookkeepingWebApi.Domain.Entity
 
         [Required(ErrorMessage = "Укажите полное имя пользователя совершившего транзакцию.")]
         public string? UserFullName { get; set; }
+        
         [Required(ErrorMessage = "Укажите номер карты пользователя совершившего транзакцию.")]
         public string? NumberCardUser { get; set; }
 
@@ -22,8 +18,10 @@ namespace HomeBookkeepingWebApi.Domain.Entity
 
         [Required(ErrorMessage = "Укажите дату проведение операции")] 
         public DateTime DateOperations { get; set; }
+        
         [Required(ErrorMessage = "Укажите сумму операции")] 
         public decimal Sum { get; set; }
+       
         [Required(ErrorMessage = "Укажите категорию расхода")] 
         public string? Category { get; set; }
     }

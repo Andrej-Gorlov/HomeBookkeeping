@@ -3,6 +3,7 @@ using HomeBookkeepingWebApi;
 using HomeBookkeepingWebApi.DAL;
 using HomeBookkeepingWebApi.DAL.Interfaces;
 using HomeBookkeepingWebApi.DAL.Repository;
+using HomeBookkeepingWebApi.Middleware.Extensions;
 using HomeBookkeepingWebApi.Service.Implementations;
 using HomeBookkeepingWebApi.Service.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -13,30 +14,24 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(x => x.UseSqlServer(connectionString));
+
 // Add services to the container.
 
-IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();// create object mapping
+IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());//íàñòðîéêà AutoMapper
-
 
 builder.Services.AddScoped<IÑreditÑardRepository, ÑreditÑardRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
-builder.Services.AddScoped<IReportRepository, ReportRepository>();
 
 builder.Services.AddScoped<IÑreditÑardService, ÑreditÑardService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 
-
-
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -62,8 +57,6 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -72,8 +65,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-
+app.UseErrorHandlerMiddleware();
 
 app.UseHttpsRedirection();
 
