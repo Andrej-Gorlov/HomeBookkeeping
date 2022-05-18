@@ -116,7 +116,7 @@ namespace HomeBookkeepingWebApi.Controllers
             {
                 return BadRequest(user);
             }
-            return CreatedAtAction(nameof(GetUsers), userDTO);//(GetUsers)?
+            return CreatedAtAction(nameof(GetUsers), userDTO);
         }
 
         /// <summary>

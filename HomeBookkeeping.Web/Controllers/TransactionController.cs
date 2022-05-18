@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Hosting.Internal;
 using Newtonsoft.Json;
 using OfficeOpenXml;
+using System.Net.Http.Headers;
 
 namespace HomeBookkeeping.Web.Controllers
 {
@@ -17,12 +18,14 @@ namespace HomeBookkeeping.Web.Controllers
         private readonly IUserService _userService;
         private readonly IСreditСardService _creditСardService;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public TransactionController(ITransactionService transactionService, IUserService userService, IСreditСardService creditСardService, IWebHostEnvironment webHostEnvironment)
+        private readonly IHttpClientFactory _clientFactory;
+        public TransactionController(ITransactionService transactionService, IUserService userService, IСreditСardService creditСardService, IWebHostEnvironment webHostEnvironment, IHttpClientFactory clientFactory)
         {
             _transactionService= transactionService;
             _userService= userService;
             _creditСardService = creditСardService;
             _webHostEnvironment= webHostEnvironment;
+            _clientFactory= clientFactory;
         }
 
         [HttpGet]
@@ -80,7 +83,9 @@ namespace HomeBookkeeping.Web.Controllers
             model.Transaction.NumberCardUser = creditСard.Number;
             var responsTransaction = await _transactionService.AddTransactionAsync<ResponseBase>(model.Transaction);
             if (responsTransaction != null)
-            return RedirectToAction(nameof(TransactionGet));
+            {
+                return RedirectToAction(nameof(TransactionGet));
+            }
             return View(model);
         }
 
@@ -137,80 +142,38 @@ namespace HomeBookkeeping.Web.Controllers
             string? numberCardUser = creditСard.Number;
 
 
-            //string webRootPath = _webHostEnvironment.WebRootPath;
-            //string path = @"\fileexcel\";
-            //string upload = webRootPath + path;//путь к img 
-            //string feilName = model.fileExcel.FileName;
-            //using (var fileStream = new FileStream(Path.Combine(upload, feilName), FileMode.Create))
+            //var client = _clientFactory.CreateClient();
+
+            //if (model.fileExcel.Length > 0)
             //{
-            //    model.fileExcel.CopyTo(fileStream);
+            //    using (var memoryStream = new MemoryStream())
+            //    {
+            //        //Get the file steam from the multiform data uploaded from the browser
+            //        await model.fileExcel.CopyToAsync(memoryStream);
+
+            //        //Build an multipart/form-data request to upload the file to Web API
+            //        using var form = new MultipartFormDataContent();
+            //        using var fileContent = new ByteArrayContent(memoryStream.ToArray());
+            //        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
+            //        form.Add(fileContent, "file", model.fileExcel.FileName);
+
+            //        var responsTransaction = await _transactionService.AddTransactionFromFileExcelAsync<ResponseBase>(form, userFullName, numberCardUser);
+
+            //        if (responsTransaction != null)
+            //        {
+            //            return RedirectToAction(nameof(TransactionGet));
+            //        }
+            //    }
             //}
 
 
-            //DateTime date1 = new DateTime(2015,7,20,18,30,01);
-            //string s1 = "26.02.2022";
-            //string s2 = "09:44";
-            //int year= int.Parse(s1.Substring(s1.Length - 4));
-            //int month = int.Parse(s1[3].ToString()+s1[4].ToString());
-            //int dey = int.Parse(s1.Substring(0, 2));
-            //int has = int.Parse(s2.Substring(0, 2));
-            //int minute =int.Parse(s2.Substring(s2.Length - 2));
-            //DateTime date2 = new DateTime(year, month, dey, has, minute, 01);
+            var responsTransaction = await _transactionService.AddTransactionFromFileExcelAsync<ResponseBase>(model.fileExcel, userFullName, numberCardUser);
 
-
-
-
-            var list = new List<TransactionDTOBase>();
-            using (var stream = new MemoryStream())
+            if (responsTransaction != null)
             {
-                await model.fileExcel.CopyToAsync(stream);
-                using (var package = new ExcelPackage(stream))
-                {
-                    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-                    ExcelWorksheet worksheet = package.Workbook.Worksheets["Лист1"];
-
-                    var rowCount = worksheet.Dimension.Rows;
-
-                    for (int row = 12; row <= rowCount; row++)
-                    {
-                        string RowEnd = worksheet.Cells[row, 1].Value.ToString().Substring(0, 30);
-
-                        if (RowEnd== "Реквизиты для перевода на счёт")
-                            break;
-
-                        bool isRow = worksheet.Cells[row, 1].Value.ToString().Trim() == "Продолжение на следующей странице" 
-                            || worksheet.Cells[row, 1].Value.ToString().Trim()== "ДАТА ОПЕРАЦИИ (МСК)";//<-----------
-
-
-                        if (!isRow) 
-                        {
-                            string data = worksheet.Cells[row, 1].Value.ToString().Trim();
-                            string time = worksheet.Cells[row, 2].Value.ToString().Trim();
-                            int year = int.Parse(data.Substring(data.Length - 4));
-                            int month = int.Parse(data[3].ToString() + data[4].ToString());
-                            int day = int.Parse(data.Substring(0, 2));
-                            int hour = int.Parse(time.Substring(0, 2));
-                            int minute = int.Parse(time.Substring(time.Length - 2));
-
-                            list.Add(new TransactionDTOBase
-                            {
-                                UserFullName = userFullName,
-                                NumberCardUser = numberCardUser,
-
-                                DateOperations = new DateTime(year,month,day,hour,minute,01),
-
-                                Category = worksheet.Cells[row, 5].Value.ToString().Trim(),
-                                RecipientName = worksheet.Cells[row + 1, 5].Value.ToString().Trim(),
-                                Sum = decimal.Parse(worksheet.Cells[row, 17].Value.ToString().Trim())
-                            });
-                            row++;
-                        }
-                    }
-                }
+                return RedirectToAction(nameof(TransactionGet));
             }
-
-
-            return View();
+            return View(model);
         }
     }
 }

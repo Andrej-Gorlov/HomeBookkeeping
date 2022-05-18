@@ -66,8 +66,6 @@ namespace HomeBookkeeping.Web.Services
                 return apiResponse;
             }
         }
-
-
         public void Dispose()
         {
             GC.SuppressFinalize(true);

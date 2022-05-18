@@ -19,17 +19,9 @@ namespace HomeBookkeepingWebApi.DAL.Repository
         {
             Transaction transaction = _mapper.Map<TransactionDTO, Transaction>(entity);
 
-            var user =await _db.User.FirstOrDefaultAsync(
-                x => x.FullName.ToUpper().Replace(" ", "") == transaction.UserFullName.ToUpper().Replace(" ", ""));
-
             var card = await _db.СreditСard.FirstOrDefaultAsync(
                 x => x.UserFullName.ToUpper().Replace(" ", "") == transaction.UserFullName.ToUpper().Replace(" ", "")
                 && x.Number.ToUpper().Replace(" ", "") == transaction.NumberCardUser.ToUpper().Replace(" ", ""));
-
-            if (user == null || card == null)
-            {
-                throw new NullReferenceException("Не найден пользователь или номер карты указанный в транзакции.");
-            } 
 
             _db.Transaction.Add(transaction);
 

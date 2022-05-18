@@ -15,7 +15,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// Создание новой транзакции.
         /// </summary>
         /// <param name="transactionDTO"></param>
-        /// <returns>Создаётся транзакция</returns>
+        /// <returns> Создаётся транзакция </returns>
         /// <remarks>
         /// Образец ввовда данных:
         ///
@@ -47,7 +47,43 @@ namespace HomeBookkeepingWebApi.Controllers
             {
                 return BadRequest(transaction);
             }
-            return Ok(transactionDTO);
+            return CreatedAtAction(nameof(GetByIdTransaction), transactionDTO);
+        }
+
+        /// <summary>
+        /// Создание новых транзакций из ExcelFail.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="userFullName"></param>
+        /// <param name="numberCardUser"></param>
+        /// <returns> Создаётся транзакции </returns>
+        ///         /// <remarks>
+        /// Образец запроса:
+        /// 
+        ///     GET /transaction/FileExcel/
+        ///     
+        ///        userFullName: "string"     // Полное имя пользователя совершившего транзакцию.
+        ///        numberCardUser: "string"   // Номер карты с которой списаны/зачислены денежные средства.
+        ///        
+        ///     Request body
+        ///     
+        ///        fileExcel: .xls/.xlsx      // Выберите файл с расширением xls, xlsx,
+        ///     
+        /// </remarks>
+        /// <response code="201"> Запрос прошёл. (Успех) </response>
+        /// <response code="400"> Недопустимое значение ввода </response>
+        [HttpPost]
+        [Route("transaction/{userFullName}/{numberCardUser}/")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddTransactionFromFileExcel(string userFullName, string numberCardUser, IFormFile file)
+        {
+            var transactions = await _transactionSer.AddFileExcelServiceAsync(file, userFullName, numberCardUser);
+            if (transactions.Result is null)
+            {
+                return BadRequest(transactions); 
+            }
+            return CreatedAtAction(nameof(GetByIdTransaction), transactions);
         }
 
         /// <summary>

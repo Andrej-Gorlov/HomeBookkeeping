@@ -1,4 +1,5 @@
 ﻿using HomeBookkeepingWebApi.Domain.DTO;
+using HomeBookkeepingWebApi.Domain.Entity;
 
 namespace HomeBookkeepingWebApi.DAL.Interfaces
 {

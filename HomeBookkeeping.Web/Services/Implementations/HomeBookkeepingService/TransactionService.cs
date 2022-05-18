@@ -10,7 +10,6 @@ namespace HomeBookkeeping.Web.Services.Implementations.HomeBookkeepingService
         public TransactionService(IHttpClientFactory clientFactory) : base(clientFactory) => _clientFactory = clientFactory;
 
 
-
         public async Task<T> AddTransactionAsync<T>(TransactionDTOBase transactionDTO)
         {
             return await this.SendAsync<T>(new ApiRequest()
@@ -20,7 +19,14 @@ namespace HomeBookkeeping.Web.Services.Implementations.HomeBookkeepingService
                 Url = StaticDitels.HomeBookkeepingApiBase + "/api/transaction",
             });
         }
-
+        public async Task<T> AddTransactionFromFileExcelAsync<T>(IFormFile file, string userFullName, string numberCardUser)
+        {
+            return await this.SendAsync<T>(new ApiRequest()
+            {
+                Api_Type = StaticDitels.ApiType.POST,
+                Url = StaticDitels.HomeBookkeepingApiBase + "/api/transaction/" + userFullName + "/" + numberCardUser + "/" + file
+            });
+        }
         public async Task<T> DeleteTransactionAsync<T>(int id)
         {
             return await this.SendAsync<T>(new ApiRequest()
@@ -29,7 +35,6 @@ namespace HomeBookkeeping.Web.Services.Implementations.HomeBookkeepingService
                 Url = StaticDitels.HomeBookkeepingApiBase + "/api/transaction/" + id
             });
         }
-
         public async Task<T> DeleteTransactionAsync<T>(int year, int month, int day, int hour, int minute, int second)
         {
             return await this.SendAsync<T>(new ApiRequest()
@@ -38,7 +43,6 @@ namespace HomeBookkeeping.Web.Services.Implementations.HomeBookkeepingService
                 Url = StaticDitels.HomeBookkeepingApiBase + "/api/transaction/" + year + "/" + month + "/" + day+"/"+ hour + "/" + minute + "/" + second
             });
         }
-
         public async Task<T> GetByIdTransactionAsync<T>(int id)
         {
             return await this.SendAsync<T>(new ApiRequest()
@@ -47,7 +51,6 @@ namespace HomeBookkeeping.Web.Services.Implementations.HomeBookkeepingService
                 Url = StaticDitels.HomeBookkeepingApiBase + "/api/transaction/" + id
             });
         }
-
         public async Task<T> GetTransactionsAsync<T>()
         {
             return await this.SendAsync<T>(new ApiRequest()
