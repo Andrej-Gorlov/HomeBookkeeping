@@ -1,5 +1,6 @@
 ﻿using HomeBookkeepingWebApi.DAL.Interfaces;
 using HomeBookkeepingWebApi.Domain.DTO;
+using HomeBookkeepingWebApi.Domain.Entity;
 using HomeBookkeepingWebApi.Domain.Response;
 using HomeBookkeepingWebApi.Service.Interfaces;
 
@@ -12,7 +13,16 @@ namespace HomeBookkeepingWebApi.Service.Implementations
         public async Task<IBaseResponse<UserDTO>> CreateServiceAsync(UserDTO entity)
         {
             var baseResponse = new BaseResponse<UserDTO>();
-            UserDTO model = await _userRep.CreateAsync(entity);
+            if(entity.СreditСards.Count != 0)
+            {
+                СreditСardDTO сreditСard = new();
+                сreditСard.UserFullName = entity.FullName;
+                сreditСard.BankName = "-";
+                сreditСard.Number = "-";
+                сreditСard.L_Account = "-";
+                entity.СreditСards.Add(сreditСard); 
+            }
+            var model = await _userRep.CreateAsync(entity);
             baseResponse.DisplayMessage = "Пользователь создан";
             baseResponse.Result = model;
             return baseResponse;

@@ -1,6 +1,7 @@
 ﻿using HomeBookkeepingWebApi.Domain.DTO;
 using HomeBookkeepingWebApi.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace HomeBookkeepingWebApi.Controllers
 {
@@ -9,7 +10,12 @@ namespace HomeBookkeepingWebApi.Controllers
     public class TransactionController : ControllerBase
     {
         private readonly ITransactionService _transactionSer;
-        public TransactionController(ITransactionService transactionSer)=> _transactionSer = transactionSer;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public TransactionController(ITransactionService transactionSer,IWebHostEnvironment webHostEnvironment)
+        {
+            _transactionSer = transactionSer;
+            _webHostEnvironment = webHostEnvironment;
+        } 
 
         /// <summary>
         /// Создание новой транзакции.

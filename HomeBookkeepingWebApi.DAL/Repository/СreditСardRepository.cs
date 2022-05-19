@@ -43,8 +43,7 @@ namespace HomeBookkeepingWebApi.DAL.Repository
         public async Task<СreditСardDTO> EnrollmentAsync(string nameBank, string number, decimal sum)
         {
             СreditСard? creditСard = await _db.СreditСard
-                .FirstOrDefaultAsync(x => x.BankName == nameBank 
-                && x.Number.Replace(" ", "") == number.Replace(" ", ""));
+                .FirstOrDefaultAsync(x => x.BankName == nameBank && x.Number.Replace(" ", "") == number.Replace(" ", ""));
 
             if (creditСard!=null)
             {

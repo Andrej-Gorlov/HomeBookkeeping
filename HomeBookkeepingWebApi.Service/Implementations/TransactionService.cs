@@ -4,6 +4,7 @@ using HomeBookkeepingWebApi.Domain.Response;
 using HomeBookkeepingWebApi.Service.Interfaces;
 using Microsoft.AspNetCore.Http;
 using OfficeOpenXml;
+using System.Net;
 
 namespace HomeBookkeepingWebApi.Service.Implementations
 {
@@ -114,7 +115,6 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             {
                 throw new NullReferenceException("Не найден пользователь или номер карты указанный в транзакции.");
             }
-
             var list = new List<TransactionDTO>();
             using (var stream = new MemoryStream())
             {
@@ -135,44 +135,50 @@ namespace HomeBookkeepingWebApi.Service.Implementations
                             }
                         }
                         bool isRow = worksheet.Cells[row, 1].Value.ToString() == "Продолжение на следующей странице"
-                            || worksheet.Cells[row, 1].Value.ToString().Trim() == "ДАТА ОПЕРАЦИИ (МСК)\nДата обработки¹ и код авторизации"
-                            || worksheet.Cells[row, 13].Value.ToString().Trim()[0] == '+';
-                        if(worksheet.Cells[row, 13].Value.ToString().Trim()[0] == '+')
-                        {
-                            _creditCardRep.EnrollmentAsync(card.BankName, numberCardUser, 
-                                decimal.Parse(worksheet.Cells[row, 13].Value.ToString().Trim().Substring(1)));
-                        }
+                            || worksheet.Cells[row, 1].Value.ToString().Trim() == "ДАТА ОПЕРАЦИИ (МСК)\nДата обработки¹ и код авторизации";
+
                         if (!isRow)
                         {
-                            string data = worksheet.Cells[row, 1].Text.ToString().Trim();
-                            string time = worksheet.Cells[row, 2].Value.ToString().Trim();
-
-                            int year = int.Parse(data.Substring(data.Length - 4));
-                            int month = int.Parse(data[3].ToString() + data[4].ToString());
-                            int day = int.Parse(data.Substring(0, 2));
-                            int hour = int.Parse(time.Substring(0, 2));
-                            int minute = int.Parse(time.Substring(time.Length - 2));
-
-                            list.Add(new TransactionDTO
+                            if (worksheet.Cells[row, 13].Text.ToString().Trim()[0] == '+')
                             {
-                                UserFullName = userFullName,
-                                NumberCardUser = numberCardUser,
-                                DateOperations = new DateTime(year, month, day, hour, minute, 01),
-                                Category = worksheet.Cells[row, 5].Text.ToString().Trim(),
-                                RecipientName = worksheet.Cells[row + 1, 5].Text.ToString().Trim(),
-                                Sum = decimal.Parse(worksheet.Cells[row, 13].Value.ToString().Trim())
-                            });
+
+                               await _creditCardRep.EnrollmentAsync(card.BankName, numberCardUser,
+                                   decimal.Parse(worksheet.Cells[row, 13].Value.ToString().Trim().Substring(1)));
+                            }
+                            else
+                            {
+                                string data = worksheet.Cells[row, 1].Text.ToString().Trim();
+                                string time = worksheet.Cells[row, 2].Value.ToString().Trim();
+
+                                int year = int.Parse(data.Substring(data.Length - 4));
+                                int month = int.Parse(data[3].ToString() + data[4].ToString());
+                                int day = int.Parse(data.Substring(0, 2));
+                                int hour = int.Parse(time.Substring(0, 2));
+                                int minute = int.Parse(time.Substring(time.Length - 2));
+
+                                list.Add(new TransactionDTO
+                                {
+                                    UserFullName = userFullName,
+                                    NumberCardUser = numberCardUser,
+                                    DateOperations = new DateTime(year, month, day, hour, minute, 01),
+                                    Category = worksheet.Cells[row, 5].Text.ToString().Trim(),
+                                    RecipientName = worksheet.Cells[row + 1, 5].Text.ToString().Trim(),
+                                    Sum = decimal.Parse(worksheet.Cells[row, 13].Value.ToString().Trim())
+                                });
+                            }
                             row++;
                         }
                     }
                 }
             }
             var baseResponse = new BaseResponse<List<TransactionDTO>>();
+            var transactions = new List<TransactionDTO>();
             foreach (TransactionDTO transaction in list)
             {
                 TransactionDTO transactionDTO = await _transactionRep.AddAsync(transaction);
-                baseResponse.Result.Add(transactionDTO);
+                transactions.Add(transactionDTO);
             }
+            baseResponse.Result = transactions;
             baseResponse.DisplayMessage = $"Список транзакций из файла [ {fileExcel.FileName} ] добавлен.";
             return baseResponse;
         }

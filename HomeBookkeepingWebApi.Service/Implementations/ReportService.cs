@@ -2,6 +2,7 @@
 using HomeBookkeepingWebApi.Domain.DTO;
 using HomeBookkeepingWebApi.Domain.Entity.TemporaryData;
 using HomeBookkeepingWebApi.Domain.Response;
+using HomeBookkeepingWebApi.Service.Helpers;
 using HomeBookkeepingWebApi.Service.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +19,8 @@ namespace HomeBookkeepingWebApi.Service.Implementations
         } 
         public async Task<IBaseResponse<IEnumerable<ReportCategory>>> ReportByCategoryAllYearsServiceAsync(string category)
         {
-            var nameUsers = _userRep.GetAsync().Result.AsQueryable().Select(x => x.FullName).Distinct().ToList();
+            var users = await _userRep.GetAsync();
+            var nameUsers = users.Select(x => x.FullName).Distinct().ToList();
 
             var transactions = await _transactionRep.GetAsync();
             var listYear = transactions.Select(x => x.DateOperations.Year).Distinct().ToList();
@@ -35,13 +37,13 @@ namespace HomeBookkeepingWebApi.Service.Implementations
                         .Select(x => x.DateOperations.Month).Distinct().ToList();
                     foreach (var itemMonth in listMonth)
                     {
-                        DateTime dateTime = DefinitionDateTime(itemYear, itemMonth.ToString());
+                        DateTime dateTime = ReportHelper.DefinitionDateTime(itemYear, itemMonth.ToString());
                         ReportCategory reportMonth = new()
                         {
                             FullName = itemUser,
                             DateTime = dateTime,
                             Category = nameCategory.Category,
-                            recipientsData = ListRecipient(transactions.ToList(), dateTime, nameCategory.Category, itemUser, true),
+                            recipientsData = ReportHelper.ListRecipient(transactions.ToList(), dateTime, nameCategory.Category, itemUser, true),
                             Sum = transactions.Where(x => x.UserFullName == itemUser &&
                                                      x.DateOperations.Year == dateTime.Year &&
                                                      x.DateOperations.Month == dateTime.Month &&
@@ -79,13 +81,13 @@ namespace HomeBookkeepingWebApi.Service.Implementations
                     .Select(x => x.DateOperations.Month).Distinct().ToList();
                 foreach (var itemMonth in listMonth)
                 {
-                    DateTime dateTime = DefinitionDateTime(year, itemMonth.ToString());
+                    DateTime dateTime = ReportHelper.DefinitionDateTime(year, itemMonth.ToString());
                     ReportCategory reportMonth = new()
                     {
                         FullName = itemUser,
                         DateTime = dateTime,
                         Category = nameCategory.Category,
-                        recipientsData = ListRecipient(transactions.ToList(),dateTime, nameCategory.Category, itemUser, true),
+                        recipientsData = ReportHelper.ListRecipient(transactions.ToList(),dateTime, nameCategory.Category, itemUser, true),
                         Sum = transactions.Where(x => x.UserFullName == itemUser &&
                                                  x.DateOperations.Year == dateTime.Year &&
                                                  x.DateOperations.Month == dateTime.Month &&
@@ -109,7 +111,8 @@ namespace HomeBookkeepingWebApi.Service.Implementations
         }
         public async Task<IBaseResponse<IEnumerable<Report>>> FullReportServiceAsync()
         {
-            var nameUsers = _userRep.GetAsync().Result.AsQueryable().Select(x => x.FullName).Distinct().ToList();
+            var users = await _userRep.GetAsync();
+            var nameUsers = users.Select(x => x.FullName).Distinct().ToList();
 
             var transactions = await _transactionRep.GetAsync();
             var listYear = transactions.Select(x => x.DateOperations.Year).Distinct().ToList();
@@ -124,12 +127,12 @@ namespace HomeBookkeepingWebApi.Service.Implementations
                         .Select(x => x.DateOperations.Month).Distinct().ToList();
                     foreach (var itemMonth in listMonth)
                     {
-                        DateTime dateTime = DefinitionDateTime(itemYear, itemMonth.ToString());
+                        DateTime dateTime = ReportHelper.DefinitionDateTime(itemYear, itemMonth.ToString());
                         Report reportMonth = new()
                         {
                             FullName = itemName,
                             DateTime = dateTime,
-                            Сategories = ListTypeExpense(transactions.ToList(), dateTime, itemName, true),
+                            Сategories = ReportHelper.ListTypeExpense(transactions.ToList(), dateTime, itemName, true),
                             Sum = transactions.Where(x => x.DateOperations.Year == dateTime.Year
                                                     && x.DateOperations.Month == dateTime.Month
                                                     && x.UserFullName == itemName).Sum(x => x.Sum)
@@ -152,9 +155,8 @@ namespace HomeBookkeepingWebApi.Service.Implementations
         }
         public async Task<IBaseResponse<IEnumerable<ReportCategory>>> ReportByCategoryNameUserYearServiceAsync(string category, string fullName, int year)
         {
-            var name = await _userRep.GetAsync().Result.AsQueryable()
-                .FirstOrDefaultAsync(
-                x => x.FullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", ""));
+            var users = await _userRep.GetAsync();
+            var name = users.FirstOrDefault(x => x.FullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", ""));
 
             var transactions = await _transactionRep.GetAsync();
             var listMonth = transactions.Where(x => x.DateOperations.Year == year)
@@ -163,13 +165,13 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             List<ReportCategory> reportCategoryNameUserYear = new();
             foreach (var item in listMonth)
             {
-                DateTime dateTime = DefinitionDateTime(year, item.ToString());
+                DateTime dateTime = ReportHelper.DefinitionDateTime(year, item.ToString());
                 ReportCategory reportMonth = new()
                 {
                     FullName = name.FullName,
                     DateTime = dateTime,
                     Category = category,
-                    recipientsData = ListRecipient(transactions.ToList(), dateTime, category, name.FullName),
+                    recipientsData = ReportHelper.ListRecipient(transactions.ToList(), dateTime, category, name.FullName),
                     Sum = transactions.Where(
                             x => x.UserFullName == name.FullName &&
                             x.DateOperations.Year == dateTime.Year &&
@@ -193,10 +195,9 @@ namespace HomeBookkeepingWebApi.Service.Implementations
         }
         public async Task<IBaseResponse<ReportCategory>> ReportByCategoryNameUserYearMonthServiceAsync(string category, string fullName, int year, string month)
         {
-            DateTime dateTime = DefinitionDateTime(year, month);
-
-            var name = await _userRep.GetAsync().Result.AsQueryable().FirstOrDefaultAsync(
-                x => x.FullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", ""));
+            DateTime dateTime = ReportHelper.DefinitionDateTime(year, month);
+            var users = await _userRep.GetAsync();
+            var name = users.FirstOrDefault(x => x.FullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", ""));
 
             var transactions = await _transactionRep.GetAsync();
 
@@ -205,7 +206,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
                 FullName = name.FullName,
                 DateTime = dateTime,
                 Category = category,
-                recipientsData = ListRecipient(transactions.ToList(), dateTime, category, name.FullName, true),
+                recipientsData = ReportHelper.ListRecipient(transactions.ToList(), dateTime, category, name.FullName, true),
                 Sum = transactions.Where(
                                     x => x.UserFullName == name.FullName &&
                                     x.DateOperations.Year == dateTime.Year &&
@@ -227,8 +228,8 @@ namespace HomeBookkeepingWebApi.Service.Implementations
         }
         public async Task<IBaseResponse<IEnumerable<Report>>> ReportAllYearsNameUserServiceAsync(string fullName)
         {
-            var name = await _userRep.GetAsync().Result.AsQueryable().FirstOrDefaultAsync(
-                x => x.FullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", ""));
+            var users = await _userRep.GetAsync();
+            var name = users.FirstOrDefault(x => x.FullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", ""));
 
             var transactions = await _transactionRep.GetAsync();
             var listYear = transactions.Select(x => x.DateOperations.Year).Distinct().ToList();
@@ -241,12 +242,12 @@ namespace HomeBookkeepingWebApi.Service.Implementations
                     .Select(x => x.DateOperations.Month).Distinct().ToList();
                 foreach (var itemMonth in listMonth)
                 {
-                    DateTime dateTime = DefinitionDateTime(itemYear, itemMonth.ToString());
+                    DateTime dateTime = ReportHelper.DefinitionDateTime(itemYear, itemMonth.ToString());
                     Report reportMonth = new()
                     {
                         FullName = name.FullName,
                         DateTime = dateTime,
-                        Сategories = ListTypeExpense(transactions.ToList(), dateTime, name.FullName, true),
+                        Сategories = ReportHelper.ListTypeExpense(transactions.ToList(), dateTime, name.FullName, true),
                         Sum = transactions.Where(x => x.DateOperations.Year == dateTime.Year
                                                  && x.DateOperations.Month == dateTime.Month
                                                  && x.UserFullName == name.FullName).Sum(x => x.Sum)
@@ -268,8 +269,8 @@ namespace HomeBookkeepingWebApi.Service.Implementations
         }
         public async Task<IBaseResponse<IEnumerable<Report>>> ReportByNameUserYearServiceAsync(string fullName, int year)
         {
-            var name = await _userRep.GetAsync().Result.AsQueryable().FirstOrDefaultAsync(
-                x => x.FullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", ""));
+            var users = await _userRep.GetAsync();
+            var name = users.FirstOrDefault(x => x.FullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", ""));
 
             var transactions = await _transactionRep.GetAsync();
             var listMonth = transactions
@@ -279,12 +280,12 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             List<Report> reportByNameUserYear = new();
             foreach (var item in listMonth)
             {
-                DateTime dateTime = DefinitionDateTime(year, item.ToString());
+                DateTime dateTime = ReportHelper.DefinitionDateTime(year, item.ToString());
                 Report reportMonth = new()
                 {
                     FullName = name.FullName,
                     DateTime = dateTime,
-                    Сategories = ListTypeExpense(transactions.ToList(), dateTime, name.FullName, true),
+                    Сategories = ReportHelper.ListTypeExpense(transactions.ToList(), dateTime, name.FullName, true),
                     Sum = transactions.Where(x => x.DateOperations.Year == dateTime.Year &&
                                              x.DateOperations.Month == dateTime.Month &&
                                              x.UserFullName == name.FullName).Sum(x => x.Sum)
@@ -305,10 +306,9 @@ namespace HomeBookkeepingWebApi.Service.Implementations
         }
         public async Task<IBaseResponse<Report>> ReportByNameUserYearMonthServiceAsync(string fullName, int year, string month)
         {
-            DateTime dateTime = DefinitionDateTime(year, month);
-            var name = await _userRep.GetAsync().Result.AsQueryable()
-                .FirstOrDefaultAsync(
-                x => x.FullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", ""));
+            DateTime dateTime = ReportHelper.DefinitionDateTime(year, month);
+            var users = await _userRep.GetAsync();
+            var name = users.FirstOrDefault(x => x.FullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", ""));
 
             var transactions = await _transactionRep.GetAsync();
 
@@ -316,7 +316,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             {
                 FullName = name.FullName,
                 DateTime = dateTime,
-                Сategories = ListTypeExpense(transactions.ToList(), dateTime, name.FullName, true),
+                Сategories = ReportHelper.ListTypeExpense(transactions.ToList(), dateTime, name.FullName, true),
                 Sum = transactions.Where(x => x.DateOperations.Year == dateTime.Year &&
                                          x.DateOperations.Month == dateTime.Month &&
                                          x.UserFullName == name.FullName).Sum(x => x.Sum)
@@ -360,105 +360,6 @@ namespace HomeBookkeepingWebApi.Service.Implementations
                 baseResponse.DisplayMessage = $"Список пользователей пуст.";
             baseResponse.Result = listFullName.ToList();
             return baseResponse;
-        }
-        //--------------------------- Private method ---------------------------\\
-        private DateTime DefinitionDateTime(int year, string month = "1")
-        {
-            var m = month.ToUpper().Replace(" ", "");
-
-            if (m == "ЯНВАРЬ" || m == "JANUARY" || m == "1" || m == "01")
-                return new DateTime(year, 1, 1);
-            else if (m == "ФЕВРАЛЬ" || m == "FEBRUARY" || m == "2" || m == "02")
-                return new DateTime(year, 2, 1);
-            else if (m == "МАРТ" || m == "MARCH" || m == "3" || m == "03")
-                return new DateTime(year, 3, 1);
-            else if (m == "АПРЕЛЬ" || m == "APRIL" || m == "4" || m == "04")
-                return new DateTime(year, 4, 1);
-            else if (m == "МАЙ" || m == "MAY" || m == "5" || m == "05")
-                return new DateTime(year, 5, 1);
-            else if (m == "ИЮНЬ" || m == "JUNE" || m == "6" || m == "06")
-                return new DateTime(year, 6, 1);
-            else if (m == "ИЮЛЬ" || m == "JULY" || m == "7" || m == "07")
-                return new DateTime(year, 7, 1);
-            else if (m == "АВГУСТ" || m == "AUGUST" || m == "8" || m == "08")
-                return new DateTime(year, 8, 1);
-            else if (m == "СЕНТЯБРЬ" || m == "SEPTEMBER" || m == "9" || m == "09")
-                return new DateTime(year, 9, 1);
-            else if (m == "ОКТЯБРЬ" || m == "OCTOBER" || m == "10")
-                return new DateTime(year, 10, 1);
-            else if (m == "НОЯБРЬ" || m == "NOVEMBER" || m == "11")
-                return new DateTime(year, 11, 1);
-            else if (m == "ДЕКАБРЬ" || m == "DECEMBER" || m == "12")
-                return new DateTime(year, 12, 1);
-            else return new DateTime(0);
-        }
-        private List<TypeExpenseAndSum> ListTypeExpense(List<TransactionDTO> transactions, DateTime dateTime, string fullName, bool Month = false)
-        {
-            List<TypeExpenseAndSum> listTypeExpense = new List<TypeExpenseAndSum>();
-            var listCategory = transactions.Select(x => x.Category).Distinct().ToList();
-
-            foreach (string category in listCategory)
-            {
-                var typeEAS = new TypeExpenseAndSum();
-                typeEAS.NameTypeExpense = category;
-                if (Month)
-                {
-                    typeEAS.Recipients = ListRecipient(transactions, dateTime, category, fullName, true);
-
-                    typeEAS.SumTypeExpense = transactions
-                        .Where(x => x.DateOperations.Year == dateTime.Year 
-                        && x.DateOperations.Month == dateTime.Month 
-                        && x.Category == category 
-                        && x.UserFullName == fullName).Sum(x => x.Sum);
-                }
-                else
-                {
-                    typeEAS.Recipients = ListRecipient(transactions, dateTime, category, fullName);
-
-                    typeEAS.SumTypeExpense = transactions
-                        .Where(x => x.DateOperations.Year == dateTime.Year 
-                        && x.Category == category 
-                        && x.UserFullName == fullName).Sum(x => x.Sum);
-                }
-                if (typeEAS.SumTypeExpense != 0)
-                {
-                    listTypeExpense.Add(typeEAS);
-                }
-            }
-            return listTypeExpense;
-        }
-        private List<ReportRecipient> ListRecipient(List<TransactionDTO> transactions,DateTime dateTime, string category, string fullName, bool Month = false)
-        {
-            List<ReportRecipient> listRecipientData = new();
-
-            var listRecipientName = transactions.Select(x => x.RecipientName).Distinct().ToList();
-
-            foreach (var item in listRecipientName)
-            {
-                ReportRecipient recipient = new();
-                recipient.NameRecipient = item;
-                if (Month)
-                {
-                    recipient.NameRecipientSum = transactions
-                        .Where(x => x.DateOperations.Year == dateTime.Year
-                        && x.DateOperations.Month == dateTime.Month
-                        && x.Category == category
-                        && x.RecipientName == item
-                        && x.UserFullName == fullName).Sum(x => x.Sum);
-                }
-                else
-                {
-                    recipient.NameRecipientSum = transactions
-                        .Where(x => x.DateOperations.Year == dateTime.Year 
-                        && x.Category == category && x.RecipientName == item 
-                        && x.UserFullName == fullName).Sum(x => x.Sum);
-                } 
-                if (recipient.NameRecipientSum != 0)
-                {
-                    listRecipientData.Add(recipient);
-                }    
-            }
-            return listRecipientData;
         }
     }
 }

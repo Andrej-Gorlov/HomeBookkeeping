@@ -16,8 +16,4 @@
     <ProjectReference Include="..\HomeBookkeepingWebApi.Domain\HomeBookkeepingWebApi.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Helpers\" />
-  </ItemGroup>
-
 </Project>

@@ -24,7 +24,8 @@ namespace HomeBookkeeping.Web.Services.Implementations.HomeBookkeepingService
             return await this.SendAsync<T>(new ApiRequest()
             {
                 Api_Type = StaticDitels.ApiType.POST,
-                Url = StaticDitels.HomeBookkeepingApiBase + "/api/transaction/" + userFullName + "/" + numberCardUser + "/" + file
+                File=file,
+                Url = StaticDitels.HomeBookkeepingApiBase + "/api/transaction/" + userFullName + "/" + numberCardUser 
             });
         }
         public async Task<T> DeleteTransactionAsync<T>(int id)

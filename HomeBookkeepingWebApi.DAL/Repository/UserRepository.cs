@@ -18,24 +18,9 @@ namespace HomeBookkeepingWebApi.DAL.Repository
         public async Task<UserDTO> CreateAsync(UserDTO entity)
         {
             User user = _mapper.Map<UserDTO, User>(entity);
-            if (user.СreditСards.Count!=0)
-            {
-                _db.User.Add(user);
-                await _db.SaveChangesAsync();
-                return _mapper.Map<User, UserDTO>(user);
-            }
-            else
-            {
-                СreditСard сreditСard = new();
-                сreditСard.UserFullName = entity.FullName;
-                сreditСard.BankName = "-";
-                сreditСard.Number = "-";
-                сreditСard.L_Account = "-";
-                user.СreditСards.Add(сreditСard);
-                _db.User.Add(user);
-                await _db.SaveChangesAsync();
-                return _mapper.Map<User, UserDTO>(user);
-            }
+            _db.User.Add(user);
+            await _db.SaveChangesAsync();
+            return _mapper.Map<User, UserDTO>(user);
         }
         public async Task<bool> DeleteAsync(int id)
         {

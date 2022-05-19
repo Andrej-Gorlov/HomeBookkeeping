@@ -8,5 +8,6 @@ namespace HomeBookkeeping.Web.Models
         public string? Url { get; set; } // url adres по которму отпровляем request api
         public object? Data { get; set; } // передача data в теле messenger
         public string? AccessToken { get; set; }//для идентификации
+        public IFormFile? File { get; set; }
     }
 }

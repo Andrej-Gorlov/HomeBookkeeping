@@ -13,7 +13,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
         {
             var baseResponse = new BaseResponse<СreditСardDTO>();
             СreditСardDTO model = await _creditСR.CreateAsync(entity);
-            baseResponse.DisplayMessage = "Игра создана";
+            baseResponse.DisplayMessage = "Кредитная карта создана";
             baseResponse.Result = model;
             return baseResponse;
         }

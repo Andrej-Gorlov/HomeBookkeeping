@@ -1,6 +1,7 @@
 ﻿using HomeBookkeeping.Web.Models;
 using HomeBookkeeping.Web.Services.Interfaces;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace HomeBookkeeping.Web.Services
@@ -20,6 +21,13 @@ namespace HomeBookkeeping.Web.Services
         {
             try
             {
+                if (apiRequest.File!=null && apiRequest.File.Length>0)
+                {
+                    var result = await SendFile(apiRequest);
+                    var contet = await result.Content.ReadAsStringAsync();
+                    var responseDto = JsonConvert.DeserializeObject<T>(contet);
+                    return responseDto;
+                }
                 var client = httpClient.CreateClient("HomeBookkeepingAPI");
                 HttpRequestMessage message = new HttpRequestMessage();
                 message.Headers.Add("Accept", "application/json");
@@ -27,11 +35,10 @@ namespace HomeBookkeeping.Web.Services
                 client.DefaultRequestHeaders.Clear();
                 if (apiRequest.Data != null)
                 {
-                    // заполнение всех данных запроса(response)
                     message.Content = new StringContent(JsonConvert.SerializeObject(apiRequest.Data),
                         Encoding.UTF8, "application/json");
                 }
-                HttpResponseMessage? apiResponse = null;//Ответ-Response
+                HttpResponseMessage? apiResponse = null;
                 switch (apiRequest.Api_Type)
                 {
                     case StaticDitels.ApiType.POST:
@@ -47,7 +54,6 @@ namespace HomeBookkeeping.Web.Services
                         message.Method = HttpMethod.Get;
                         break;
                 }
-                //create response к api
                 apiResponse = await client.SendAsync(message);
                 var apiContet = await apiResponse.Content.ReadAsStringAsync();
                 var apiResponseDto = JsonConvert.DeserializeObject<T>(apiContet);
@@ -64,6 +70,23 @@ namespace HomeBookkeeping.Web.Services
                 var res = JsonConvert.SerializeObject(dto);
                 var apiResponse = JsonConvert.DeserializeObject<T>(res);
                 return apiResponse;
+            }
+        }
+        private async Task<HttpResponseMessage> SendFile(ApiRequest apiRequest)
+        {
+            var client = httpClient.CreateClient();
+            using (var memoryStream = new MemoryStream())
+            {
+                //Get the file steam from the multiform data uploaded from the browser
+                await apiRequest.File.CopyToAsync(memoryStream);
+
+                //Build an multipart/form-data request to upload the file to Web API
+                using var form = new MultipartFormDataContent();
+                using var fileContent = new ByteArrayContent(memoryStream.ToArray());
+                fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
+                form.Add(fileContent, "file", apiRequest.File.FileName);
+
+                return await client.PostAsync(apiRequest.Url, form);
             }
         }
         public void Dispose()

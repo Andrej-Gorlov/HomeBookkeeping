@@ -3,11 +3,7 @@ using HomeBookkeeping.Web.Models.HomeBookkeeping;
 using HomeBookkeeping.Web.Models.ViewModels;
 using HomeBookkeeping.Web.Services.Interfaces.IHomeBookkeepingService;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Hosting.Internal;
 using Newtonsoft.Json;
-using OfficeOpenXml;
-using System.Net.Http.Headers;
 
 namespace HomeBookkeeping.Web.Controllers
 {
@@ -18,14 +14,12 @@ namespace HomeBookkeeping.Web.Controllers
         private readonly IUserService _userService;
         private readonly IСreditСardService _creditСardService;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IHttpClientFactory _clientFactory;
-        public TransactionController(ITransactionService transactionService, IUserService userService, IСreditСardService creditСardService, IWebHostEnvironment webHostEnvironment, IHttpClientFactory clientFactory)
+        public TransactionController(ITransactionService transactionService, IUserService userService, IСreditСardService creditСardService, IWebHostEnvironment webHostEnvironment)
         {
             _transactionService= transactionService;
             _userService= userService;
             _creditСardService = creditСardService;
             _webHostEnvironment= webHostEnvironment;
-            _clientFactory= clientFactory;
         }
 
         [HttpGet]
@@ -134,41 +128,13 @@ namespace HomeBookkeeping.Web.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> TransactionDownload(TransactionVM model)
+        public async Task<IActionResult> TransactionDownloadFile(TransactionVM model)
         {
             var responsCreditСard = await _creditСardService.GetByIdСreditСardAsync<ResponseBase>(model.СreditСard.СreditСardId);
             СreditСardDTOBase? creditСard = JsonConvert.DeserializeObject<СreditСardDTOBase>(Convert.ToString(responsCreditСard.Result));
             string? userFullName = creditСard.UserFullName;
             string? numberCardUser = creditСard.Number;
-
-
-            //var client = _clientFactory.CreateClient();
-
-            //if (model.fileExcel.Length > 0)
-            //{
-            //    using (var memoryStream = new MemoryStream())
-            //    {
-            //        //Get the file steam from the multiform data uploaded from the browser
-            //        await model.fileExcel.CopyToAsync(memoryStream);
-
-            //        //Build an multipart/form-data request to upload the file to Web API
-            //        using var form = new MultipartFormDataContent();
-            //        using var fileContent = new ByteArrayContent(memoryStream.ToArray());
-            //        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
-            //        form.Add(fileContent, "file", model.fileExcel.FileName);
-
-            //        var responsTransaction = await _transactionService.AddTransactionFromFileExcelAsync<ResponseBase>(form, userFullName, numberCardUser);
-
-            //        if (responsTransaction != null)
-            //        {
-            //            return RedirectToAction(nameof(TransactionGet));
-            //        }
-            //    }
-            //}
-
-
             var responsTransaction = await _transactionService.AddTransactionFromFileExcelAsync<ResponseBase>(model.fileExcel, userFullName, numberCardUser);
-
             if (responsTransaction != null)
             {
                 return RedirectToAction(nameof(TransactionGet));
