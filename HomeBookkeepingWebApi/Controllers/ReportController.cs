@@ -1,5 +1,7 @@
-﻿using HomeBookkeepingWebApi.Service.Interfaces;
+﻿using HomeBookkeepingWebApi.Domain.Paging;
+using HomeBookkeepingWebApi.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace HomeBookkeepingWebApi.Controllers
 {
@@ -58,7 +60,7 @@ namespace HomeBookkeepingWebApi.Controllers
                 return NotFound();
             }
             return Ok(nameUsers);
-        } 
+        }
 
         /// <summary>
         /// Отчёт определенного пользователя за конкретный год.
@@ -71,8 +73,10 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     GET /report/ReportByNameUserYear/{fullName}/{year}
         ///     
-        ///        fullName: "string"   // Введите полное имя пользователя, отчёт которого нужно показать.
-        ///        year: 0              // Введите год за который нужно паказать отчёт.
+        ///        PageNumber: Номер страницы   // Введите номер страницы, которую нужно показать с отчётом.
+        ///        PageSize: Размер страницы    // Введите размер страницы, какое количество данных из отчёта нужно вывести.
+        ///        fullName: "string"           // Введите полное имя пользователя, отчёт которого нужно показать.
+        ///        year: 0                      // Введите год за который нужно паказать отчёт.
         ///     
         /// </remarks>
         /// <response code="200"> Запрос прошёл. (Успех) </response>
@@ -83,17 +87,27 @@ namespace HomeBookkeepingWebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> ReportByNameUserYear(string fullName, int year)
+        public async Task<IActionResult> ReportByNameUserYear([FromQuery] PagingQueryParameters paging, string fullName, int year)
         {
             if (year <= 0)
             {
                 return BadRequest($"год: [{year}] не может быть меньше или равен нулю");
             }
-            var report = await _reportSer.ReportByNameUserYearServiceAsync(fullName, year);
+            var report = await _reportSer.ReportByNameUserYearServiceAsync(paging, fullName, year);
             if (report.Result is null)
             {
                 return NotFound();
             }
+            var metadata = new
+            {
+                report.Result.TotalCount,
+                report.Result.PageSize,
+                report.Result.CurrentPage,
+                report.Result.TotalPages,
+                report.Result.HasNext,
+                report.Result.HasPrevious
+            };
+            Response?.Headers?.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(report);
         }
 
@@ -149,9 +163,11 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     GET /report/ReportByCategoryNameUserYear/{category}/{fullName}/{year}
         ///     
-        ///        typeExpense: "string"   // Введите категорию за которую нужно паказать отчёт.
-        ///        fullName: "string"      // Введите полное имя пользователя, отчёт которого нужно показать.
-        ///        year: 0                 // Введите год за который нужно паказать отчёт.
+        ///        PageNumber: Номер страницы   // Введите номер страницы, которую нужно показать с отчётом.
+        ///        PageSize: Размер страницы    // Введите размер страницы, какое количество данных из отчёта нужно вывести.
+        ///        typeExpense: "string"        // Введите категорию за которую нужно паказать отчёт.
+        ///        fullName: "string"           // Введите полное имя пользователя, отчёт которого нужно показать.
+        ///        year: 0                      // Введите год за который нужно паказать отчёт.
         ///     
         /// </remarks>
         /// <response code="200"> Запрос прошёл. (Успех) </response>
@@ -162,20 +178,29 @@ namespace HomeBookkeepingWebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> ReportByCategoryNameUserYear(string category, string fullName, int year)
+        public async Task<IActionResult> ReportByCategoryNameUserYear([FromQuery] PagingQueryParameters paging, string category, string fullName, int year)
         {
             if (year <= 0)
             {
                 return BadRequest($"год: [{year}] не может быть меньше или равен нулю");
             }
-            var report = await _reportSer.ReportByCategoryNameUserYearServiceAsync(category, fullName, year);
+            var report = await _reportSer.ReportByCategoryNameUserYearServiceAsync(paging, category, fullName, year);
             if (report.Result is null)
             {
                 return NotFound();
             }
+            var metadata = new
+            {
+                report.Result.TotalCount,
+                report.Result.PageSize,
+                report.Result.CurrentPage,
+                report.Result.TotalPages,
+                report.Result.HasNext,
+                report.Result.HasPrevious
+            };
+            Response?.Headers?.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(report);
         }
-
 
         /// <summary>
         /// Отчёт по категории определенного пользователя за конкретный год и месяц.
@@ -226,6 +251,8 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <remarks>
         ///
         ///     GET /report/full
+        ///        PageNumber: Номер страницы   // Введите номер страницы, которую нужно показать с отчётом.
+        ///        PageSize: Размер страницы    // Введите размер страницы, какое количество данных из отчёта нужно вывести.
         ///
         /// </remarks> 
         /// <response code="200"> Запрос прошёл. (Успех) </response>
@@ -234,15 +261,25 @@ namespace HomeBookkeepingWebApi.Controllers
         [Route("full")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> ExpensFullReport()
+        public async Task<IActionResult> ExpensFullReport([FromQuery] PagingQueryParameters paging)
         {
-            var report = await _reportSer.FullReportServiceAsync();
+            var report = await _reportSer.FullReportServiceAsync(paging);
             if (report.Result is null)
             {
                 return NotFound();
             }
+            var metadata = new
+            {
+                report.Result.TotalCount,
+                report.Result.PageSize,
+                report.Result.CurrentPage,
+                report.Result.TotalPages,
+                report.Result.HasNext,
+                report.Result.HasPrevious
+            };
+            Response?.Headers?.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(report);
-        } 
+        }
 
         /// <summary>
         /// Отчёт за все года определенного пользователя
@@ -254,7 +291,9 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     GET /report/ReportAllYearsNameUser/{fullName}
         ///     
-        ///        fullName: "string"   // Введите полное имя пользователя, которого нужно показать отчёт.
+        ///        PageNumber: Номер страницы   // Введите номер страницы, которую нужно показать с отчётом.
+        ///        PageSize: Размер страницы    // Введите размер страницы, какое количество данных из отчёта нужно вывести.
+        ///        fullName: "string"           // Введите полное имя пользователя, которого нужно показать отчёт.
         ///     
         /// </remarks>
         /// <response code="200"> Запрос прошёл. (Успех) </response>
@@ -263,13 +302,23 @@ namespace HomeBookkeepingWebApi.Controllers
         [Route("ReportAllYearsNameUser/{fullName}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> ReportAllYearsNameUser(string fullName)
+        public async Task<IActionResult> ReportAllYearsNameUser([FromQuery] PagingQueryParameters paging, string fullName)
         {
-            var report = await _reportSer.ReportAllYearsNameUserServiceAsync(fullName);
+            var report = await _reportSer.ReportAllYearsNameUserServiceAsync(paging, fullName);
             if (report.Result is null)
             {
                 return NotFound();
             }
+            var metadata = new
+            {
+                report.Result.TotalCount,
+                report.Result.PageSize,
+                report.Result.CurrentPage,
+                report.Result.TotalPages,
+                report.Result.HasNext,
+                report.Result.HasPrevious
+            };
+            Response?.Headers?.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(report);
         }
 
@@ -283,6 +332,8 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     GET /report/ReportByCategoryAllYears/{category}
         ///     
+        ///        PageNumber: Номер страницы   // Введите номер страницы, которую нужно показать с отчётом.
+        ///        PageSize: Размер страницы    // Введите размер страницы, какое количество данных из отчёта нужно вывести.
         ///        typeExpense: "string"   // Введите категорию за которую нужно паказать отчёт.
         ///     
         /// </remarks>
@@ -292,13 +343,23 @@ namespace HomeBookkeepingWebApi.Controllers
         [Route("ReportByCategoryAllYears/{category}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> ReportByCategoryAllYears(string category)
+        public async Task<IActionResult> ReportByCategoryAllYears([FromQuery] PagingQueryParameters paging, string category)
         {
-            var report = await _reportSer.ReportByCategoryAllYearsServiceAsync(category);
+            var report = await _reportSer.ReportByCategoryAllYearsServiceAsync(paging, category);
             if (report.Result is null)
             {
                 return NotFound();
             }
+            var metadata = new
+            {
+                report.Result.TotalCount,
+                report.Result.PageSize,
+                report.Result.CurrentPage,
+                report.Result.TotalPages,
+                report.Result.HasNext,
+                report.Result.HasPrevious
+            };
+            Response?.Headers?.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(report);
         }
 
@@ -313,6 +374,8 @@ namespace HomeBookkeepingWebApi.Controllers
         /// 
         ///     GET /report/ReportByCategoryYaer/{category}/{year}
         ///     
+        ///        PageNumber: Номер страницы   // Введите номер страницы, которую нужно показать с отчётом.
+        ///        PageSize: Размер страницы    // Введите размер страницы, какое количество данных из отчёта нужно вывести.
         ///        category: "string"         // Введите категорию за которую нужно паказать отчёт.
         ///        year: 0                    // Введите год за который нужно паказать отчёт.
         ///     
@@ -325,17 +388,27 @@ namespace HomeBookkeepingWebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> ReportByCategoryYaer(string category, int year)
+        public async Task<IActionResult> ReportByCategoryYaer([FromQuery] PagingQueryParameters paging, string category, int year)
         {
             if (year <= 0)
             {
                 return BadRequest($"год: [{year}] не может быть меньше или равен нулю");
             }
-            var report = await _reportSer.ReportByCategoryYaerServiceAsync(category, year);
+            var report = await _reportSer.ReportByCategoryYaerServiceAsync(paging, category, year);
             if (report.Result is null)
             {
                 return NotFound();
             }
+            var metadata = new
+            {
+                report.Result.TotalCount,
+                report.Result.PageSize,
+                report.Result.CurrentPage,
+                report.Result.TotalPages,
+                report.Result.HasNext,
+                report.Result.HasPrevious
+            };
+            Response?.Headers?.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(report);
         }
     }

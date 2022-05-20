@@ -1,6 +1,6 @@
 ﻿using HomeBookkeepingWebApi.DAL.Interfaces;
 using HomeBookkeepingWebApi.Domain.DTO;
-using HomeBookkeepingWebApi.Domain.Entity;
+using HomeBookkeepingWebApi.Domain.Paging;
 using HomeBookkeepingWebApi.Domain.Response;
 using HomeBookkeepingWebApi.Service.Interfaces;
 
@@ -42,9 +42,10 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             baseResponse.Result = IsSuccess;
             return baseResponse;
         }
-        public async Task<IBaseResponse<IEnumerable<UserDTO>>> GetServiceAsync()
+        public async Task<IBaseResponse<PagedList<UserDTO>>> GetServiceAsync(PagingQueryParameters paging)
         {
-            var baseResponse = new BaseResponse<IEnumerable<UserDTO>>();
+            var baseResponse = new BaseResponse<PagedList<UserDTO>>();
+
             IEnumerable<UserDTO> usersDTO = await _userRep.GetAsync();
             if (usersDTO is null)
             {
@@ -54,7 +55,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             {
                 baseResponse.DisplayMessage = "Список всех пользователей.";
             }
-            baseResponse.Result = usersDTO;
+            baseResponse.Result = PagedList<UserDTO>.ToPagedList(usersDTO, paging.PageNumber, paging.PageSize);
             return baseResponse;
         }
         public async Task<IBaseResponse<UserDTO>> GetByFullNameServiceAsync(string fullName)

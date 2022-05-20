@@ -1,6 +1,8 @@
 ﻿using HomeBookkeepingWebApi.Domain.DTO;
+using HomeBookkeepingWebApi.Domain.Paging;
 using HomeBookkeepingWebApi.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace HomeBookkeepingWebApi.Controllers
 {
@@ -19,6 +21,9 @@ namespace HomeBookkeepingWebApi.Controllers
         /// Образец выовда запроса:
         ///
         ///     GET /creditcards
+        ///     
+        ///        PageNumber: Номер страницы   // Введите номер страницы, которую нужно показать с списоком всех кредитных карт.
+        ///        PageSize: Размер страницы    // Введите размер страницы, какое количество кредитных карт нужно вывести.
         ///
         /// </remarks> 
         /// <response code="200"> Запрос прошёл. (Успех) </response>
@@ -27,13 +32,23 @@ namespace HomeBookkeepingWebApi.Controllers
         [Route("creditcards")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetСreditСards()
+        public async Task<IActionResult> GetСreditСards([FromQuery] PagingQueryParameters paging)
         {
-            var creditCards = await _creditСardSer.GetServiceAsync();
+            var creditCards = await _creditСardSer.GetServiceAsync(paging);
             if (creditCards.Result is null)
             {
                 return NotFound(creditCards);
             }
+            var metadata = new
+            {
+                creditCards.Result.TotalCount,
+                creditCards.Result.PageSize,
+                creditCards.Result.CurrentPage,
+                creditCards.Result.TotalPages,
+                creditCards.Result.HasNext,
+                creditCards.Result.HasPrevious
+            };
+            Response?.Headers?.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(creditCards);
         }
 

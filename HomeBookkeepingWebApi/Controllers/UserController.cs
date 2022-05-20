@@ -1,6 +1,8 @@
 ﻿using HomeBookkeepingWebApi.Domain.DTO;
+using HomeBookkeepingWebApi.Domain.Paging;
 using HomeBookkeepingWebApi.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace HomeBookkeepingWebApi.Controllers
 {
@@ -18,6 +20,9 @@ namespace HomeBookkeepingWebApi.Controllers
         /// <remarks>
         ///
         ///     GET /users
+        ///     
+        ///        PageNumber: Номер страницы   // Введите номер страницы, которую нужно показать с списоком всех пользователей.
+        ///        PageSize: Размер страницы    // Введите размер страницы, какое количество пользователей нужно вывести.
         ///
         /// </remarks> 
         /// <response code="200"> Запрос прошёл. (Успех) </response>
@@ -26,13 +31,23 @@ namespace HomeBookkeepingWebApi.Controllers
         [Route("users")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers([FromQuery] PagingQueryParameters paging)
         {
-            var users = await _userSer.GetServiceAsync();
+            var users = await _userSer.GetServiceAsync(paging);
             if (users is null)
             {
                 return NotFound(users);
             }
+            var metadata = new
+            {
+                users.Result.TotalCount,
+                users.Result.PageSize,
+                users.Result.CurrentPage,
+                users.Result.TotalPages,
+                users.Result.HasNext,
+                users.Result.HasPrevious
+            };
+            Response?.Headers?.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(users);
         }
 

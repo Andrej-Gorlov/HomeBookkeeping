@@ -1,5 +1,6 @@
 ﻿using HomeBookkeepingWebApi.DAL.Interfaces;
 using HomeBookkeepingWebApi.Domain.DTO;
+using HomeBookkeepingWebApi.Domain.Paging;
 using HomeBookkeepingWebApi.Domain.Response;
 using HomeBookkeepingWebApi.Service.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -71,11 +72,11 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             baseResponse.Result = IsSuccess;
             return baseResponse;
         }
-        public async Task<IBaseResponse<IEnumerable<TransactionDTO>>> GetServiceAsync()
+        public async Task<IBaseResponse<PagedList<TransactionDTO>>> GetServiceAsync(PagingQueryParameters paging)
         {
-            var baseResponse = new BaseResponse<IEnumerable<TransactionDTO>>();
-            IEnumerable<TransactionDTO> transactionDTO = await _transactionRep.GetAsync();
-            if (transactionDTO is null)
+            var baseResponse = new BaseResponse<PagedList<TransactionDTO>>();
+            IEnumerable<TransactionDTO> transactionsDTO = await _transactionRep.GetAsync();
+            if (transactionsDTO is null)
             {
                 baseResponse.DisplayMessage = "Список всех транзакций пуст.";
             }
@@ -83,7 +84,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             {
                 baseResponse.DisplayMessage = "Список всех транзакций.";
             }
-            baseResponse.Result = transactionDTO;
+            baseResponse.Result = PagedList<TransactionDTO>.ToPagedList(transactionsDTO, paging.PageNumber, paging.PageSize);
             return baseResponse;
         }
         public async Task<IBaseResponse<TransactionDTO>> GetByIdServiceAsync(int id)

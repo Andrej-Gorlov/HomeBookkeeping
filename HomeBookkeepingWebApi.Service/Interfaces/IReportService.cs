@@ -1,4 +1,5 @@
 ﻿using HomeBookkeepingWebApi.Domain.Entity.TemporaryData;
+using HomeBookkeepingWebApi.Domain.Paging;
 using HomeBookkeepingWebApi.Domain.Response;
 
 namespace HomeBookkeepingWebApi.Service.Interfaces
@@ -9,20 +10,20 @@ namespace HomeBookkeepingWebApi.Service.Interfaces
         Task<IBaseResponse<List<string>>> GetAllFullNameUserServiceAsync();
 
         // Отчёт определенного user за конкретный год
-        Task<IBaseResponse<IEnumerable<Report>>> ReportByNameUserYearServiceAsync(string fullName, int year);
+        Task<IBaseResponse<PagedList<Report>>> ReportByNameUserYearServiceAsync(PagingQueryParameters paging, string fullName, int year);
         // Отчёт определенного user за конкретный год и месяц
         Task<IBaseResponse<Report>> ReportByNameUserYearMonthServiceAsync(string fullName, int year, string month);
         // Отчёт категории определенного user за конкретный год
-        Task<IBaseResponse<IEnumerable<ReportCategory>>> ReportByCategoryNameUserYearServiceAsync(string category, string fullName, int year);
+        Task<IBaseResponse<PagedList<ReportCategory>>> ReportByCategoryNameUserYearServiceAsync(PagingQueryParameters paging, string category, string fullName, int year);
         //Отчёт категории определенного user за конкретный год и месяц
         Task<IBaseResponse<ReportCategory>> ReportByCategoryNameUserYearMonthServiceAsync(string category, string fullName, int year, string month);
         // Полный отчёт
-        Task<IBaseResponse<IEnumerable<Report>>> FullReportServiceAsync();
+        Task<IBaseResponse<PagedList<Report>>> FullReportServiceAsync(PagingQueryParameters paging);
         // Отчёт за все года определенного user
-        Task<IBaseResponse<IEnumerable<Report>>> ReportAllYearsNameUserServiceAsync(string fullName);
+        Task<IBaseResponse<PagedList<Report>>> ReportAllYearsNameUserServiceAsync(PagingQueryParameters paging, string fullName);
         // Отчёт определенной категории за все года
-        Task<IBaseResponse<IEnumerable<ReportCategory>>> ReportByCategoryAllYearsServiceAsync(string category);
+        Task<IBaseResponse<PagedList<ReportCategory>>> ReportByCategoryAllYearsServiceAsync(PagingQueryParameters paging, string category);
         // Отчёт определенной категории за конкретный год
-        Task<IBaseResponse<IEnumerable<ReportCategory>>> ReportByCategoryYaerServiceAsync(string category, int year);
+        Task<IBaseResponse<PagedList<ReportCategory>>> ReportByCategoryYaerServiceAsync(PagingQueryParameters paging, string category, int year);
     }
 }

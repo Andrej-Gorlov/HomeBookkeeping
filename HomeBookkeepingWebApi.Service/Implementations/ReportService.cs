@@ -1,6 +1,7 @@
 ﻿using HomeBookkeepingWebApi.DAL.Interfaces;
 using HomeBookkeepingWebApi.Domain.DTO;
 using HomeBookkeepingWebApi.Domain.Entity.TemporaryData;
+using HomeBookkeepingWebApi.Domain.Paging;
 using HomeBookkeepingWebApi.Domain.Response;
 using HomeBookkeepingWebApi.Service.Helpers;
 using HomeBookkeepingWebApi.Service.Interfaces;
@@ -16,8 +17,8 @@ namespace HomeBookkeepingWebApi.Service.Implementations
         {
             _userRep = userRep;
             _transactionRep = transactionRep;
-        } 
-        public async Task<IBaseResponse<IEnumerable<ReportCategory>>> ReportByCategoryAllYearsServiceAsync(string category)
+        }
+        public async Task<IBaseResponse<PagedList<ReportCategory>>> ReportByCategoryAllYearsServiceAsync(PagingQueryParameters paging, string category)
         {
             var users = await _userRep.GetAsync();
             var nameUsers = users.Select(x => x.FullName).Distinct().ToList();
@@ -56,23 +57,23 @@ namespace HomeBookkeepingWebApi.Service.Implementations
                     }
                 }
             }
-            var baseResponse = new BaseResponse<IEnumerable<ReportCategory>>();
+            var baseResponse = new BaseResponse<PagedList<ReportCategory>>();
             if (reportCategoryAllYears is null)
                 baseResponse.DisplayMessage = $"Список всех расходов по категории [{category}] за все года пуст.";
             else
                 baseResponse.DisplayMessage = $"Список всех расходов по категории [{category}] за все года.";
-            
-            baseResponse.Result = reportCategoryAllYears;
+
+            baseResponse.Result = PagedList<ReportCategory>.ToPagedList(reportCategoryAllYears, paging.PageNumber, paging.PageSize);
             return baseResponse;
         }
-        public async Task<IBaseResponse<IEnumerable<ReportCategory>>> ReportByCategoryYaerServiceAsync(string category, int year)
+        public async Task<IBaseResponse<PagedList<ReportCategory>>> ReportByCategoryYaerServiceAsync(PagingQueryParameters paging, string category, int year)
         {
             var transactions = await _transactionRep.GetAsync();
             var nameCategory = transactions
-                .FirstOrDefault(x => x.Category.ToUpper().Replace(" ", "") == category.ToUpper().Replace(" ", ""));;
-           
+                .FirstOrDefault(x => x.Category.ToUpper().Replace(" ", "") == category.ToUpper().Replace(" ", "")); ;
+
             var nameUsers = _userRep.GetAsync().Result.AsQueryable().Select(x => x.FullName).Distinct().ToList();
-            
+
             List<ReportCategory> reportCategoryAllYears = new();
             foreach (var itemUser in nameUsers)
             {
@@ -87,7 +88,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
                         FullName = itemUser,
                         DateTime = dateTime,
                         Category = nameCategory.Category,
-                        recipientsData = ReportHelper.ListRecipient(transactions.ToList(),dateTime, nameCategory.Category, itemUser, true),
+                        recipientsData = ReportHelper.ListRecipient(transactions.ToList(), dateTime, nameCategory.Category, itemUser, true),
                         Sum = transactions.Where(x => x.UserFullName == itemUser &&
                                                  x.DateOperations.Year == dateTime.Year &&
                                                  x.DateOperations.Month == dateTime.Month &&
@@ -99,17 +100,17 @@ namespace HomeBookkeepingWebApi.Service.Implementations
                     }
                 }
             }
-            var baseResponse = new BaseResponse<IEnumerable<ReportCategory>>();
-            
+            var baseResponse = new BaseResponse<PagedList<ReportCategory>>();
+
             if (reportCategoryAllYears is null)
                 baseResponse.DisplayMessage = $"Список всех расходов по категории [{category}] за год [{year}] пуст.";
             else
                 baseResponse.DisplayMessage = $"Список всех расходов по категории [{category}] за год [{year}].";
-            
-            baseResponse.Result = reportCategoryAllYears;
+
+            baseResponse.Result = PagedList<ReportCategory>.ToPagedList(reportCategoryAllYears, paging.PageNumber, paging.PageSize);
             return baseResponse;
         }
-        public async Task<IBaseResponse<IEnumerable<Report>>> FullReportServiceAsync()
+        public async Task<IBaseResponse<PagedList<Report>>> FullReportServiceAsync(PagingQueryParameters paging)
         {
             var users = await _userRep.GetAsync();
             var nameUsers = users.Select(x => x.FullName).Distinct().ToList();
@@ -144,16 +145,16 @@ namespace HomeBookkeepingWebApi.Service.Implementations
                     }
                 }
             }
-            var baseResponse = new BaseResponse<IEnumerable<Report>>();
+            var baseResponse = new BaseResponse<PagedList<Report>>();
             if (fullReport is null)
                 baseResponse.DisplayMessage = $"Список всех расходов пуст.";
             else
                 baseResponse.DisplayMessage = $"Список всех расходов.";
-           
-            baseResponse.Result = fullReport;
+
+            baseResponse.Result = PagedList<Report>.ToPagedList(fullReport, paging.PageNumber, paging.PageSize);
             return baseResponse;
         }
-        public async Task<IBaseResponse<IEnumerable<ReportCategory>>> ReportByCategoryNameUserYearServiceAsync(string category, string fullName, int year)
+        public async Task<IBaseResponse<PagedList<ReportCategory>>> ReportByCategoryNameUserYearServiceAsync(PagingQueryParameters paging, string category, string fullName, int year)
         {
             var users = await _userRep.GetAsync();
             var name = users.FirstOrDefault(x => x.FullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", ""));
@@ -161,7 +162,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             var transactions = await _transactionRep.GetAsync();
             var listMonth = transactions.Where(x => x.DateOperations.Year == year)
                 .Select(x => x.DateOperations.Month).Distinct().ToList();
-           
+
             List<ReportCategory> reportCategoryNameUserYear = new();
             foreach (var item in listMonth)
             {
@@ -184,13 +185,13 @@ namespace HomeBookkeepingWebApi.Service.Implementations
                     reportCategoryNameUserYear.Add(reportMonth);
                 }
             }
-            var baseResponse = new BaseResponse<IEnumerable<ReportCategory>>();
+            var baseResponse = new BaseResponse<PagedList<ReportCategory>>();
             if (reportCategoryNameUserYear is null)
                 baseResponse.DisplayMessage = $"Список расходов по категории [{category}] пользователя [{fullName}] за год [{year}] пуст.";
             else
                 baseResponse.DisplayMessage = $"Список расходов по категории [{category}] пользователя [{fullName}] за год [{year}].";
-           
-            baseResponse.Result = reportCategoryNameUserYear;
+
+            baseResponse.Result = PagedList<ReportCategory>.ToPagedList(reportCategoryNameUserYear, paging.PageNumber, paging.PageSize);
             return baseResponse;
         }
         public async Task<IBaseResponse<ReportCategory>> ReportByCategoryNameUserYearMonthServiceAsync(string category, string fullName, int year, string month)
@@ -222,11 +223,11 @@ namespace HomeBookkeepingWebApi.Service.Implementations
                 baseResponse.DisplayMessage = $"Отчёт по категории [{category}] пользователя [{fullName}] за год [{year}] и месеца [{month}] не найден.";
             else
                 baseResponse.DisplayMessage = $"Отчёт по категории [{category}] пользователя [{fullName}] за год [{year}] и месеца [{month}]";
-            
+
             baseResponse.Result = reportCategoryNameUserYearMonth;
             return baseResponse;
         }
-        public async Task<IBaseResponse<IEnumerable<Report>>> ReportAllYearsNameUserServiceAsync(string fullName)
+        public async Task<IBaseResponse<PagedList<Report>>> ReportAllYearsNameUserServiceAsync(PagingQueryParameters paging, string fullName)
         {
             var users = await _userRep.GetAsync();
             var name = users.FirstOrDefault(x => x.FullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", ""));
@@ -258,16 +259,16 @@ namespace HomeBookkeepingWebApi.Service.Implementations
                     }
                 }
             }
-            var baseResponse = new BaseResponse<IEnumerable<Report>>();
+            var baseResponse = new BaseResponse<PagedList<Report>>();
             if (reportAllYearsNameUser is null)
                 baseResponse.DisplayMessage = $"Список расходов пользователя [{fullName}] за все года пуст.";
             else
                 baseResponse.DisplayMessage = $"Список расходов пользователя [{fullName}] за все года.";
-            
-            baseResponse.Result = reportAllYearsNameUser;
+
+            baseResponse.Result = PagedList<Report>.ToPagedList(reportAllYearsNameUser, paging.PageNumber, paging.PageSize);
             return baseResponse;
         }
-        public async Task<IBaseResponse<IEnumerable<Report>>> ReportByNameUserYearServiceAsync(string fullName, int year)
+        public async Task<IBaseResponse<PagedList<Report>>> ReportByNameUserYearServiceAsync(PagingQueryParameters paging, string fullName, int year)
         {
             var users = await _userRep.GetAsync();
             var name = users.FirstOrDefault(x => x.FullName.ToUpper().Replace(" ", "") == fullName.ToUpper().Replace(" ", ""));
@@ -276,7 +277,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             var listMonth = transactions
                 .Where(x => x.DateOperations.Year == year)
                 .Select(x => x.DateOperations.Month).Distinct().ToList();
-           
+
             List<Report> reportByNameUserYear = new();
             foreach (var item in listMonth)
             {
@@ -295,13 +296,13 @@ namespace HomeBookkeepingWebApi.Service.Implementations
                     reportByNameUserYear.Add(reportMonth);
                 }
             }
-            var baseResponse = new BaseResponse<IEnumerable<Report>>();
+            var baseResponse = new BaseResponse<PagedList<Report>>();
             if (reportByNameUserYear is null)
                 baseResponse.DisplayMessage = $"Список расходов пользователя [{fullName}] за все год [{year}] пуст.";
             else
                 baseResponse.DisplayMessage = $"Список расходов пользователя [{fullName}] за все год [{year}].";
-            
-            baseResponse.Result = reportByNameUserYear;
+
+            baseResponse.Result = PagedList<Report>.ToPagedList(reportByNameUserYear, paging.PageNumber, paging.PageSize);
             return baseResponse;
         }
         public async Task<IBaseResponse<Report>> ReportByNameUserYearMonthServiceAsync(string fullName, int year, string month)
@@ -329,7 +330,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
                 baseResponse.DisplayMessage = $"Отчёт пользователя [{fullName}] за год [{year}] и месеца [{month}] не найден.";
             else
                 baseResponse.DisplayMessage = $"Отчёт пользователя [{fullName}] за год [{year}] и месеца [{month}]";
-            
+
             baseResponse.Result = reportByNameUserYearMonth;
             return baseResponse;
         }
@@ -344,7 +345,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
                 baseResponse.DisplayMessage = $"Список категорий.";
             else
                 baseResponse.DisplayMessage = $"Список категорий пуст.";
-            
+
             baseResponse.Result = listCategory.ToList();
             return baseResponse;
         }

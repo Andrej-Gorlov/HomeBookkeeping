@@ -1,5 +1,6 @@
 ﻿using HomeBookkeepingWebApi.DAL.Interfaces;
 using HomeBookkeepingWebApi.Domain.DTO;
+using HomeBookkeepingWebApi.Domain.Paging;
 using HomeBookkeepingWebApi.Domain.Response;
 using HomeBookkeepingWebApi.Service.Interfaces;
 
@@ -40,9 +41,9 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             baseResponse.Result = model;
             return baseResponse;
         }
-        public async Task<IBaseResponse<IEnumerable<СreditСardDTO>>> GetServiceAsync()
+        public async Task<IBaseResponse<PagedList<СreditСardDTO>>> GetServiceAsync(PagingQueryParameters paging)
         {
-            var baseResponse = new BaseResponse<IEnumerable<СreditСardDTO>>();
+            var baseResponse = new BaseResponse<PagedList<СreditСardDTO>>();
             IEnumerable<СreditСardDTO> creditСardsDTO = await _creditСR.GetAsync();
             if (creditСardsDTO is null)
             {
@@ -52,7 +53,7 @@ namespace HomeBookkeepingWebApi.Service.Implementations
             {
                 baseResponse.DisplayMessage = "Список всех кредитных карт.";
             }
-            baseResponse.Result = creditСardsDTO;
+            baseResponse.Result = PagedList<СreditСardDTO>.ToPagedList(creditСardsDTO, paging.PageNumber, paging.PageSize);
             return baseResponse;
         }
         public async Task<IBaseResponse<IEnumerable<СreditСardDTO>>> GetServiceAsync(string fullName)
