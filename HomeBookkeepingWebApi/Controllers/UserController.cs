@@ -18,7 +18,8 @@ namespace HomeBookkeepingWebApi.Controllers
         /// </summary>
         /// <returns>Вывод всех пользователей</returns>
         /// <remarks>
-        ///
+        /// Образец запроса:
+        /// 
         ///     GET /users
         ///     
         ///        PageNumber: Номер страницы   // Введите номер страницы, которую нужно показать с списоком всех пользователей.

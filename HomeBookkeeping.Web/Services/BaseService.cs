@@ -16,7 +16,6 @@ namespace HomeBookkeeping.Web.Services
             this.httpClient = httpClient;
         }
 
-
         public async Task<T> SendAsync<T>(ApiRequest apiRequest)
         {
             try
@@ -56,6 +55,16 @@ namespace HomeBookkeeping.Web.Services
                 }
                 apiResponse = await client.SendAsync(message);
                 var apiContet = await apiResponse.Content.ReadAsStringAsync();
+                
+                if (apiResponse.Headers.FirstOrDefault(x=>x.Key== "X-Pagination").Key != null)
+                {
+                    var apiHeaders = apiResponse.Headers.GetValues("X-Pagination").FirstOrDefault();
+                    var apiResponseDt = JsonConvert.DeserializeObject<T>
+                        ( apiContet.Substring(0,apiContet.Length-1) 
+                          + ",\"PagedList\":" + apiHeaders+"}" );
+                    return apiResponseDt;
+                }
+
                 var apiResponseDto = JsonConvert.DeserializeObject<T>(apiContet);
                 return apiResponseDto;
             }

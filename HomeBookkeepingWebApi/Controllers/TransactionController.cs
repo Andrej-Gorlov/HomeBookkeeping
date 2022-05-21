@@ -183,6 +183,7 @@ namespace HomeBookkeepingWebApi.Controllers
         /// Образец выовда запроса:
         ///
         ///     GET /transactions
+        /// Образец запроса:
         ///     
         ///        PageNumber: Номер страницы   // Введите номер страницы, которую нужно показать с списоком всех транзакций.
         ///        PageSize: Размер страницы    // Введите размер страницы, какое количество транзакций нужно вывести.
@@ -194,7 +195,7 @@ namespace HomeBookkeepingWebApi.Controllers
         [Route("transactions")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetСreditСards([FromQuery] PagingQueryParameters paging)
+        public async Task<IActionResult> GetTransactions([FromQuery] PagingQueryParameters paging)
         {
             var transactions = await _transactionSer.GetServiceAsync(paging);
             if (transactions.Result is null)

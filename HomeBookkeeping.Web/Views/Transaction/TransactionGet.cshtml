@@ -1,4 +1,4 @@
-﻿@model IEnumerable<HomeBookkeeping.Web.Models.HomeBookkeeping.TransactionDTOBase>
+﻿@model HomeBookkeeping.Web.Models.ViewModels.TransactionVM
 
     <br /><br />
 
@@ -38,7 +38,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @foreach (var item in Model.TransactionsDTO)
                 {
                     <tr>
                         <td>
@@ -72,3 +72,33 @@
             </tbody>
         </table>
     </div>
+
+<div class="container pt-5">
+     <div class="text-center">
+        @if (Model.Paging.HasPrevious)
+        {
+            <a asp-action="TransactionGet"
+               asp-route-page="@(Model.Paging.CurrentPage - 1)"
+               class="btn btn-outline-primary">
+                <i class="glyphicon glyphicon-chevron-left"></i>
+                Назад
+            </a>
+        }
+
+        @for (int i = 1; i <= Model.Paging.TotalPages; i++)
+          {
+              <a asp-action="TransactionGet" asp-route-page="@i"
+              class="btn btn-outline-primary">@i</a>
+          }
+
+        @if (Model.Paging.HasNext&& Model.Paging.CurrentPage!=1)
+        {
+            <a asp-action="TransactionGet"
+               asp-route-page="@(Model.Paging.CurrentPage + 1)"
+               class="btn btn-outline-primary">
+                Вперед
+                <i class="glyphicon glyphicon-chevron-right"></i>
+            </a>
+        }
+   </div>
+</div>

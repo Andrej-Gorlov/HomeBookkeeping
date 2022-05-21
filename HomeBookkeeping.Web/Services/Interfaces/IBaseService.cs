@@ -5,6 +5,6 @@ namespace HomeBookkeeping.Web.Services.Interfaces
     public interface IBaseService : IDisposable
     {
         ResponseBase responseModel { get; set; }
-        Task<T> SendAsync<T>(ApiRequest apiRequest);// отправка request
+        Task<T> SendAsync<T>(ApiRequest apiRequest);
     }
 }

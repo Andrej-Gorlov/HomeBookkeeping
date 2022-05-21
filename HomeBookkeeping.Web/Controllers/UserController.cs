@@ -1,5 +1,6 @@
 ﻿using HomeBookkeeping.Web.Models;
 using HomeBookkeeping.Web.Models.HomeBookkeeping;
+using HomeBookkeeping.Web.Services;
 using HomeBookkeeping.Web.Services.Interfaces.IHomeBookkeepingService;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -16,7 +17,7 @@ namespace HomeBookkeeping.Web.Controllers
         [HttpGet]
         public async Task <IActionResult> UserIndex()
         {
-            List<UserDTOBase> listUsers = new();
+            List<UserDTOBase>? listUsers = new();
             var respons = await _userService.GetUsersAsync<ResponseBase>();
             if (respons != null)
             {

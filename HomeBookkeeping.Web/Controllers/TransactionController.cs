@@ -1,5 +1,6 @@
 ﻿using HomeBookkeeping.Web.Models;
 using HomeBookkeeping.Web.Models.HomeBookkeeping;
+using HomeBookkeeping.Web.Models.Paging;
 using HomeBookkeeping.Web.Models.ViewModels;
 using HomeBookkeeping.Web.Services.Interfaces.IHomeBookkeepingService;
 using Microsoft.AspNetCore.Mvc;
@@ -25,15 +26,16 @@ namespace HomeBookkeeping.Web.Controllers
         [HttpGet]
         public IActionResult TransactionIndex()=> View();
         [HttpGet]
-        public async Task<IActionResult> TransactionGet()
+        public async Task<IActionResult> TransactionGet(int page = 1)
         {
-            List<TransactionDTOBase> listTransaction = new();
-            var respons = await _transactionService.GetTransactionsAsync<ResponseBase>();
+            TransactionVM transactionVM = new();
+            var respons = await _transactionService.GetTransactionsAsync<ResponseBase>(new PagingParameters() { PageNumber =page});
             if (respons.Result != null)
             {
-                listTransaction = JsonConvert.DeserializeObject<List<TransactionDTOBase>>(Convert.ToString(respons.Result));
+                transactionVM.TransactionsDTO = JsonConvert.DeserializeObject<List<TransactionDTOBase>>(Convert.ToString(respons.Result));
+                transactionVM.Paging = respons.PagedList;
             }
-            return View(listTransaction);
+            return View(transactionVM);
         }
 
 

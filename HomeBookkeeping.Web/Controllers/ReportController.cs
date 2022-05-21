@@ -1,5 +1,6 @@
 ﻿using HomeBookkeeping.Web.Models;
 using HomeBookkeeping.Web.Models.HomeBookkeeping;
+using HomeBookkeeping.Web.Models.Paging;
 using HomeBookkeeping.Web.Models.ViewModels;
 using HomeBookkeeping.Web.Services.Interfaces.IHomeBookkeepingService;
 using Microsoft.AspNetCore.Mvc;
@@ -44,7 +45,8 @@ namespace HomeBookkeeping.Web.Controllers
         private async Task<ReportVM> Data()
         {
             List<TransactionDTOBase> listTransaction = new();
-            var respons = await _transactionService.GetTransactionsAsync<ResponseBase>();
+            var respons = await _transactionService.GetTransactionsAsync<ResponseBase>(new PagingParameters() { PageSize=1000});
+
             if (respons != null)
             {
                 listTransaction = JsonConvert.DeserializeObject<List<TransactionDTOBase>>(Convert.ToString(respons.Result));
