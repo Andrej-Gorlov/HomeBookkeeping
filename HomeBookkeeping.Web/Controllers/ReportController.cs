@@ -14,6 +14,7 @@ namespace HomeBookkeeping.Web.Controllers
     {
         private readonly IReportServise _reportService;
         private readonly ITransactionService _transactionService;
+        private ReportVM riv = new();
         public ReportController(IReportServise reportService, ITransactionService transactionService)
         {
             _reportService = reportService;
@@ -32,7 +33,7 @@ namespace HomeBookkeeping.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> ParamsNameCategoryNameUserYearMonth()=> View(await Data());
         [HttpGet]
-        public async Task<IActionResult> FullReport()=> await FullReport(new ReportVM());
+        public async Task<IActionResult> FullReport(int page = 1) => await FullReport(page,riv);
         [HttpGet]
         public async Task<IActionResult> ParameterNameCategory() => View(await Data());
         [HttpGet]
@@ -51,6 +52,7 @@ namespace HomeBookkeeping.Web.Controllers
             {
                 listTransaction = JsonConvert.DeserializeObject<List<TransactionDTOBase>>(Convert.ToString(respons.Result));
             }
+
             ReportVM reportVM = new ReportVM()
             {
                 CategoryList = listTransaction.Select(x => new SelectListItem
@@ -70,66 +72,89 @@ namespace HomeBookkeeping.Web.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> FullReport(ReportVM reportVM)
+        public async Task<IActionResult> FullReport(int page, ReportVM report)
         {
-            List<ReportBase> listTDRT = new();
-            if (reportVM.fullName==null && reportVM.month==null && reportVM.year == 0)
+            if (page == 0)
+                page++;
+
+            if (report.fullName==null && report.month==null && report.year == 0)
             {
-                var respons = await _reportService.FullReportAsync<ResponseBase>();
+                var respons = await _reportService.FullReportAsync<ResponseBase>(new PagingParameters() { PageNumber = page });
                 if (respons != null)
-                    listTDRT = JsonConvert.DeserializeObject<List<ReportBase>>(Convert.ToString(respons.Result));
-                return View(listTDRT);
+                {
+                    report.Reports = JsonConvert.DeserializeObject<List<ReportBase>>(Convert.ToString(respons.Result));
+                    report.Paging = respons.PagedList;
+                }   
+                return View(report);
             }
-            if (reportVM.month == null && reportVM.year==0)
+            if (report.month == null && report.year==0)
             {
-                var respons = await _reportService.ReportAllYearsNameUserAsync<ResponseBase>(reportVM.fullName);
+                var respons = await _reportService.ReportAllYearsNameUserAsync<ResponseBase>(new PagingParameters() { PageNumber = page }, report.fullName);
                 if (respons != null)
-                    listTDRT = JsonConvert.DeserializeObject<List<ReportBase>>(Convert.ToString(respons.Result));
-                return View(listTDRT);
+                {
+                    report.Reports = JsonConvert.DeserializeObject<List<ReportBase>>(Convert.ToString(respons.Result));
+                    report.Paging = respons.PagedList;
+                }  
+                return View(report);
             }
-            if (reportVM.month == null)
+            if (report.month == null)
             {
-                var respons = await _reportService.ReportByNameUserAsync<ResponseBase>(reportVM.fullName, reportVM.year);
+                var respons = await _reportService.ReportByNameUserAsync<ResponseBase>(new PagingParameters() { PageNumber = page }, report.fullName, report.year);
                 if (respons != null)
-                    listTDRT = JsonConvert.DeserializeObject<List<ReportBase>>(Convert.ToString(respons.Result));
-                return View(listTDRT);
+                {
+                    report.Reports = JsonConvert.DeserializeObject<List<ReportBase>>(Convert.ToString(respons.Result));
+                    report.Paging = respons.PagedList;
+                }  
+                return View(report);
             }
-            if (reportVM.fullName!=null && reportVM.year!=0 && reportVM.month!=null)
+            if (report.fullName!=null && report.year!=0 && report.month!=null)
             {
                 ReportBase TDRT = new();
-                var respons = await _reportService.ReportByNameUserYearMonthAsync<ResponseBase>(reportVM.fullName, reportVM.year, reportVM.month);
+                var respons = await _reportService.ReportByNameUserYearMonthAsync<ResponseBase>(report.fullName, report.year, report.month);
                 if (respons != null)
                     TDRT = JsonConvert.DeserializeObject<ReportBase>(Convert.ToString(respons.Result));
-                listTDRT.Add(TDRT);
-                return View(listTDRT);
+                report.Reports.Add(TDRT);
+                return View(report);
             }
             return RedirectToAction("Index");
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ReportCategory(ReportVM reportVM)
+        public async Task<IActionResult> ReportCategory(int page,ReportVM reportVM)
         {
-            List<ReportCategoryBase> listTDRC = new();
+            if (page == 0)
+                page++;
+
+            ReportVM report = new();
             if (reportVM.year==0 && reportVM.month==null && reportVM.fullName == null)
             {
-                var respons = await _reportService.ReportByCategoryAllYearsAsync<ResponseBase>(reportVM.category);
+                var respons = await _reportService.ReportByCategoryAllYearsAsync<ResponseBase>(new PagingParameters() { PageNumber = page }, reportVM.category);
                 if (respons != null)
-                    listTDRC = JsonConvert.DeserializeObject<List<ReportCategoryBase>>(Convert.ToString(respons.Result));
-                return View(listTDRC);
+                {
+                    report.ReportCategories = JsonConvert.DeserializeObject<List<ReportCategoryBase>>(Convert.ToString(respons.Result));
+                    report.Paging = respons.PagedList;
+                }
+                return View(report);
             }
             if (reportVM.month == null && reportVM.fullName==null)
             {
-                var respons = await _reportService.ReportByCategoryYaerAsync<ResponseBase>(reportVM.category, reportVM.year);
+                var respons = await _reportService.ReportByCategoryYaerAsync<ResponseBase>(new PagingParameters() { PageNumber = page }, reportVM.category, reportVM.year);
                 if (respons != null)
-                    listTDRC = JsonConvert.DeserializeObject<List<ReportCategoryBase>>(Convert.ToString(respons.Result));
-                return View(listTDRC);
+                {
+                    report.ReportCategories = JsonConvert.DeserializeObject<List<ReportCategoryBase>>(Convert.ToString(respons.Result));
+                    report.Paging = respons.PagedList;
+                }
+                return View(report);
             }
             if (reportVM.month == null)
             {
-                var respons = await _reportService.ReportByCategoryNameUserYearAsync<ResponseBase>(reportVM.category, reportVM.fullName, reportVM.year);
+                var respons = await _reportService.ReportByCategoryNameUserYearAsync<ResponseBase>(new PagingParameters() { PageNumber = page }, reportVM.category, reportVM.fullName, reportVM.year);
                 if (respons != null)
-                    listTDRC = JsonConvert.DeserializeObject<List<ReportCategoryBase>>(Convert.ToString(respons.Result));
-                return View(listTDRC);
+                {
+                    report.ReportCategories = JsonConvert.DeserializeObject<List<ReportCategoryBase>>(Convert.ToString(respons.Result));
+                    report.Paging = respons.PagedList;
+                }
+                return View(report);
             }
             if(reportVM.category!=null && reportVM.fullName!=null && reportVM.year!=0 && reportVM.month != null)
             {
@@ -137,8 +162,8 @@ namespace HomeBookkeeping.Web.Controllers
                 var respons = await _reportService.ReportByCategoryNameUserYearMonthAsync<ResponseBase>(reportVM.category,reportVM.fullName, reportVM.year, reportVM.month);
                 if (respons != null)
                     TDRC = JsonConvert.DeserializeObject<ReportCategoryBase>(Convert.ToString(respons.Result));
-                listTDRC.Add(TDRC);
-                return View(listTDRC);
+                report.ReportCategories.Add(TDRC);
+                return View(report);
             }
             return RedirectToAction("Index");
         }

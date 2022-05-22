@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using HomeBookkeeping.Web.Models.HomeBookkeeping;
+using HomeBookkeeping.Web.Models.Paging;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -13,7 +15,10 @@ namespace HomeBookkeeping.Web.Models.ViewModels
         public IEnumerable<SelectListItem>? FullNameList { get; set; }
         public IEnumerable<SelectListItem>? YearList { get; set; }
         public IEnumerable<SelectListItem>? CategoryList { get; set; }
-        public Months Months { get; set; }   
+        public Months Months { get; set; }
+        public List<ReportCategoryBase>? ReportCategories { get; set; }
+        public List<ReportBase>? Reports { get; set; }
+        public PagedList? Paging { get; set; }
     }
     public enum Months
     {

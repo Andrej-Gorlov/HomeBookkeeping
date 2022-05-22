@@ -1,4 +1,5 @@
 ﻿using HomeBookkeeping.Web.Models;
+using HomeBookkeeping.Web.Models.Paging;
 using HomeBookkeeping.Web.Services.Interfaces.IHomeBookkeepingService;
 
 namespace HomeBookkeeping.Web.Services.Implementations.HomeBookkeepingService
@@ -10,30 +11,30 @@ namespace HomeBookkeeping.Web.Services.Implementations.HomeBookkeepingService
 
 
 
-        public async Task<T> ReportByCategoryAllYearsAsync<T>(string category)
+        public async Task<T> ReportByCategoryAllYearsAsync<T>(PagingParameters parameters ,string category)
         {
             return await this.SendAsync<T>(new ApiRequest()
             {
                 Api_Type = StaticDitels.ApiType.GET,
-                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ReportByCategoryAllYears/" + category
+                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ReportByCategoryAllYears/" + category + "?pagenumber=" + parameters.PageNumber + "&pagesize=" + parameters.PageSize
             });
         }
 
-        public async Task<T> ReportByCategoryYaerAsync<T>(string category, int year)
+        public async Task<T> ReportByCategoryYaerAsync<T>(PagingParameters parameters, string category, int year)
         {
             return await this.SendAsync<T>(new ApiRequest()
             {
                 Api_Type = StaticDitels.ApiType.GET,
-                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ReportByCategoryYaer/" + category+"/"+ year
+                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ReportByCategoryYaer/" + category+"/"+ year + "?pagenumber=" + parameters.PageNumber + "&pagesize=" + parameters.PageSize
             });
         }
 
-        public async Task<T> FullReportAsync<T>()
+        public async Task<T> FullReportAsync<T>(PagingParameters parameters)
         {
             return await this.SendAsync<T>(new ApiRequest()
             {
                 Api_Type = StaticDitels.ApiType.GET,
-                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/full"
+                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/full?pagenumber=" + parameters.PageNumber + "&pagesize=" + parameters.PageSize
             });
         }
 
@@ -46,21 +47,21 @@ namespace HomeBookkeeping.Web.Services.Implementations.HomeBookkeepingService
             });
         }
 
-        public async Task<T> ReportByCategoryNameUserYearAsync<T>(string category, string fullName, int year)
+        public async Task<T> ReportByCategoryNameUserYearAsync<T>(PagingParameters parameters, string category, string fullName, int year)
         {
             return await this.SendAsync<T>(new ApiRequest()
             {
                 Api_Type = StaticDitels.ApiType.GET,
-                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ReportByCategoryNameUserYear/" + category + "/" + fullName + "/" + year 
+                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ReportByCategoryNameUserYear/" + category + "/" + fullName + "/" + year + "?pagenumber=" + parameters.PageNumber + "&pagesize=" + parameters.PageSize
             });
         }
 
-        public async Task<T> ReportAllYearsNameUserAsync<T>(string fullName)
+        public async Task<T> ReportAllYearsNameUserAsync<T>(PagingParameters parameters, string fullName)
         {
             return await this.SendAsync<T>(new ApiRequest()
             {
                 Api_Type = StaticDitels.ApiType.GET,
-                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ReportAllYearsNameUser/" + fullName
+                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ReportAllYearsNameUser/" + fullName + "?pagenumber=" + parameters.PageNumber + "&pagesize=" + parameters.PageSize
             });
         }
 
@@ -73,12 +74,12 @@ namespace HomeBookkeeping.Web.Services.Implementations.HomeBookkeepingService
             });
         }
 
-        public async Task<T> ReportByNameUserAsync<T>(string fullName, int year)
+        public async Task<T> ReportByNameUserAsync<T>(PagingParameters parameters, string fullName, int year)
         {
             return await this.SendAsync<T>(new ApiRequest()
             {
                 Api_Type = StaticDitels.ApiType.GET,
-                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ReportByNameUserYear/" + fullName + "/" + year
+                Url = StaticDitels.HomeBookkeepingApiBase + "/api/report/ReportByNameUserYear/" + fullName + "/" + year + "?pagenumber=" + parameters.PageNumber + "&pagesize=" + parameters.PageSize
             });
         }
 
