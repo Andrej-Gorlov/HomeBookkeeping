@@ -43,7 +43,7 @@ namespace HomeBookkeeping.Web.Controllers
         public async Task<IActionResult> TransactionAdd()
         {
             List<UserDTOBase> listUser = new();
-            var respons = await _userService.GetUsersAsync<ResponseBase>();
+            var respons = await _userService.GetUsersAsync<ResponseBase>(new PagingParameters() { PageSize=1000 });
             listUser = JsonConvert.DeserializeObject<List<UserDTOBase>>(Convert.ToString(respons.Result));
             ViewBag.UserList = listUser;
             TransactionVM transactionVM = new()
@@ -59,7 +59,7 @@ namespace HomeBookkeeping.Web.Controllers
         public async Task<JsonResult> GetСreditСardByUserIdAsync(int userId)
         {
             List<СreditСardDTOBase> listСreditСard = new();
-            var respons = await _creditСardService.GetСreditСardsAsync<ResponseBase>();
+            var respons = await _creditСardService.GetСreditСardsAsync<ResponseBase>(new PagingParameters() { PageSize = 1000 });
             listСreditСard = JsonConvert.DeserializeObject<List<СreditСardDTOBase>>(Convert.ToString(respons.Result));
             var data= listСreditСard.Where(x=>x.UserId== userId).Select(x => new
             {
@@ -123,7 +123,7 @@ namespace HomeBookkeeping.Web.Controllers
         public async Task<IActionResult> TransactionDownload() 
         {
             List<UserDTOBase> listUser = new();
-            var respons = await _userService.GetUsersAsync<ResponseBase>();
+            var respons = await _userService.GetUsersAsync<ResponseBase>(new PagingParameters() { PageSize = 1000 });
             listUser = JsonConvert.DeserializeObject<List<UserDTOBase>>(Convert.ToString(respons.Result));
             ViewBag.UserList = listUser;
             return View();

@@ -1,5 +1,6 @@
 ﻿using HomeBookkeeping.Web.Models;
 using HomeBookkeeping.Web.Models.HomeBookkeeping;
+using HomeBookkeeping.Web.Models.Paging;
 using HomeBookkeeping.Web.Services.Interfaces.IHomeBookkeepingService;
 
 namespace HomeBookkeeping.Web.Services.Implementations.HomeBookkeepingService
@@ -48,12 +49,12 @@ namespace HomeBookkeeping.Web.Services.Implementations.HomeBookkeepingService
             });
         }
 
-        public async Task<T> GetСreditСardsAsync<T>()
+        public async Task<T> GetСreditСardsAsync<T>(PagingParameters parameters)
         {
             return await this.SendAsync<T>(new ApiRequest()
             {
                 Api_Type = StaticDitels.ApiType.GET,
-                Url = StaticDitels.HomeBookkeepingApiBase + "/api/creditcards"
+                Url = StaticDitels.HomeBookkeepingApiBase + "/api/creditcards?pagenumber=" + parameters.PageNumber + "&pagesize=" + parameters.PageSize
             });
         }
 

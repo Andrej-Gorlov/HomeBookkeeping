@@ -1,5 +1,7 @@
 ﻿using HomeBookkeeping.Web.Models;
 using HomeBookkeeping.Web.Models.HomeBookkeeping;
+using HomeBookkeeping.Web.Models.Paging;
+using HomeBookkeeping.Web.Models.ViewModels;
 using HomeBookkeeping.Web.Services;
 using HomeBookkeeping.Web.Services.Interfaces.IHomeBookkeepingService;
 using Microsoft.AspNetCore.Mvc;
@@ -15,16 +17,16 @@ namespace HomeBookkeeping.Web.Controllers
 
 
         [HttpGet]
-        public async Task <IActionResult> UserIndex()
+        public async Task <IActionResult> UserIndex(int page = 1)
         {
-            List<UserDTOBase>? listUsers = new();
-            var respons = await _userService.GetUsersAsync<ResponseBase>();
+            UserVM userVM = new();
+            var respons = await _userService.GetUsersAsync<ResponseBase>(new PagingParameters() { PageNumber = page });
             if (respons != null)
             {
-                listUsers = JsonConvert.DeserializeObject<List<UserDTOBase>>(Convert.ToString(respons.Result));
+                userVM.Users = JsonConvert.DeserializeObject<List<UserDTOBase>>(Convert.ToString(respons.Result));
+                userVM.Paging = respons.PagedList;
             }
-            return View(listUsers);
-
+            return View(userVM);
         }
 
 

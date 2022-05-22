@@ -1,5 +1,6 @@
 ﻿using HomeBookkeeping.Web.Models;
 using HomeBookkeeping.Web.Models.HomeBookkeeping;
+using HomeBookkeeping.Web.Models.Paging;
 using HomeBookkeeping.Web.Models.ViewModels;
 using HomeBookkeeping.Web.Services.Interfaces.IHomeBookkeepingService;
 using Microsoft.AspNetCore.Mvc;
@@ -14,15 +15,17 @@ namespace HomeBookkeeping.Web.Controllers
         public СreditСardController(IСreditСardService creditСardService) => _creditСardService = creditСardService;
 
         [HttpGet]
-        public async Task<IActionResult> СreditСardIndex()
+        public async Task<IActionResult> СreditСardIndex(int page = 1)
         {
-            List<СreditСardDTOBase> listСreditСard = new();
-            var respons = await _creditСardService.GetСreditСardsAsync<ResponseBase>();
+            СreditСardVM cardVM= new();
+
+            var respons = await _creditСardService.GetСreditСardsAsync<ResponseBase>(new PagingParameters() { PageNumber = page });
             if (respons != null)
             {
-                listСreditСard = JsonConvert.DeserializeObject<List<СreditСardDTOBase>>(Convert.ToString(respons.Result));
+                cardVM.CreditСards = JsonConvert.DeserializeObject<List<СreditСardDTOBase>>(Convert.ToString(respons.Result));
+                cardVM.Paging = respons.PagedList;
             }
-            return View(listСreditСard);
+            return View(cardVM);
         }
         [HttpGet]
         public async Task <IActionResult> СreditСardUserIndex(string fullName)
@@ -65,7 +68,7 @@ namespace HomeBookkeeping.Web.Controllers
         public async Task<IActionResult> СreditСardCreate()
         {
             List<СreditСardDTOBase> listСreditСard = new();
-            var respons = await _creditСardService.GetСreditСardsAsync<ResponseBase>();
+            var respons = await _creditСardService.GetСreditСardsAsync<ResponseBase>(new PagingParameters() { PageSize = 1000 });
             if (respons != null)
             {
                 listСreditСard = JsonConvert.DeserializeObject<List<СreditСardDTOBase>>(Convert.ToString(respons.Result));
@@ -87,7 +90,7 @@ namespace HomeBookkeeping.Web.Controllers
         {
             //-------------------- чтобы найти имя пользователя (т.к пока не знаю как передать два аргумента из выпадающего списка)
             List<СreditСardDTOBase> listСreditСard = new();
-            var res = await _creditСardService.GetСreditСardsAsync<ResponseBase>();
+            var res = await _creditСardService.GetСreditСardsAsync<ResponseBase>(new PagingParameters() { PageSize = 1000 });
             if (res != null)
             {
                 listСreditСard = JsonConvert.DeserializeObject<List<СreditСardDTOBase>>(Convert.ToString(res.Result));

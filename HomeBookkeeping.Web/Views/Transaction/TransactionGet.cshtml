@@ -71,10 +71,8 @@
                 }
             </tbody>
         </table>
-    </div>
 
-<div class="container pt-5">
-     <div class="text-center">
+        <div class="text-center">
         @if (Model.Paging.HasPrevious)
         {
             <a asp-action="TransactionGet"
@@ -86,10 +84,13 @@
         }
 
         @for (int i = 1; i <= Model.Paging.TotalPages; i++)
-          {
-              <a asp-action="TransactionGet" asp-route-page="@i"
-              class="btn btn-outline-primary">@i</a>
-          }
+        {
+            @if (@Model.Paging.CurrentPage!=i)
+            {
+                <a asp-action="TransactionGet" asp-route-page="@i"
+                class="btn btn-outline-primary">@i</a>
+            }
+        }
 
         @if (Model.Paging.HasNext&& Model.Paging.CurrentPage!=1)
         {
@@ -101,4 +102,5 @@
             </a>
         }
    </div>
-</div>
+
+    </div>
